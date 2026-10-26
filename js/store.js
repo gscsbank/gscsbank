@@ -302,6 +302,53 @@
       this.save();
     }
 
+    // --- Member Feedback (සාමාජික ප්‍රතිපෝෂණ) ---
+    getFeedbacks() {
+      return this.data.feedbacks || [];
+    }
+
+    addFeedback(feedback) {
+      if (!this.data.feedbacks) this.data.feedbacks = [];
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('si-LK') + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const refId = 'GSCS-FB-' + Math.floor(100000 + Math.random() * 900000);
+      const newFeedback = {
+        ...feedback,
+        id: 'fb-' + Date.now(),
+        refId: refId,
+        submittedAt: dateStr,
+        status: 'pending', // 'pending', 'approved', 'rejected'
+        publishedAsTestimonial: false
+      };
+      this.data.feedbacks.unshift(newFeedback);
+      this.save();
+      return newFeedback;
+    }
+
+    updateFeedbackStatus(id, status, notes = '') {
+      const fb = (this.data.feedbacks || []).find(f => f.id === id);
+      if (fb) {
+        fb.status = status;
+        if (notes) fb.reviewNotes = notes;
+        fb.reviewedAt = new Date().toLocaleDateString();
+        this.save();
+      }
+    }
+
+    publishFeedbackAsTestimonial(id) {
+      const fb = (this.data.feedbacks || []).find(f => f.id === id);
+      if (fb) {
+        fb.publishedAsTestimonial = true;
+        fb.status = 'approved';
+        this.save();
+      }
+    }
+
+    deleteFeedback(id) {
+      this.data.feedbacks = (this.data.feedbacks || []).filter(f => f.id !== id);
+      this.save();
+    }
+
     // --- Smart COOP App Registration Applications ---
     getSmartCoopApplications() {
       return this.data.smartCoopApplications || [];

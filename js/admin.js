@@ -12,7 +12,8 @@ const tabTitles = {
   applications: 'සාමාජික අයදුම්පත් කළමනාකරණය (Member Applications)',
   loanpayments: 'ණය වාරික ගෙවීම් කළමනාකරණය (Loan Installment Payments)',
   smartcoop: 'Smart COOP යෙදුම් අයදුම්පත් (Smart COOP Applications)',
-  sync: 'GitHub Pages දත්ත සමමුහුර්තකරණය (Data Persistence)'
+  sync: 'GitHub Pages දත්ත සමමුහුර්තකරණය (Data Persistence)',
+  feedbacks: 'සාමාජික ප්‍රතිපෝෂණ කළමනාකරණය (Member Feedback)'
 };
 
 let currentTab = 'overview';
@@ -133,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try { renderApplicationsTable(); } catch(e) { console.error('Error in renderApplicationsTable:', e); }
     try { renderLoanPaymentsTable(); } catch(e) { console.error('Error in renderLoanPaymentsTable:', e); }
     try { renderSmartCoopTable(); } catch(e) { console.error('Error in renderSmartCoopTable:', e); }
+    try { renderFeedbackTable(); } catch(e) { console.error('Error in renderFeedbackTable:', e); }
     try { setupForms(); } catch(e) { console.error('Error in setupForms:', e); }
 
     // Set initial active tab state
@@ -147,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try { renderApplicationsTable(); } catch(e) {}
       try { renderLoanPaymentsTable(); } catch(e) {}
       try { renderSmartCoopTable(); } catch(e) {}
+      try { renderFeedbackTable(); } catch(e) {}
     });
   }
 
@@ -157,11 +160,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const prods = window.bankStore.getProducts();
     const inqs = window.bankStore.getInquiries();
     const apps = window.bankStore.getMembershipApplications ? window.bankStore.getMembershipApplications() : [];
+    const feedbacks = window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [];
     const info = window.bankStore.getBankInfo();
 
     document.getElementById('ov-news-count').textContent = news.length;
     document.getElementById('ov-services-count').textContent = prods.length;
     document.getElementById('ov-inq-count').textContent = inqs.length;
+
+    // Feedback count
+    const ovFbCountEl = document.getElementById('ov-fb-count');
+    const ovFbPendingEl = document.getElementById('ov-fb-pending');
+    const fbBadgeEl = document.getElementById('sidebar-fb-badge');
+    const pendingFbs = feedbacks.filter(f => f.status === 'pending');
+    if (ovFbCountEl) ovFbCountEl.textContent = feedbacks.length;
+    if (ovFbPendingEl) ovFbPendingEl.textContent = `${pendingFbs.length}ක් පොරොත්තු ලේඛනයේ`;
+    if (fbBadgeEl) fbBadgeEl.textContent = pendingFbs.length;
 
     const appsCountEl = document.getElementById('ov-apps-count');
     const appsPendingEl = document.getElementById('ov-apps-pending');
@@ -2052,4 +2065,117 @@ document.addEventListener('DOMContentLoaded', () => {
     `);
     printWin.document.close();
   };
+  // ============================================================
+  // --- FEEDBACK MANAGEMENT ---
+  // ============================================================
+  let currentFbFilter = 'all';
+
+  function renderFeedbackTable() {
+    const allFeedbacks = window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [];
+    const tbody = document.getElementById('admin-fb-table-body');
+    if (!tbody) return;
+
+    const filtered = currentFbFilter === 'all'
+      ? allFeedbacks
+      : allFeedbacks.filter(f => f.status === currentFbFilter);
+
+    // Update sidebar badge (pending count)
+    const pendingFbs = allFeedbacks.filter(f => f.status === 'pending');
+    const badgeEl = document.getElementById('sidebar-fb-badge');
+    if (badgeEl) badgeEl.textContent = pendingFbs.length;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-slate-400 text-xs">ප්‍රතිපෝෂණ කිසිවක් ලැබී නොමැත.</td></tr>';
+      return;
+    }
+
+    const starHtml = (rating) => [1,2,3,4,5].map(s =>
+      `<i class="${s <= (rating||5) ? 'fa-solid' : 'fa-regular'} fa-star text-yellow-400"></i>`
+    ).join('');
+
+    const statusBadge = (status, published) => {
+      if (published) return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">Published</span>';
+      if (status === 'approved') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Approved</span>';
+      if (status === 'rejected') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800">Rejected</span>';
+      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Pending</span>';
+    };
+
+    tbody.innerHTML = filtered.map(f => `
+      <tr class="hover:bg-slate-50 transition-colors">
+        <td class="py-3 px-4">
+          <div class="font-bold text-slate-900">${f.name}</div>
+          <div class="text-[11px] text-slate-400">${f.village || ''} &bull; ${f.phone || ''}</div>
+        </td>
+        <td class="py-3 px-4 text-sm">${starHtml(f.rating)} <span class="text-[11px] text-slate-400 ml-1">(${f.rating}/5)</span></td>
+        <td class="py-3 px-4 text-slate-600 text-[11px]">${f.service || '-'}</td>
+        <td class="py-3 px-4 max-w-xs">
+          <p class="text-slate-700 text-[11px] line-clamp-2 italic">"${f.message}"</p>
+        </td>
+        <td class="py-3 px-4 text-slate-400 text-[11px] whitespace-nowrap">${f.submittedAt || '-'}</td>
+        <td class="py-3 px-4 text-center">
+          ${f.publishedAsTestimonial
+            ? '<i class="fa-solid fa-check-circle text-indigo-500 text-base" title="ප්‍රකාශිත"></i>'
+            : '<i class="fa-regular fa-circle text-slate-300 text-base"></i>'
+          }
+        </td>
+        <td class="py-3 px-4">${statusBadge(f.status, f.publishedAsTestimonial)}</td>
+        <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
+          ${!f.publishedAsTestimonial ? `
+          <button onclick="window.approveFeedback('${f.id}')" class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50" title="Approve">
+            <i class="fa-solid fa-check"></i>
+          </button>
+          <button onclick="window.publishFeedbackAsTestimonial('${f.id}')" class="p-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50" title="Publish as Testimonial">
+            <i class="fa-solid fa-star"></i>
+          </button>
+          <button onclick="window.rejectFeedback('${f.id}')" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50" title="Reject">
+            <i class="fa-solid fa-ban"></i>
+          </button>
+          ` : ''}
+          <button onclick="window.deleteFeedbackConfirm('${f.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50" title="Delete">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.setFbFilter = function(filter) {
+    currentFbFilter = filter;
+    document.querySelectorAll('.fb-filter-btn').forEach(btn => {
+      const isActive = btn.getAttribute('onclick').includes(`'${filter}'`);
+      btn.className = isActive
+        ? 'fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white'
+        : 'fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200';
+    });
+    renderFeedbackTable();
+  };
+
+  window.approveFeedback = function(id) {
+    window.bankStore.updateFeedbackStatus(id, 'approved');
+    renderFeedbackTable();
+    showAdminToast('ප්‍රතිපෝෂණය අනුමත කරන ලදී.');
+  };
+
+  window.rejectFeedback = function(id) {
+    window.bankStore.updateFeedbackStatus(id, 'rejected');
+    renderFeedbackTable();
+    showAdminToast('ප්‍රතිපෝෂණය ප්‍රතික්ෂේප කරන ලදී.');
+  };
+
+  window.publishFeedbackAsTestimonial = function(id) {
+    if (confirm('මෙම ප්‍රතිපෝෂණය "සාමාජිකයින්ගේ සාර්ථකත්වයේ කතා" කොටසේ ප්‍රකාශිත කිරීමට අවශ්‍ය බව තහවුරු කරන්න?')) {
+      window.bankStore.publishFeedbackAsTestimonial(id);
+      renderFeedbackTable();
+      showAdminToast('ප්‍රතිපෝෂණය ප්‍රකාශිත කරන ලදී! දැන් වෙබ් අඩවියේ testimonials කොටසේ දිස්වේ.');
+    }
+  };
+
+  window.deleteFeedbackConfirm = function(id) {
+    if (confirm('මෙම ප්‍රතිපෝෂණය ස්ථිරවශයෙන් මකා දැමීමට අවශ්‍ය බව තහවුරු කරන්න?')) {
+      window.bankStore.deleteFeedback(id);
+      renderFeedbackTable();
+      showAdminToast('ප්‍රතිපෝෂණය මකාදමන ලදී.');
+    }
+  };
+
 });

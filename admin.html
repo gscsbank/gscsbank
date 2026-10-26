@@ -164,6 +164,11 @@
           <i class="fa-brands fa-github w-5 text-center text-sm text-slate-300"></i>
           <span>GitHub Pages & Sync</span>
         </button>
+        <button data-tab="feedbacks" onclick="window.switchAdminTab('feedbacks')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-star-half-stroke w-5 text-center text-sm text-yellow-300"></i>
+          <span class="flex-grow">සාමාජික ප්‍රතිපෝෂණ (Feedback)</span>
+          <span id="sidebar-fb-badge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#DF0178] text-white">0</span>
+        </button>
       </nav>
 
       <!-- Sidebar Bottom Profile / View Live Site -->
@@ -253,6 +258,17 @@
                 <span class="text-xs font-bold text-slate-400 uppercase">ලැබුණු විමසීම්</span>
                 <div id="ov-inq-count" class="text-2xl font-black text-slate-900">0</div>
                 <p class="text-[11px] text-slate-500">වෙබ් අඩවිය හරහා</p>
+              </div>
+            </div>
+
+            <div onclick="window.switchAdminTab('feedbacks')" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4 cursor-pointer hover:border-yellow-400 transition-colors">
+              <div class="w-14 h-14 rounded-2xl bg-yellow-50 text-yellow-500 flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-star-half-stroke"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">ප්‍රතිපෝෂණ</span>
+                <div id="ov-fb-count" class="text-2xl font-black text-slate-900">0</div>
+                <p id="ov-fb-pending" class="text-[11px] text-slate-500">0ක් පොරොත්තු ලේඛනයේ</p>
               </div>
             </div>
 
@@ -767,6 +783,44 @@
             <button onclick="window.confirmResetDefaults()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-red-600 hover:bg-red-700 text-white transition-all whitespace-nowrap">
               Reset All Data
             </button>
+          </div>
+        </section>
+
+        <!-- ================= TAB: MEMBER FEEDBACK (ප්‍රතිපෝෂණ) ================= -->
+        <section id="panel-feedbacks" class="admin-panel space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">සාමාජික ප්‍රතිපෝෂණ කළමනාකරණය (Member Feedback)</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියේ "ප්‍රතිපෝෂණ" ආකෘති පත්‍රයෙන් ලැබුණු සාමාජික ප්‍රතිපෝෂණ. අනුමත කළ ප්‍රතිපෝෂණ "සාමාජිකයින්ගේ සාර්ථකත්වයේ කතා" කොටසේ ස්වයංක්‍රීයව දිස්වේ.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="window.setFbFilter('all')" class="fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white">සියල්ල</button>
+              <button onclick="window.setFbFilter('pending')" class="fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Pending</button>
+              <button onclick="window.setFbFilter('approved')" class="fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Approved</button>
+              <button onclick="window.setFbFilter('rejected')" class="fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Rejected</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-4">සාමාජිකයා / ප්‍රදේශය</th>
+                    <th class="py-3 px-4">ශ්‍රේණිය</th>
+                    <th class="py-3 px-4">සේවාව</th>
+                    <th class="py-3 px-4">ප්‍රතිපෝෂණය</th>
+                    <th class="py-3 px-4">දිනය</th>
+                    <th class="py-3 px-4">ප්‍රකාශිත</th>
+                    <th class="py-3 px-4">තත්ත්වය</th>
+                    <th class="py-3 px-4 text-right">ක්‍රියා</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-fb-table-body" class="divide-y divide-slate-100">
+                  <!-- Injected by admin.js -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 

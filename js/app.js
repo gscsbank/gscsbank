@@ -624,7 +624,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('testimonials-grid');
     if (!container) return;
 
-    const testimonials = [
+    // Combine approved+published store feedbacks with hardcoded testimonials
+    const storeFeedbacks = (window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [])
+      .filter(f => f.publishedAsTestimonial === true && f.status === 'approved');
+
+    const defaultTestimonials = [
       {
         name: "W.M. සුසන්ත වන්නිනායක මහතා",
         role: "කෘෂි ව්‍යවසායක - ගලපිටියාගම",
@@ -651,11 +655,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     ];
 
-    container.innerHTML = testimonials.map(t => `
+    // Merge: published store feedbacks first, then defaults (up to 6 total)
+    const storeCards = storeFeedbacks.map(f => ({
+      name: f.name,
+      role: (f.service || 'සාමාජිකයා') + (f.village ? ' - ' + f.village : ''),
+      icon: "fa-solid fa-user",
+      iconBg: "bg-pink-100",
+      iconColor: "text-[#DF0178]",
+      quote: f.message,
+      rating: f.rating || 5
+    }));
+
+    const combined = [...storeCards, ...defaultTestimonials].slice(0, 6);
+
+    container.innerHTML = combined.map(t => `
       <div class="testimonial-card flex flex-col justify-between">
         <div>
           <div class="flex text-pink-500 gap-1 mb-4 text-sm">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            ${[1,2,3,4,5].map(s => `<i class="${s <= (t.rating || 5) ? 'fa-solid' : 'fa-regular'} fa-star"></i>`).join('')}
           </div>
           <p class="text-slate-700 italic text-sm sm:text-base leading-relaxed mb-6 relative z-10">
             "${t.quote}"
@@ -1582,4 +1599,122 @@ document.addEventListener('DOMContentLoaded', () => {
       window.print();
     }
   };
+
+  // ============================================================
+  // --- MEMBER FEEDBACK FORM HANDLER ---
+  // ============================================================
+  let selectedFeedbackRating = 0;
+
+  window.resetFeedbackStars = function() {
+    selectedFeedbackRating = 0;
+    document.querySelectorAll('.fb-star').forEach(s => {
+      s.classList.remove('text-yellow-400');
+      s.classList.add('text-slate-300');
+    });
+    const ratingInput = document.getElementById('fb-rating');
+    const ratingText = document.getElementById('fb-rating-text');
+    if (ratingInput) ratingInput.value = 0;
+    if (ratingText) ratingText.textContent = 'තරුවකක් click කරන්න';
+  };
+
+  function setupFeedbackForm() {
+    // Star rating interaction
+    const starContainer = document.getElementById('fb-star-container');
+    const ratingInput = document.getElementById('fb-rating');
+    const ratingText = document.getElementById('fb-rating-text');
+    const ratingLabels = ['', 'දුර්වලයි', 'සාමාන්‍යයි', 'හොඳයි', 'ඉතා හොඳයි', 'විශිෂ්ටයි!'];
+
+    if (starContainer) {
+      starContainer.querySelectorAll('.fb-star').forEach(star => {
+        star.addEventListener('click', () => {
+          selectedFeedbackRating = parseInt(star.getAttribute('data-value'));
+          if (ratingInput) ratingInput.value = selectedFeedbackRating;
+          if (ratingText) ratingText.textContent = ratingLabels[selectedFeedbackRating] || '';
+          starContainer.querySelectorAll('.fb-star').forEach(s => {
+            const v = parseInt(s.getAttribute('data-value'));
+            if (v <= selectedFeedbackRating) {
+              s.classList.remove('text-slate-300');
+              s.classList.add('text-yellow-400');
+            } else {
+              s.classList.remove('text-yellow-400');
+              s.classList.add('text-slate-300');
+            }
+          });
+        });
+
+        star.addEventListener('mouseover', () => {
+          const hoverVal = parseInt(star.getAttribute('data-value'));
+          starContainer.querySelectorAll('.fb-star').forEach(s => {
+            const v = parseInt(s.getAttribute('data-value'));
+            if (v <= hoverVal) {
+              s.classList.add('text-yellow-400');
+              s.classList.remove('text-slate-300');
+            } else {
+              s.classList.remove('text-yellow-400');
+              s.classList.add('text-slate-300');
+            }
+          });
+        });
+
+        star.addEventListener('mouseleave', () => {
+          starContainer.querySelectorAll('.fb-star').forEach(s => {
+            const v = parseInt(s.getAttribute('data-value'));
+            if (v <= selectedFeedbackRating) {
+              s.classList.add('text-yellow-400');
+              s.classList.remove('text-slate-300');
+            } else {
+              s.classList.remove('text-yellow-400');
+              s.classList.add('text-slate-300');
+            }
+          });
+        });
+      });
+    }
+
+    // Form submit
+    const feedbackForm = document.getElementById('feedback-form');
+    if (!feedbackForm) return;
+
+    feedbackForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('fb-name').value.trim();
+      const village = document.getElementById('fb-village').value.trim();
+      const phone = document.getElementById('fb-phone').value.trim();
+      const service = document.getElementById('fb-service').value;
+      const message = document.getElementById('fb-message').value.trim();
+      const consent = document.getElementById('fb-consent').checked;
+      const rating = parseInt(document.getElementById('fb-rating').value) || 0;
+
+      if (!name || !village || !phone || !message) {
+        showToast('කරුණාකර සියලු අවශ්‍ය ක්ෂේත්‍ර පුරවන්න.', 'error');
+        return;
+      }
+      if (!consent) {
+        showToast('ප්‍රකාශනය සඳහා අනුමැතිය ලබාදෙන්න.', 'error');
+        return;
+      }
+      if (rating === 0) {
+        showToast('කරුණාකර ශ්‍රේණිගත කිරීමක් select කරන්න.', 'error');
+        return;
+      }
+
+      const savedFeedback = window.bankStore.addFeedback({
+        name, village, phone, service, message, rating, consent
+      });
+
+      // Show success
+      document.getElementById('feedback-form-container').classList.add('hidden');
+      const successView = document.getElementById('feedback-success-view');
+      successView.classList.remove('hidden');
+      const refEl = document.getElementById('feedback-ref-display');
+      if (refEl) refEl.textContent = 'යොමු අංකය: ' + savedFeedback.refId;
+
+      showToast('ප්‍රතිපෝෂණය සාර්ථකව ලැබිණ! ස්තූතියි.', 'success');
+    });
+  }
+
+  // Call setup
+  try { setupFeedbackForm(); } catch(e) { console.error('Feedback form error:', e); }
+
 });
