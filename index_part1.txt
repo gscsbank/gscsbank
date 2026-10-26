@@ -1,0 +1,153 @@
+﻿Created At: 2026-10-24T20:05:40+05:30
+Completed At: 2026-10-24T20:05:40+05:30
+Showing lines 1-150 of 1068
+1: <!DOCTYPE html>
+2: <html lang="si" class="scroll-smooth">
+3: <head>
+4:   <meta charset="UTF-8">
+5:   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+6:   <title>Galapitiyagama Sanasa Bank | à¶œà¶½à¶´à·’à¶§à·’à¶ºà¶œà¶¸ à·ƒà¶±à·ƒ à·ƒà¶¸à·–à¶´à¶šà·à¶» à¶¶à·à¶‚à¶šà·”à·€ (GSCS Bank)</title>
+7:   
+8:   <meta name="description" content="à¶œà¶½à¶´à·’à¶§à·’à¶ºà¶œà¶¸ à·ƒà¶±à·ƒ à·€à·’à·€à·’à¶° à·ƒà·šà·€à· à·ƒà¶¸à·–à¶´à¶šà·à¶» à·ƒà¶¸à·’à¶­à·’à¶º (GSCS Bank). à¶½à·’à¶ºà·à¶´à¶¯à·’à¶‚à¶ à·’ à¶…à¶‚à¶šà¶º: Kuli/395. à·à·Šâ€à¶»à·“ à¶½à¶‚à¶šà· à¶¸à·„ à¶¶à·à¶‚à¶šà·”à·€à·š à·€à·’à·à·šà·‚ à¶…à¶±à·”à¶¸à·à¶­à·’à¶º à·ƒà·„à·’à¶­à·€ à¶­à·à¶±à·Šà¶´à¶­à·” à¶·à·à¶»à¶œà·à¶±à·“à¶¸ à·ƒà·„ à·ƒà·„à¶±à¶¯à·à¶ºà·“ à¶«à¶º à¶´à·„à·ƒà·”à¶šà¶¸à·Š.">
+9:   <link rel="icon" type="image/png" href="assets/images/gscs-logo.png">
+10: 
+11:   <!-- Tailwind CSS CDN -->
+12:   <script src="https://cdn.tailwindcss.com"></script>
+13:   <script>
+14:     tailwind.config = {
+15:       theme: {
+16:         extend: {
+17:           colors: {
+18:             bank: {
+19:               navy: '#0B0D7C',
+20:               dark: '#070954',
+21:               blue: '#181DA8',
+22:               pink: '#DF0178',
+23:               fuchsia: '#BA0063',
+24:               light: '#f8fafc'
+25:             }
+26:           },
+27:           fontFamily: {
+28:             sans: ['"Plus Jakarta Sans"', '"Noto Sans Sinhala"', 'system-ui', 'sans-serif'],
+29:           }
+30:         }
+31:       }
+32:     }
+33:   </script>
+34: 
+35:   <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Sinhala -->
+36:   <link rel="preconnect" href="https://fonts.googleapis.com">
+37:   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+38:   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+39: 
+40:   <!-- Font Awesome 6 Icons -->
+41:   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+42: 
+43:   <!-- Custom Master Styles -->
+44:   <link rel="stylesheet" href="css/style.css">
+45: </head>
+46: <body class="bg-slate-50 text-slate-800 antialiased selection:bg-[#DF0178] selection:text-white">
+47: 
+48:   <!-- ================= TOP UTILITY BAR (Commercial Bank Style) ================= -->
+49:   <div class="top-bar-bg border-b border-indigo-950 text-xs py-2 px-4 sm:px-8">
+50:     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+51:       <!-- Left Contact & Reg Info -->
+52:       <div class="flex items-center gap-4 sm:gap-6 text-slate-300">
+53:         <span class="flex items-center gap-1.5 font-bold text-pink-400">
+54:           <i class="fa-solid fa-building-shield"></i> Reg No: Kuli/395 (Est. 1987)
+55:         </span>
+56:         <a href="tel:+94372260658" class="hover:text-white flex items-center gap-1.5 transition-colors font-medium">
+57:           <i class="fa-solid fa-phone text-pink-400"></i> +94 37 22 60 658
+58:         </a>
+59:         <a href="https://wa.me/94771234567" target="_blank" class="hover:text-emerald-400 hidden md:flex items-center gap-1.5 transition-colors">
+60:           <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp Support
+61:         </a>
+62:         <span class="hidden xl:inline text-slate-400 text-[11px]">
+63:           <i class="fa-solid fa-certificate text-amber-400 mr-1"></i> CBSL Approved for Deposits
+64:         </span>
+65:       </div>
+66: 
+67:       <!-- Right Utility Actions -->
+68:       <div class="flex items-center gap-4 ml-auto">
+69:         <!-- Language Switcher -->
+70:         <div class="flex items-center bg-slate-900/90 rounded-lg p-0.5 border border-slate-700">
+71:           <button data-lang="si" class="lang-btn active px-2.5 py-1 rounded text-[11px] font-bold text-pink-400 transition-all">à·ƒà·’à¶‚à·„à¶½</button>
+72:           <button data-lang="en" class="lang-btn px-2.5 py-1 rounded text-[11px] font-medium text-slate-300 hover:text-white transition-all">English</button>
+73:         </div>
+74: 
+75:         <!-- Admin Portal Gateway Link -->
+76:         <a href="admin.html" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border border-pink-500/40 font-bold transition-all text-[11px]">
+77:           <i class="fa-solid fa-lock text-[10px]"></i>
+78:           <span>Admin Dashboard (à¶´à¶»à·’à¶´à·à¶½à¶š)</span>
+79:         </a>
+80:       </div>
+81:     </div>
+82:   </div>
+83: 
+84:   <!-- ================= BREAKING URGENT BANNER ================= -->
+85:   <div id="urgent-notice-container" class="bg-pink-50 border-b border-pink-200 py-2 px-4 transition-all">
+86:     <div class="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-sm">
+87:       <div id="urgent-notice-ticker" class="overflow-hidden whitespace-nowrap text-pink-950 flex-grow pr-4">
+88:         <!-- Injected dynamically -->
+89:       </div>
+90:       <button onclick="document.getElementById('urgent-notice-container').classList.add('hidden')" class="text-pink-800 hover:text-pink-950 text-sm font-bold pl-2" title="Close">
+91:         <i class="fa-solid fa-xmark"></i>
+92:       </button>
+93:     </div>
+94:   </div>
+95: 
+96:   <!-- ================= STICKY MAIN HEADER & NAVIGATION ================= -->
+97:   <header id="main-header" class="header-sticky">
+98:     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+99:       <div class="flex items-center justify-between h-20">
+100:         
+101:         <!-- Bank Logo & Identity -->
+102:         <a href="index.html" class="flex items-center gap-3.5 group">
+103:           <img src="assets/images/gscs-logo.png" alt="GSCS Bank Official Logo" class="h-14 w-auto object-contain group-hover:scale-105 transition-transform">
+104:         </a>
+105: 
+106:         <!-- Desktop Navigation Links -->
+107:         <nav class="hidden lg:flex items-center gap-5 xl:gap-6 text-[13.5px]">
+108:           <a href="#home" class="nav-link active">à¶¸à·”à¶½à·Š à¶´à·’à¶§à·”à·€</a>
+109:           <a href="#about" class="nav-link">à¶…à¶´ à¶œà·à¶±</a>
+110:           <a href="#savings" class="nav-link">à¶‰à¶­à·”à¶»à·”à¶¸à·Š à·„à· à¶­à·à¶±à·Šà¶´à¶­à·”</a>
+111:           <a href="#loans" class="nav-link">à¶«à¶º à¶´à·„à·ƒà·”à¶šà¶¸à·Š</a>
+112:           <a href="#rates" class="nav-link">à¶´à·œà¶½à·“ à¶…à¶±à·”à¶´à·à¶­</a>
+113:           <a href="#calculators" class="nav-link">à¶¸à·–à¶½à·Šâ€à¶º à¶œà¶«à¶šà¶º</a>
+114:           <a href="#digital-banking" class="nav-link">Smart COOP</a>
+115:           <a href="#news" class="nav-link">à¶´à·”à·€à¶­à·Š</a>
+116:           <a href="#contact" class="nav-link">à·ƒà¶¸à·Šà¶¶à¶±à·Šà¶°à¶­à·</a>
+117:         </nav>
+118: 
+119:         <!-- Right Header Action (Smart COOP Online Banking Button) -->
+120:         <div class="hidden sm:flex items-center gap-3">
+121:           <button onclick="window.openOnlineBankingModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white shadow-md shadow-pink-900/20 transition-all transform hover:-translate-y-0.5">
+122:             <i class="fa-solid fa-shield-halved text-pink-200"></i>
+123:             <span>Smart COOP à¶´à·’à·€à·’à·ƒà·”à¶¸</span>
+124:           </button>
+125:         </div>
+126: 
+127:         <!-- Mobile Drawer Menu Toggle -->
+128:         <div class="lg:hidden flex items-center gap-2">
+129:           <button onclick="window.openOnlineBankingModal()" class="p-2.5 rounded-lg bg-[#DF0178] text-white text-sm font-bold shadow-sm" title="Smart COOP">
+130:             <i class="fa-solid fa-lock"></i>
+131:           </button>
+132:           <button id="mobile-menu-btn" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors" aria-label="Toggle Menu">
+133:             <i class="fa-solid fa-bars text-lg"></i>
+134:           </button>
+135:         </div>
+136: 
+137:       </div>
+138:     </div>
+139:   </header>
+140: 
+141:   <!-- ================= MOBILE NAVIGATION DRAWER ================= -->
+142:   <div id="mobile-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex flex-col justify-end lg:hidden">
+143:     <div class="bg-white rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto space-y-5">
+144:       <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+145:         <div class="flex items-center gap-2">
+146:           <img src="assets/images/gscs-logo.png" alt="Logo" class="h-10 object-contain">
+147:         </div>
+148:         <button id="close-drawer-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+149:           <i class="fa-solid fa-xmark"></i>
+150:         </button>

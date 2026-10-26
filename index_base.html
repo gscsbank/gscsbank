@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="si" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galapitiyagama Sanasa Bank | ගලපිටියගම සනස සමූපකාර බැංකුව (GSCS Bank)</title>
+  
+  <meta name="description" content="ගලපිටියගම සනස විවිධ සේවා සමූපකාර සමිතිය (GSCS Bank). ලියාපදිංචි අංකය: Kuli/395. ශ්‍රී ලංකා මහ බැංකුවේ විශේෂ අනුමැතිය සහිතව තැන්පතු භාරගැනීම සහ සහනදායී ණය පහසුකම්.">
+  <link rel="icon" type="image/png" href="assets/images/gscs-logo.png">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bank: {
+              navy: '#0B0D7C',
+              dark: '#070954',
+              blue: '#181DA8',
+              pink: '#DF0178',
+              fuchsia: '#BA0063',
+              light: '#f8fafc'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Sinhala"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Sinhala -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Custom Master Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-[#DF0178] selection:text-white">
+
+  <!-- ================= TOP UTILITY BAR (Commercial Bank Style) ================= -->
+  <div class="top-bar-bg border-b border-indigo-950 text-xs py-2 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Left Contact & Reg Info -->
+      <div class="flex items-center gap-4 sm:gap-6 text-slate-300">
+        <span class="flex items-center gap-1.5 font-bold text-pink-400">
+          <i class="fa-solid fa-building-shield"></i> Reg No: Kuli/395 (Est. 1987)
+        </span>
+        <a href="tel:+94372260658" class="hover:text-white flex items-center gap-1.5 transition-colors font-medium">
+          <i class="fa-solid fa-phone text-pink-400"></i> +94 37 22 60 658
+        </a>
+        <a href="https://wa.me/94771234567" target="_blank" class="hover:text-emerald-400 hidden md:flex items-center gap-1.5 transition-colors">
+          <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp Support
+        </a>
+        <span class="hidden xl:inline text-slate-400 text-[11px]">
+          <i class="fa-solid fa-certificate text-amber-400 mr-1"></i> CBSL Approved for Deposits
+        </span>
+      </div>
+
+      <!-- Right Utility Actions -->
+      <div class="flex items-center gap-4 ml-auto">
+        <!-- Language Switcher -->
+        <div class="flex items-center bg-slate-900/90 rounded-lg p-0.5 border border-slate-700">
+          <button data-lang="si" class="lang-btn active px-2.5 py-1 rounded text-[11px] font-bold text-pink-400 transition-all">සිංහල</button>
+          <button data-lang="en" class="lang-btn px-2.5 py-1 rounded text-[11px] font-medium text-slate-300 hover:text-white transition-all">English</button>
+        </div>
+
+        <!-- Admin Portal Gateway Link -->
+        <a href="admin.html" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border border-pink-500/40 font-bold transition-all text-[11px]">
+          <i class="fa-solid fa-lock text-[10px]"></i>
+          <span>Admin Dashboard (පරිපාලක)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= BREAKING URGENT BANNER ================= -->
+  <div id="urgent-notice-container" class="bg-pink-50 border-b border-pink-200 py-2 px-4 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-sm">
+      <div id="urgent-notice-ticker" class="overflow-hidden whitespace-nowrap text-pink-950 flex-grow pr-4">
+        <!-- Injected dynamically -->
+      </div>
+      <button onclick="document.getElementById('urgent-notice-container').classList.add('hidden')" class="text-pink-800 hover:text-pink-950 text-sm font-bold pl-2" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= STICKY MAIN HEADER & NAVIGATION ================= -->
+  <header id="main-header" class="header-sticky">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Bank Logo & Identity -->
+        <a href="index.html" class="flex items-center gap-3.5 group">
+          <img src="assets/images/gscs-logo.png" alt="GSCS Bank Official Logo" class="h-14 w-auto object-contain group-hover:scale-105 transition-transform">
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-5 xl:gap-6 text-[13.5px]">
+          <a href="#home" class="nav-link active">මුල් පිටුව</a>
+          <a href="#about" class="nav-link">අප ගැන</a>
+          <a href="#savings" class="nav-link">ඉතුරුම් හා තැන්පතු</a>
+          <a href="#loans" class="nav-link">ණය පහසුකම්</a>
+          <a href="#rates" class="nav-link">පොලී අනුපාත</a>
+          <a href="#calculators" class="nav-link">මූල්‍ය ගණකය</a>
+          <a href="#digital-banking" class="nav-link">Smart COOP</a>
+          <a href="#news" class="nav-link">පුවත්</a>
+          <a href="#contact" class="nav-link">සම්බන්ධතා</a>
+        </nav>
+
+        <!-- Right Header Action (Smart COOP Online Banking Button) -->
+        <div class="hidden sm:flex items-center gap-3">
+          <button onclick="window.openOnlineBankingModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white shadow-md shadow-pink-900/20 transition-all transform hover:-translate-y-0.5">
+            <i class="fa-solid fa-shield-halved text-pink-200"></i>
+            <span>Smart COOP පිවිසුම</span>
+          </button>
+        </div>
+
+        <!-- Mobile Drawer Menu Toggle -->
+        <div class="lg:hidden flex items-center gap-2">
+          <button onclick="window.openOnlineBankingModal()" class="p-2.5 rounded-lg bg-[#DF0178] text-white text-sm font-bold shadow-sm" title="Smart COOP">
+            <i class="fa-solid fa-lock"></i>
+          </button>
+          <button id="mobile-menu-btn" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors" aria-label="Toggle Menu">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MOBILE NAVIGATION DRAWER ================= -->
+  <div id="mobile-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex flex-col justify-end lg:hidden">
+    <div class="bg-white rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto space-y-5">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <img src="assets/images/gscs-logo.png" alt="Logo" class="h-10 object-contain">
+        </div>
+        <button id="close-drawer-btn" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <nav class="flex flex-col gap-2.5 font-semibold text-slate-700 text-sm">
+        <a href="#home" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-house text-[#0B0D7C]"></i> මුල් පිටුව (Home)</a>
+        <a href="#about" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-landmark text-pink-600"></i> අප ගැන (About GSCS)</a>
+        <a href="#savings" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-piggy-bank text-[#DF0178]"></i> ඉතුරුම් හා තැන්පතු (Savings & Deposits)</a>
+        <a href="#loans" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> ණය පහසුකම් (Loans)</a>
+        <a href="#rates" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-chart-line text-[#0B0D7C]"></i> පොලී අනුපාත (Interest Rates)</a>
+        <a href="#calculators" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-calculator text-purple-600"></i> මූල්‍ය ගණකය (Loan Calculator)</a>
+        <a href="#digital-banking" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-mobile-screen text-pink-600"></i> Smart COOP Mobile App</a>
+        <a href="#news" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-newspaper text-blue-600"></i> පුවත් සහ නිවේදන (News)</a>
+        <a href="#contact" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-phone text-[#0B0D7C]"></i> සම්බන්ධතා (Contact Us)</a>
+        <a href="admin.html" class="p-2.5 rounded-xl bg-pink-50 text-pink-900 border border-pink-200 flex items-center gap-3 font-bold"><i class="fa-solid fa-lock text-[#DF0178]"></i> පරිපාලක පුවරුව (Admin Dashboard)</a>
+      </nav>
+
+      <div class="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+        <button onclick="document.getElementById('mobile-drawer').classList.add('hidden'); window.openOnlineBankingModal()" class="w-full py-3 rounded-xl font-bold bg-[#0B0D7C] text-white flex items-center justify-center gap-2">
+          <i class="fa-solid fa-shield-halved text-pink-400"></i>
+          <span>Smart COOP පිවිසුම</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= HERO SECTION & BANNER SLIDER ================= -->
+  <section id="home" class="hero-slider-container">
+    <div id="hero-slider-wrapper" class="relative w-full h-full">
+      <!-- Slides injected by app.js -->
+    </div>
+
+    <!-- Slider Nav Controls -->
+    <button onclick="window.prevHeroSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-md transition-all border border-white/20" title="Previous Slide">
+      <i class="fa-solid fa-angle-left"></i>
+    </button>
+    <button onclick="window.nextHeroSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-md transition-all border border-white/20" title="Next Slide">
+      <i class="fa-solid fa-angle-right"></i>
+    </button>
+
+    <!-- Slider Dots -->
+    <div id="hero-dots" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      <!-- Injected dynamically -->
+    </div>
+  </section>
+
+  <!-- ================= FLOATING QUICK TOOLS BAR ================= -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 quick-tools-bar">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 p-4 sm:p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+      
+      <!-- Tool 1: Loan Calculator -->
+      <a href="#calculators" class="tool-card p-4 rounded-xl bg-slate-50/80 hover:bg-white flex items-center gap-3.5 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-pink-100 text-[#DF0178] flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm group-hover:text-[#DF0178] transition-colors">ණය ගණකය</h4>
+          <p class="text-xs text-slate-500">වාරිකය ගණනය කරන්න</p>
+        </div>
+      </a>
+
+      <!-- Tool 2: FD Growth -->
+      <a href="#calculators" class="tool-card p-4 rounded-xl bg-slate-50/80 hover:bg-white flex items-center gap-3.5 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-indigo-100 text-[#0B0D7C] flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-vault"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm group-hover:text-[#0B0D7C] transition-colors">තැන්පතු ගණකය</h4>
+          <p class="text-xs text-slate-500">13.50% දක්වා ඉහළම ලාභ</p>
+        </div>
+      </a>
+
+      <!-- Tool 3: Interest Rates -->
+      <a href="#rates" class="tool-card p-4 rounded-xl bg-slate-50/80 hover:bg-white flex items-center gap-3.5 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition-colors">දෛනික පොලී අනුපාත</h4>
+          <p class="text-xs text-slate-500">අද දිනයට අදාළ අනුපාත</p>
+        </div>
+      </a>
+
+      <!-- Tool 4: Apply Online -->
+      <div onclick="window.openInquiryModal('General Inquiry')" class="tool-card p-4 rounded-xl bg-slate-50/80 hover:bg-white flex items-center gap-3.5 group cursor-pointer">
+        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm group-hover:text-purple-700 transition-colors">අයදුම්පත් / විමසීම්</h4>
+          <p class="text-xs text-slate-500">කඩිනම් සේවා ලබාගන්න</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= ABOUT GSCS BANK & STATS ================= -->
+  <section id="about" class="py-16 sm:py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left: About Details -->
+        <div class="lg:col-span-7 space-y-6">
+          <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-100 text-[#DF0178] border border-pink-200">
+            අපගේ අනන්‍යතාවය | About GSCS Bank
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0B0D7C] leading-tight">
+            ගලපිටියගම සනස විවිධ සේවා සමූපකාර සමිතිය
+          </h2>
+          <div class="space-y-4 text-sm sm:text-base text-slate-600 leading-relaxed">
+            <p>
+              1972 අංක 5 දරන සමූපකාර සමිති පනත යටතේ නීත්‍යානුකූලව ලියාපදිංචි වූ මූල්‍ය ආයතනයක් වන ගලපිටියගම සනස සමූපකාර සමිතිය, <strong>1987 මාර්තු මස 24 වන දින</strong> කුලි/395 (Kuli/395) ලියාපදිංචි අංකය යටතේ පිහිටුවන ලදී.
+            </p>
+            <p>
+              අප සමිතිය තැන්පතු භාරගැනීම සඳහා <strong>ශ්‍රී ලංකා මහ බැංකුවේ (Central Bank of Sri Lanka) විශේෂ අනුමැතිය</strong> සහිතව ක්‍රියාත්මක වන අතර, උපරිම ආරක්ෂාව හා විශ්වාසනීයත්වය සහතික කරමින් මූල්‍ය වෙළඳපොළේ ආකර්ෂණීයම ස්ථාවර තැන්පතු පොලී අනුපාත පිරිනමයි.
+            </p>
+            <p>
+              අප සාමාජිකයින්ගේ ආර්ථික ශක්තිය නංවාලීම උදෙසා අවම පොලී අනුපාත යටතේ ණය පහසුකම්, ළමා හා තරුණ සමාජ, සහ විවිධ ආර්ථික හා සමාජ සංවර්ධන වැඩසටහන් අපි අඛණ්ඩව ක්‍රියාත්මක කරන්නෙමු.
+            </p>
+          </div>
+
+          <div class="pt-2 flex flex-wrap gap-4 items-center">
+            <button onclick="window.openInquiryModal('සාමාජිකත්වය ලබාගැනීම')" class="px-6 py-3 rounded-xl font-bold text-xs sm:text-sm bg-[#0B0D7C] hover:bg-[#070954] text-white transition-all shadow-md">
+              සාමාජිකයෙකු වන්න
+            </button>
+            <a href="#rates" class="px-5 py-3 rounded-xl font-bold text-xs sm:text-sm bg-white border border-slate-300 hover:border-[#DF0178] text-slate-800 transition-colors">
+              පොලී අනුපාත බලන්න
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Official Stats & Branch Counter Grid -->
+        <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-indigo-50 text-[#0B0D7C] flex items-center justify-center text-xl mb-3">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div id="stat-members" class="text-3xl font-black text-[#0B0D7C]">1,000+</div>
+            <p class="text-xs font-semibold text-slate-500 mt-1">සක්‍රීය සාමාජිකයින්</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-pink-50 text-[#DF0178] flex items-center justify-center text-xl mb-3">
+              <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div id="stat-customers" class="text-3xl font-black text-[#DF0178]">5,000+</div>
+            <p class="text-xs font-semibold text-slate-500 mt-1">සතුටුදායක ගනුදෙනුකරුවන්</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-3">
+              <i class="fa-solid fa-hand-holding-heart"></i>
+            </div>
+            <div id="stat-welfare" class="text-3xl font-black text-[#0B0D7C]">400+</div>
+            <p class="text-xs font-semibold text-slate-500 mt-1">සුබසාධන ප්‍රතිලාභීන්</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl mb-3">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <div id="stat-years" class="text-3xl font-black text-[#DF0178]">38+ Years</div>
+            <p class="text-xs font-semibold text-slate-500 mt-1">ස්ථාපිත වර්ෂය 1987</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= BANKING PRODUCTS & SERVICES SHOWCASE ================= -->
+  <section id="savings" class="py-16 sm:py-24 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+          <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-100 text-[#DF0178] mb-2">
+            අපගේ සේවාවන් | Products & Solutions
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0B0D7C]">
+            ඔබේ සෑම මූල්‍ය අවශ්‍යතාවයකටම සරිලන විසඳුම්
+          </h2>
+        </div>
+        
+        <!-- Category Filter Tabs -->
+        <div class="flex flex-wrap gap-2 mt-6 md:mt-0">
+          <button onclick="window.filterProducts('all', this)" class="prod-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#0B0D7C] text-white shadow-sm transition-all">සියල්ල (All)</button>
+          <button onclick="window.filterProducts('savings', this)" class="prod-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:border-[#DF0178] transition-all">ඉතුරුම් (Savings)</button>
+          <button onclick="window.filterProducts('deposits', this)" class="prod-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:border-[#DF0178] transition-all">ස්ථාවර තැන්පතු (Deposits)</button>
+          <button onclick="window.filterProducts('loans', this)" class="prod-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:border-[#DF0178] transition-all">ණය සේවා (Loans)</button>
+          <button onclick="window.filterProducts('welfare', this)" class="prod-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-white text-slate-700 border border-slate-200 hover:border-[#DF0178] transition-all">සාමාජික සේවා (Welfare)</button>
+        </div>
+      </div>
+
+      <!-- Products Grid (Rendered by app.js) -->
+      <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Injected dynamically -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= DIGITAL BANKING & SMART COOP APP ================= -->
+  <section id="digital-banking" class="py-16 sm:py-24 bg-gradient-to-br from-[#0B0D7C] via-[#070954] to-[#05073E] text-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-6 space-y-6">
+          <div class="flex items-center gap-3">
+            <img src="assets/images/wix/d7b655_88dda310923a434c9b3929ebd1569a7e~mv2.png" alt="Smart COOP Icon" class="w-12 h-12 rounded-2xl object-cover shadow-lg border border-white/20">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">
+              Digital Banking for Co-operatives
+            </span>
+          </div>
+
+          <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+            Smart COOP Mobile App<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-[#DF0178]">බැංකු සේවාවන් ඔබේ අතැඟිල්ලේ</span>
+          </h2>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            ගලපිටියගම සනස බැංකුවේ ගනුදෙනුකරුවන්ට දැන් ශාඛාවට නොපැමිණ තම ජංගම දුරකථනයෙන් ඕනෑම තැනක සිට ගනුදෙනු කිරීමේ හැකියාව සලසන Smart COOP ජංගම යෙදුම.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+              <i class="fa-solid fa-clock-rotate-left text-pink-400 text-lg"></i>
+              <span>24/7 ගිණුම් ශේෂ පරීක්ෂාව</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+              <i class="fa-solid fa-money-bill-transfer text-emerald-400 text-lg"></i>
+              <span>ක්ෂණික අන්තර් බැංකු මුදල් හුවමාරු</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+              <i class="fa-solid fa-receipt text-amber-400 text-lg"></i>
+              <span>විදුලි/ජල බිල්පත් ගෙවීම් පහසුව</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center gap-3">
+              <i class="fa-solid fa-shield-halved text-sky-400 text-lg"></i>
+              <span>ද්විත්ව ආරක්ෂිත OTP සත්‍යාපනය</span>
+            </div>
+          </div>
+
+          <div class="pt-4 flex flex-wrap gap-4 items-center">
+            <button onclick="window.openOnlineBankingModal()" class="px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-[#DF0178] hover:bg-[#BA0063] text-white shadow-xl shadow-pink-900/40 transition-all flex items-center gap-2">
+              <i class="fa-solid fa-arrow-down-to-bracket"></i>
+              <span>Smart COOP යෙදුම අරඹන්න</span>
+            </button>
+            <a href="tel:+94372260658" class="px-5 py-3.5 rounded-xl font-semibold text-xs sm:text-sm bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/20 transition-all flex items-center gap-2">
+              <i class="fa-solid fa-phone text-pink-400"></i>
+              <span>සක්‍රීය කරගැනීමට අමතන්න</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 flex justify-center">
+          <img src="assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png" alt="Smart COOP Mobile App Mockup" class="w-full max-w-lg object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500">
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= INTERACTIVE FINANCIAL CALCULATORS ================= -->
+  <section id="calculators" class="py-16 sm:py-24 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-100 text-[#DF0178] mb-3">
+          ක්ෂණික මූල්‍ය ගණකය | Interactive Calculators
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0B0D7C]">
+          ණය වාරිකය සහ තැන්පතු ප්‍රතිලාභය නිවැරදිව ගණනය කරන්න
+        </h2>
+        <p class="mt-3 text-slate-600 text-sm sm:text-base">
+          විනිවිදභාවයෙන් යුතු ගණනය කිරීම් සමඟින් ඔබේ මූල්‍ය සැලසුම් වඩාත් සාර්ථකව පවත්වා ගන්න.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        
+        <!-- Calculator 1: Loan Installment EMI Calculator -->
+        <div class="bg-white text-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-pink-100 text-[#DF0178] flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <div>
+                  <h3 class="font-extrabold text-lg text-[#0B0D7C]">ණය වාරික ගණකය (Loan EMI)</h3>
+                  <p class="text-xs text-slate-500">ගොවි, ව්‍යාපාරික හා පුද්ගලික ණය</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-pink-100 text-[#DF0178]">EMI Formula</span>
+            </div>
+
+            <!-- Controls -->
+            <div class="space-y-6">
+              
+              <!-- Amount Slider -->
+              <div>
+                <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                  <span>ණය මුදල (Loan Amount)</span>
+                  <div class="flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-lg">
+                    <span class="text-slate-500 text-xs">LKR</span>
+                    <input type="text" id="loan-amount-input" value="500,000" class="w-28 text-right bg-transparent font-bold text-sm focus:outline-none">
+                  </div>
+                </div>
+                <input type="range" id="loan-amount-range" min="25000" max="5000000" step="25000" value="500000">
+                <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                  <span>රු. 25,000</span>
+                  <span>රු. 5,000,000</span>
+                </div>
+              </div>
+
+              <!-- Interest Rate Slider -->
+              <div>
+                <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                  <span>වාර්ෂික පොලී අනුපාතය (Annual Rate %)</span>
+                  <div class="flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-lg">
+                    <input type="text" id="loan-rate-input" value="11.0" class="w-14 text-right bg-transparent font-bold text-sm focus:outline-none">
+                    <span class="text-slate-500 text-xs">%</span>
+                  </div>
+                </div>
+                <input type="range" id="loan-rate-range" min="8.0" max="22.0" step="0.25" value="11.0">
+                <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                  <span>8.0%</span>
+                  <span>22.0%</span>
+                </div>
+              </div>
+
+              <!-- Loan Period Slider -->
+              <div>
+                <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                  <span>ආපසු ගෙවීමේ කාලය (Period in Months)</span>
+                  <div class="flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-lg">
+                    <input type="text" id="loan-period-input" value="36" class="w-12 text-right bg-transparent font-bold text-sm focus:outline-none">
+                    <span class="text-slate-500 text-xs">මාස</span>
+                  </div>
+                </div>
+                <input type="range" id="loan-period-range" min="6" max="120" step="6" value="36">
+                <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                  <span>මාස 6</span>
+                  <span>මාස 120 (වසර 10)</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Output Box -->
+          <div class="mt-8 pt-6 border-t border-slate-100 bg-slate-50 rounded-2xl p-5">
+            <div class="flex items-end justify-between mb-4">
+              <div>
+                <span class="text-xs font-bold uppercase text-slate-500">ඇස්තමේන්තුගත මාසික වාරිකය</span>
+                <div id="loan-emi-val" class="text-2xl sm:text-3xl font-black text-[#0B0D7C]">රු. 16,369</div>
+              </div>
+              <button onclick="window.openInquiryModal('Loan Application')" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white transition-colors shadow-md">
+                අයදුම් කරන්න
+              </button>
+            </div>
+
+            <!-- Breakdown Bar -->
+            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden flex mb-3">
+              <div id="loan-bar-principal" class="bg-[#0B0D7C] h-full" style="width: 75%;"></div>
+              <div id="loan-bar-interest" class="bg-[#DF0178] h-full" style="width: 25%;"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <span class="text-slate-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#0B0D7C]"></span> මුළු පොලිය:</span>
+                <strong id="loan-total-interest" class="font-bold text-slate-800">රු. 89,284</strong>
+              </div>
+              <div class="text-right">
+                <span class="text-slate-500 flex items-center justify-end gap-1"><span class="w-2 h-2 rounded-full bg-[#DF0178]"></span> මුළු ගෙවීම:</span>
+                <strong id="loan-total-payable" class="font-bold text-slate-800">රු. 589,284</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Calculator 2: Fixed Deposit Growth Calculator -->
+        <div class="bg-white text-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-100 text-[#0B0D7C] flex items-center justify-center font-bold">
+                  <i class="fa-solid fa-vault"></i>
+                </div>
+                <div>
+                  <h3 class="font-extrabold text-lg text-[#0B0D7C]">ස්ථාවර තැන්පතු ප්‍රතිලාභ ගණකය</h3>
+                  <p class="text-xs text-slate-500">කල්පිරෙන විට හෝ මාසික පොලී ගණනය</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-pink-100 text-[#DF0178]">13.50% Max</span>
+            </div>
+
+            <!-- Controls -->
+            <div class="space-y-6">
+              
+              <!-- FD Amount Slider -->
+              <div>
+                <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                  <span>තැන්පතු මුදල (Deposit Amount)</span>
+                  <div class="flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-lg">
+                    <span class="text-slate-500 text-xs">LKR</span>
+                    <input type="text" id="fd-amount-input" value="1,000,000" class="w-28 text-right bg-transparent font-bold text-sm focus:outline-none">
+                  </div>
+                </div>
+                <input type="range" id="fd-amount-range" min="10000" max="10000000" step="50000" value="1000000">
+                <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                  <span>රු. 10,000</span>
+                  <span>රු. 10,000,000</span>
+                </div>
+              </div>
+
+              <!-- Tenure Select -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-2">තැන්පතු කාලසීමාව (Select Tenure)</label>
+                <select id="fd-tenure-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#0B0D7C]">
+                  <option value="1" data-annual-rate="10.00" data-monthly-rate="9.50">මාස 1 (1 Month) - 10.00% p.a.</option>
+                  <option value="3" data-annual-rate="11.25" data-monthly-rate="10.75">මාස 3 (3 Months) - 11.25% p.a.</option>
+                  <option value="6" data-annual-rate="12.00" data-monthly-rate="11.50">මාස 6 (6 Months) - 12.00% p.a.</option>
+                  <option value="12" data-annual-rate="13.00" data-monthly-rate="12.50" selected>වසර 1 (12 Months) - 13.00% p.a. (ජනප්‍රියයි)</option>
+                  <option value="24" data-annual-rate="13.25" data-monthly-rate="12.75">වසර 2 (24 Months) - 13.25% p.a.</option>
+                  <option value="60" data-annual-rate="13.50" data-monthly-rate="13.00">වසර 5 (60 Months) - 13.50% p.a. (උපරිම ලාභ)</option>
+                </select>
+              </div>
+
+              <!-- Payout Frequency -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-2">පොලිය ලබාගන්නා ආකාරය (Interest Payout Mode)</label>
+                <select id="fd-payout-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#0B0D7C]">
+                  <option value="maturity" selected>කල්පිරෙන විට පොලිය (At Maturity)</option>
+                  <option value="monthly">මාසිකව පොලිය ලබාගැනීම (Monthly Payout)</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- FD Output Box -->
+          <div class="mt-8 pt-6 border-t border-slate-100 bg-pink-50/70 rounded-2xl p-5 border border-pink-200/60">
+            <div class="flex items-end justify-between mb-4">
+              <div>
+                <span class="text-xs font-bold uppercase text-pink-900">කල්පිරෙන විට මුළු වටිනාකම</span>
+                <div id="fd-maturity-val" class="text-2xl sm:text-3xl font-black text-[#0B0D7C]">රු. 1,130,000</div>
+              </div>
+              <button onclick="window.openInquiryModal('Fixed Deposit')" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#0B0D7C] hover:bg-[#070954] text-white transition-colors shadow-md">
+                තැන්පත් කරන්න
+              </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 text-xs pt-2 border-t border-pink-200/50">
+              <div>
+                <span class="text-slate-500">අදාළ පොලිය:</span>
+                <div id="fd-applied-rate" class="font-extrabold text-[#0B0D7C] text-sm">13.00% p.a.</div>
+              </div>
+              <div>
+                <span class="text-slate-500">මාසික ආදායම:</span>
+                <div id="fd-monthly-income-val" class="font-extrabold text-[#DF0178] text-sm">රු. 10,833</div>
+              </div>
+              <div class="text-right">
+                <span class="text-slate-500">මුළු ශුද්ධ ලාභය:</span>
+                <div id="fd-profit-val" class="font-extrabold text-emerald-700 text-sm">රු. 130,000</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= LIVE INTEREST RATES BOARD ================= -->
+  <section id="rates" class="py-16 sm:py-24 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+        <div>
+          <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 mb-2">
+            දෛනික පොලී පුවරුව | Live Rates Board
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0B0D7C]">
+            අද දින ක්‍රියාත්මක නිල පොලී අනුපාත
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            *පරිපාලක පුවරුව (Admin Dashboard) මඟින් සජීවීව යාවත්කාලීන වේ.
+          </p>
+        </div>
+
+        <div class="flex gap-2 mt-4 md:mt-0">
+          <button onclick="window.switchRatesTab('fd', this)" class="rates-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#0B0D7C] text-white shadow-sm transition-all">
+            ස්ථාවර තැන්පතු (FD)
+          </button>
+          <button onclick="window.switchRatesTab('savings', this)" class="rates-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+            ඉතුරුම් (Savings)
+          </button>
+          <button onclick="window.switchRatesTab('loans', this)" class="rates-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+            ණය අනුපාත (Loans)
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content 1: Fixed Deposits Table -->
+      <div id="rates-panel-fd" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-4 px-5">කාලසීමාව (Tenure)</th>
+                <th class="py-4 px-5 text-right">කල්පිරෙන විට පොලිය (At Maturity)</th>
+                <th class="py-4 px-5 text-right">මාසිකව පොලිය (Monthly Paid)</th>
+                <th class="py-4 px-5 text-right">අවම තැන්පතුව (Min Deposit)</th>
+              </tr>
+            </thead>
+            <tbody id="rates-fd-tbody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Injected by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Savings Accounts Table -->
+      <div id="rates-panel-savings" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-4 px-5">ගිණුම් වර්ගය (Account Scheme)</th>
+                <th class="py-4 px-5 text-right">වාර්ෂික පොලිය (Annual Rate)</th>
+                <th class="py-4 px-5 text-right">අවම ශේෂය (Min Balance)</th>
+                <th class="py-4 px-5">විශේෂ කරුණු (Features)</th>
+              </tr>
+            </thead>
+            <tbody id="rates-sa-tbody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Injected by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Loans Table -->
+      <div id="rates-panel-loans" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-4 px-5">ණය යෝජනා ක්‍රමය (Loan Scheme)</th>
+                <th class="py-4 px-5 text-right">වාර්ෂික පොලිය (Annual Rate)</th>
+                <th class="py-4 px-5 text-right">උපරිම ණය මුදල (Max Amount)</th>
+                <th class="py-4 px-5 text-right">උපරිම කාලය (Max Tenure)</th>
+              </tr>
+            </thead>
+            <tbody id="rates-loan-tbody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Injected by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= DEVELOPMENT PARTNERS & AFFILIATIONS ================= -->
+  <section class="py-16 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-100 text-[#DF0178] mb-2">
+          සහයෝගී ආයතන | Institutional Affiliations
+        </span>
+        <h3 class="text-2xl font-extrabold text-[#0B0D7C]">අපගේ සංවර්ධන හවුල්කරුවන්</h3>
+      </div>
+
+      <div id="partners-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Injected dynamically -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= LATEST NEWS & ANNOUNCEMENTS ================= -->
+  <section id="news" class="py-16 sm:py-24 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+        <div>
+          <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-indigo-100 text-[#0B0D7C] mb-2">
+            ප්‍රවෘත්ති සහ නිවේදන | News & Notices
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0B0D7C]">
+            ගලපිටියගම සනස බැංකුවේ නවතම පුවත්
+          </h2>
+        </div>
+        <a href="admin.html" class="mt-4 sm:mt-0 inline-flex items-center gap-2 text-xs font-bold text-[#DF0178] hover:underline">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span>නව පුවතක් පළ කරන්න (Admin)</span>
+        </a>
+      </div>
+
+      <!-- News Cards Grid -->
+      <div id="news-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Injected by app.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= CUSTOMER TESTIMONIALS ================= -->
+  <section class="py-16 sm:py-24 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-100 text-[#DF0178] mb-2">
+          සාමාජික හඬ | Member Testimonials
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0B0D7C]">
+          අපගේ සාමාජිකයින්ගේ සාර්ථකත්වයේ කතා
+        </h2>
+      </div>
+
+      <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        <!-- Injected by app.js -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= BRANCH LOCATOR & CONTACT US ================= -->
+  <section id="contact" class="py-16 sm:py-24 bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Left: Bank Branch Info -->
+        <div class="lg:col-span-5 space-y-6">
+          <div>
+            <span class="inline-block px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-100 text-[#DF0178] mb-2">
+              ශාඛා සහ සම්බන්ධතා | Branch Network
+            </span>
+            <h2 class="text-3xl font-extrabold text-[#0B0D7C]">
+              අපගේ සේවා කවුළු වෙත පැමිණෙන්න
+            </h2>
+            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+              නො. 247, පුත්තලම පාර, ගලපිටියගම, නිකවැරටිය ලිපිනයේ පිහිටි ප්‍රධාන කාර්යාලයෙන් හෝ නිකවැරටිය සේවා කවුළුවෙන් සුහදශීලී සේවාවක් ලබාගන්න.
+            </p>
+          </div>
+
+          <!-- Branches List -->
+          <div id="branches-list" class="space-y-3">
+            <!-- Injected by app.js -->
+          </div>
+
+          <div class="p-6 rounded-2xl bg-[#0B0D7C] text-white shadow-lg">
+            <h4 class="font-bold text-base mb-2 flex items-center gap-2 text-pink-300">
+              <i class="fa-solid fa-headset"></i> ක්ෂණික දුරකථන සේවාව
+            </h4>
+            <p class="text-xs text-slate-300 mb-3">ඕනෑම විමසීමක් හෝ හදිසි සේවාවක් සඳහා අපගේ ක්ෂණික ඇමතුම් අංක අමතන්න:</p>
+            <div class="flex flex-wrap gap-4 text-sm font-bold">
+              <a href="tel:+94372260658" class="hover:text-pink-300"><i class="fa-solid fa-phone mr-1"></i> +94 37 22 60 658</a>
+              <a href="mailto:galapitiyagama.sanasa@gmail.com" class="hover:text-pink-300 text-xs flex items-center"><i class="fa-solid fa-envelope mr-1"></i> galapitiyagama.sanasa@gmail.com</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Fast Contact / Inquiry Submission Form -->
+        <div class="lg:col-span-7 bg-slate-50 p-6 sm:p-10 rounded-3xl border border-slate-200">
+          <div class="mb-6">
+            <h3 class="text-2xl font-bold text-[#0B0D7C]">මාර්ගගත විමසීම් / ණය ඉල්ලුම්පත්</h3>
+            <p class="text-xs text-slate-500 mt-1">ඔබේ තොරතුරු පහතින් ඇතුළත් කරන්න. බැංකු නිලධාරියෙකු පැය 24ක් තුළ ඔබ අමතනු ඇත.</p>
+          </div>
+
+          <form id="home-contact-form" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">සම්පූර්ණ නම (Full Name) *</label>
+                <input type="text" id="home-c-name" required placeholder="නිමල් සිරිවර්ධන" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">දුරකථන අංකය (Contact Number) *</label>
+                <input type="tel" id="home-c-phone" required placeholder="077XXXXXXX" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">විද්‍යුත් තැපෑල (Email - Optional)</label>
+                <input type="email" id="home-c-email" placeholder="example@gmail.com" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">අවශ්‍ය සේවාව (Required Service) *</label>
+                <select id="home-c-service" required class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0B0D7C]">
+                  <option value="ගොවි හා වගා ණය">ගොවි හා වගා ණය (Agri Loans)</option>
+                  <option value="ස්ථාවර තැන්පතු">ස්ථාවර තැන්පතු (Fixed Deposit)</option>
+                  <option value="ක්ෂුද්‍ර මූල්‍ය හා ව්‍යාපාර ණය">ක්ෂුද්‍ර මූල්‍ය හා ව්‍යාපාර ණය (SME)</option>
+                  <option value="සනස රන් ණය සේවාව">සනස රන් ණය සේවාව (Gold Loan)</option>
+                  <option value="දරු දිරිය ළමා ඉතුරුම්">දරු දිරිය ළමා ඉතුරුම් (Kids Savings)</option>
+                  <option value="Smart COOP App">Smart COOP App ලියාපදිංචිය</option>
+                  <option value="සාමාජිකත්වය ලබාගැනීම">සාමාජිකත්වය ලබාගැනීම (Membership)</option>
+                  <option value="වෙනත්">වෙනත් කරුණක් (Other Inquiry)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">විස්තරය / ඔබගේ අවශ්‍යතාවය (Your Message) *</label>
+              <textarea id="home-c-message" rows="4" required placeholder="ඔබට අවශ්‍ය ණය මුදල හෝ සේවාව පිළිබඳ කෙටි විස්තරයක් මෙහි ලියන්න..." class="w-full bg-white border border-slate-300 rounded-xl p-4 text-sm focus:outline-none focus:border-[#0B0D7C]"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-4 rounded-xl font-bold text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white shadow-lg shadow-pink-900/20 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>විමසීම යොමු කරන්න (Submit Inquiry)</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= COMPLIANCE & FOOTER ================= -->
+  <footer class="bg-[#05073E] text-slate-300 text-xs border-t border-indigo-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-indigo-950">
+        
+        <!-- Col 1: About & Logo -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="flex items-center gap-3">
+            <img src="assets/images/gscs-logo.png" alt="GSCS Logo" class="h-14 bg-white rounded-xl p-1.5 object-contain">
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+            1972 අංක 5 දරන සමූපකාර සමිති පනත යටතේ නීත්‍යානුකූලව ලියාපදිංචි (ලියාපදිංචි අංකය: Kuli/395) ගලපිටියගම සනස සමූපකාර සමිතිය, ශ්‍රී ලංකා මහ බැංකුවේ විශේෂ අනුමැතිය සහිතව වසර 38කට අධික කාලයක් පුරා ප්‍රජා සුබසෙත සලසයි.
+          </p>
+          <div class="flex items-center gap-3 text-slate-400 text-base">
+            <a href="#" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#DF0178] hover:text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+            <a href="https://wa.me/94771234567" target="_blank" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-whatsapp text-xs"></i></a>
+            <a href="mailto:galapitiyagama.sanasa@gmail.com" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-sky-500 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-envelope text-xs"></i></a>
+          </div>
+        </div>
+
+        <!-- Col 2: Quick Links -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-xs mb-4">ඉක්මන් සබැඳි</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="#about" class="hover:text-pink-400 transition-colors">අප ගැන</a></li>
+            <li><a href="#savings" class="hover:text-pink-400 transition-colors">සාමාන්‍ය ඉතුරුම්</a></li>
+            <li><a href="#savings" class="hover:text-pink-400 transition-colors">ස්ථාවර තැන්පතු</a></li>
+            <li><a href="#loans" class="hover:text-pink-400 transition-colors">ගොවි හා වගා ණය</a></li>
+            <li><a href="#loans" class="hover:text-pink-400 transition-colors">සනස රන් ණය සේවාව</a></li>
+            <li><a href="#calculators" class="hover:text-pink-400 transition-colors">මූල්‍ය ගණකය</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Member Services -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-xs mb-4">සාමාජික සේවා</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="#digital-banking" class="hover:text-pink-400 transition-colors">Smart COOP Mobile App</a></li>
+            <li><a href="#savings" class="hover:text-pink-400 transition-colors">කොටස් හා වාර්ෂික ලාභාංශ</a></li>
+            <li><a href="#savings" class="hover:text-pink-400 transition-colors">අවමංගල්‍යාධාර අරමුදල</a></li>
+            <li><a href="#news" class="hover:text-pink-400 transition-colors">මහා සභා නිවේදන</a></li>
+            <li><a href="admin.html" class="hover:text-pink-400 font-bold transition-colors">පරිපාලක පිවිසුම (Admin)</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact & Hours -->
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-xs mb-4">කාර්යාල වේලාවන්</h4>
+          <p class="text-xs text-slate-400 mb-2 leading-relaxed">
+            සඳුදා - සිකුරාදා: පෙ.ව. 8.30 - ප.ව. 4.00<br>
+            සෙනසුරාදා: පෙ.ව. 8.30 - ප.ව. 1.00<br>
+            ඉරිදා සහ පෝය දිනවල: වසා ඇත
+          </p>
+          <p class="text-xs text-pink-400 font-bold mt-3 leading-relaxed">
+            <i class="fa-solid fa-location-dot"></i> නො. 247, පුත්තලම පාර, ගලපිටියගම, නිකවැරටිය.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Bottom Disclaimer -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <p>© 2026 Galapitiyagama Sanasa Co-operative Society (GSCS Bank). All Rights Reserved.</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:underline">පෞද්ගලිකත්ව ප්‍රතිපත්තිය</a>
+          <a href="#" class="hover:underline">නියම සහ කොන්දේසි</a>
+          <a href="admin.html" class="hover:underline text-pink-400 font-bold">Admin Portal</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ================= MODAL: NEWS READER ================= -->
+  <div id="news-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+      <button onclick="window.closeNewsModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/60 hover:bg-black text-white flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="news-modal-content">
+        <!-- Content injected dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: INQUIRY & LOAN APPLICATION ================= -->
+  <div id="inquiry-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="window.closeInquiryModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      
+      <div class="mb-5">
+        <span class="inline-block px-2.5 py-1 rounded text-[11px] font-bold bg-pink-100 text-[#DF0178] mb-2">අයදුම්පත / විමසීම්</span>
+        <h3 class="text-xl font-bold text-[#0B0D7C]">ගලපිටියගම සනස බැංකු සේවාව</h3>
+        <p class="text-xs text-slate-500 mt-1">ඔබගේ විස්තර ඇතුළත් කරන්න. අපගේ නිලධාරියෙකු කඩිනමින් ඔබ හා සම්බන්ධ වනු ඇත.</p>
+      </div>
+
+      <form id="modal-inquiry-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">නම (Full Name) *</label>
+          <input type="text" id="modal-inq-name" required placeholder="ඔබගේ නම" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">දුරකථන අංකය *</label>
+            <input type="tel" id="modal-inq-phone" required placeholder="07XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">විද්‍යුත් තැපෑල</label>
+            <input type="email" id="modal-inq-email" placeholder="email@gmail.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">අදාළ සේවාව (Service) *</label>
+          <input type="text" id="modal-inq-service" required placeholder="ස්ථාවර තැන්පතු හෝ ණය සේවාව" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">විස්තරය (Message / Details) *</label>
+          <textarea id="modal-inq-message" rows="3" required placeholder="අවශ්‍ය ණය මුදල, තැන්පතු කාලය ආදී විස්තර..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#0B0D7C]"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white transition-all shadow-md">
+          අයදුම්පත යොමු කරන්න (Submit)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ONLINE BANKING LOGIN DEMO ================= -->
+  <div id="online-banking-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100">
+      <button onclick="window.closeOnlineBankingModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <img src="assets/images/wix/d7b655_88dda310923a434c9b3929ebd1569a7e~mv2.png" alt="Smart COOP" class="w-16 h-16 mx-auto rounded-2xl mb-3 shadow-md object-contain">
+        <h3 class="text-xl font-extrabold text-[#0B0D7C]">Smart COOP ඩිජිටල් පිවිසුම</h3>
+        <p class="text-xs text-slate-500 mt-1">Galapitiyagama Sanasa Digital Banking Portal</p>
+      </div>
+
+      <form id="ob-login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">පරිශීලක නාමය / සාමාජික අංකය</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"><i class="fa-solid fa-user"></i></span>
+            <input type="text" id="ob-username" required placeholder="User ID / Member No" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">මුරපදය (Password)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"><i class="fa-solid fa-key"></i></span>
+            <input type="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="checkbox" class="rounded text-[#0B0D7C]"> මාව මතක තබාගන්න
+          </label>
+          <a href="#" class="text-[#DF0178] hover:underline font-bold">මුරපදය අමතකද?</a>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-sm bg-[#0B0D7C] hover:bg-[#070954] text-white transition-all shadow-md flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lock text-xs text-pink-400"></i>
+          <span>ආරක්ෂිතව පිවිසෙන්න (Secure Login)</span>
+        </button>
+
+        <div class="p-3 rounded-xl bg-pink-50 text-pink-900 border border-pink-200 text-xs flex items-center gap-2.5 mt-4">
+          <i class="fa-solid fa-circle-exclamation text-[#DF0178] text-base"></i>
+          <span>Smart COOP යෙදුම සක්‍රීය කර නොමැති නම් ගලපිටියගම ප්‍රධාන ශාඛාව අමතන්න.</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/defaultData.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

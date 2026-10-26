@@ -1,0 +1,145 @@
+﻿  <!-- ================= FIXED DEPOSIT GROWTH CALCULATOR ================= -->
+  <section id="calculators" class="py-16 sm:py-24 bg-slate-50 dot-pattern relative">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+        <span class="section-badge section-badge-pink">
+          <i class="fa-solid fa-calculator"></i>
+          à¶­à·à¶±à·Šà¶´à¶­à·” à¶´à·Šâ€à¶»à¶­à·’à¶½à·à¶· à¶œà¶«à¶šà¶º | FD Returns Calculator
+        </span>
+        <h2 class="section-title">
+          à·ƒà·Šà¶®à·à·€à¶» à¶­à·à¶±à·Šà¶´à¶­à·” à¶´à·Šâ€à¶»à¶­à·’à¶½à·à¶·à¶º à¶´à·„à·ƒà·”à·€à·™à¶±à·Š à¶œà¶«à¶±à¶º à¶šà¶»à¶±à·Šà¶±
+        </h2>
+        <p class="mt-3 text-slate-600 text-sm sm:text-base">
+          à¶”à¶¶à·š à¶­à·à¶±à·Šà¶´à¶­à·” à¶¸à·”à¶¯à¶½, à¶…à¶¯à·à·… à¶´à·œà¶½à·“ à¶…à¶±à·”à¶´à·à¶­à·’à¶šà¶º à·ƒà·„ à¶šà·à¶½à·ƒà·“à¶¸à·à·€ à¶‡à¶­à·”à·…à¶­à·Š à¶šà¶» à¶šà¶½à·Šà¶´à·’à¶»à·™à¶± à·€à·’à¶§ à¶½à·à¶¶à·™à¶± à¶¸à·”à·…à·” à·€à¶§à·’à¶±à·à¶šà¶¸ à·ƒà·„ à¶¸à·à·ƒà·’à¶š à¶´à·œà¶½à·“ à¶†à¶¯à·à¶ºà¶¸ à¶šà·Šà·‚à¶«à·’à¶šà·€ à¶œà¶«à¶±à¶º à¶šà¶»à¶œà¶±à·Šà¶±.
+        </p>
+      </div>
+
+      <!-- FD Growth Calculator Card -->
+      <div class="bg-white text-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200 reveal">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Left Column: Controls (7 cols) -->
+          <div class="lg:col-span-7 space-y-6">
+            
+            <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-[#0B0D7C] flex items-center justify-center text-xl font-bold border border-indigo-100">
+                <i class="fa-solid fa-vault"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-xl text-[#0B0D7C]">à¶­à·à¶±à·Šà¶´à¶­à·” à¶´à·Šâ€à¶»à¶­à·’à¶½à·à¶· à¶œà¶«à¶±à¶º</h3>
+                <p class="text-xs text-slate-500">à¶šà¶½à·Šà¶´à·’à¶»à·™à¶± à·€à·’à¶§ à·„à· à¶¸à·à·ƒà·’à¶šà·€ à¶´à·œà¶½à·’à¶º à¶½à¶¶à·à¶œà·à¶±à·“à¶¸</p>
+              </div>
+            </div>
+
+            <!-- Control 1: Deposit Amount -->
+            <div>
+              <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                <span>à¶­à·à¶±à·Šà¶´à¶­à·” à¶¸à·”à¶¯à¶½ (Deposit Amount)</span>
+                <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                  <span class="text-slate-500 text-xs font-semibold">à¶»à·”.</span>
+                  <input type="text" id="fd-amount-input" value="1,000,000" class="w-32 text-right bg-transparent font-bold text-sm text-[#0B0D7C] focus:outline-none">
+                </div>
+              </div>
+              <input type="range" id="fd-amount-range" min="10000" max="10000000" step="25000" value="1000000">
+              <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                <span>à¶»à·”. 10,000</span>
+                <span>à¶»à·”. 10,000,000</span>
+              </div>
+            </div>
+
+            <!-- Control 2: Custom Interest Rate (User entered!) -->
+            <div>
+              <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                <span>à·€à·à¶»à·Šà·‚à·’à¶š à¶´à·œà¶½à·“ à¶…à¶±à·”à¶´à·à¶­à·’à¶šà¶º (Annual Interest Rate %)</span>
+                <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                  <input type="text" id="fd-custom-rate-input" value="13.00" class="w-16 text-right bg-transparent font-bold text-sm text-[#DF0178] focus:outline-none">
+                  <span class="text-slate-500 text-xs font-bold">%</span>
+                </div>
+              </div>
+              <input type="range" id="fd-custom-rate-range" min="5.0" max="25.0" step="0.25" value="13.00">
+              <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                <span>5.0%</span>
+                <span class="text-slate-400 text-[10px]">*à¶šà·à¶½à¶ºà·™à¶±à·Š à¶šà·à¶½à¶ºà¶§ à¶´à·œà¶½à·“ à¶…à¶±à·”à¶´à·à¶­ à·€à·™à¶±à·ƒà·Š à·€à·’à¶º à·„à·à¶š</span>
+                <span>25.0%</span>
+              </div>
+            </div>
+
+            <!-- Control 3: Tenure Selection -->
+            <div>
+              <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-2">
+                <span>à¶­à·à¶±à·Šà¶´à¶­à·” à¶šà·à¶½à·ƒà·“à¶¸à·à·€ (Tenure in Months)</span>
+                <div class="flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                  <input type="text" id="fd-period-input" value="12" class="w-12 text-right bg-transparent font-bold text-sm text-[#0B0D7C] focus:outline-none">
+                  <span class="text-slate-500 text-xs font-semibold">à¶¸à·à·ƒ</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2">
+                <button type="button" onclick="window.setFDTenure(3, this)" class="fd-tenure-btn py-2 px-2 rounded-xl text-xs font-bold border border-slate-200 hover:border-[#0B0D7C] text-slate-700 transition-all text-center">à¶¸à·à·ƒ 3</button>
+                <button type="button" onclick="window.setFDTenure(6, this)" class="fd-tenure-btn py-2 px-2 rounded-xl text-xs font-bold border border-slate-200 hover:border-[#0B0D7C] text-slate-700 transition-all text-center">à¶¸à·à·ƒ 6</button>
+                <button type="button" onclick="window.setFDTenure(9, this)" class="fd-tenure-btn py-2 px-2 rounded-xl text-xs font-bold border border-slate-200 hover:border-[#0B0D7C] text-slate-700 transition-all text-center">à¶¸à·à·ƒ 9</button>
+                <button type="button" onclick="window.setFDTenure(12, this)" class="fd-tenure-btn py-2 px-2 rounded-xl text-xs font-bold bg-[#0B0D7C] text-white border border-[#0B0D7C] transition-all text-center">à¶¸à·à·ƒ 12</button>
+                <button type="button" onclick="window.setFDTenure(24, this)" class="fd-tenure-btn py-2 px-2 rounded-xl text-xs font-bold border border-slate-200 hover:border-[#0B0D7C] text-slate-700 transition-all text-center">à¶¸à·à·ƒ 24</button>
+                <button type="button" onclick="window.setFDTenure(60, this)" class="fd-tenure-btn py-2 px-2 rounded-xl text-xs font-bold border border-slate-200 hover:border-[#0B0D7C] text-slate-700 transition-all text-center">à¶¸à·à·ƒ 60</button>
+              </div>
+            </div>
+
+            <!-- Control 4: Payout Frequency -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-2">à¶´à·œà¶½à·’à¶º à¶½à¶¶à·à¶œà¶±à·Šà¶±à· à¶†à¶šà·à¶»à¶º (Interest Payout Mode)</label>
+              <select id="fd-payout-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#0B0D7C]">
+                <option value="maturity" selected>à¶šà¶½à·Šà¶´à·’à¶»à·™à¶± à·€à·’à¶§ à¶´à·œà¶½à·’à¶º (At Maturity - à¶‹à¶´à¶»à·’à¶¸ à¶½à·à¶·à¶º)</option>
+                <option value="monthly">à¶¸à·à·ƒà·’à¶šà·€ à¶´à·œà¶½à·’à¶º à¶½à¶¶à·à¶œà·à¶±à·“à¶¸ (Monthly Payout)</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Result Box (5 cols) -->
+          <div class="lg:col-span-5 bg-gradient-to-br from-[#0B0D7C] to-[#070954] text-white rounded-3xl p-6 sm:p-7 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+            <div class="absolute -right-12 -bottom-12 w-48 h-48 rounded-full bg-[#DF0178]/20 blur-2xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+              <span class="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-pink-300 backdrop-blur-sm mb-4 border border-white/10">
+                <i class="fa-solid fa-chart-line"></i> à¶‡à·ƒà·Šà¶­à¶¸à·šà¶±à·Šà¶­à·”à¶œà¶­ à¶´à·Šâ€à¶»à¶­à·’à¶½à·à¶·
+              </span>
+              
+              <div class="mb-6">
+                <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-1">à¶šà¶½à·Šà¶´à·’à¶»à·™à¶± à·€à·’à¶§ à¶¸à·”à·…à·” à·€à¶§à·’à¶±à·à¶šà¶¸</span>
+                <div id="fd-maturity-val" class="text-3xl sm:text-4xl font-black text-white tracking-tight">à¶»à·”. 1,130,000</div>
+              </div>
+
+              <div class="space-y-3.5 border-t border-white/15 pt-5 text-xs sm:text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-300">à¶ºà·™à¶¯à·€à·– à¶´à·œà¶½à·“ à¶…à¶±à·”à¶´à·à¶­à·’à¶šà¶º:</span>
+                  <span id="fd-applied-rate" class="font-extrabold text-pink-300">13.00% p.a.</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-300">à¶­à·à¶±à·Šà¶´à¶­à·” à¶šà·à¶½à·ƒà·“à¶¸à·à·€:</span>
+                  <span id="fd-display-tenure" class="font-bold text-white">à¶¸à·à·ƒ 12</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-300">à¶¸à·à·ƒà·’à¶š à¶´à·œà¶½à·“ à¶†à¶¯à·à¶ºà¶¸:</span>
+                  <span id="fd-monthly-income-val" class="font-extrabold text-amber-300">à¶»à·”. 10,833</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-white/10">
+                  <span class="text-slate-200 font-bold">à¶¸à·”à·…à·” à·à·”à¶¯à·Šà¶° à¶½à·à¶·à¶º:</span>
+                  <span id="fd-profit-val" class="font-black text-emerald-300 text-base">à¶»à·”. 130,000</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-8 relative z-10">
+              <button onclick="window.openInquiryModal('Fixed Deposit')" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white transition-all shadow-lg shadow-pink-900/40 flex items-center justify-center gap-2">
+                <span>à·ƒà·Šà¶®à·à·€à¶» à¶­à·à¶±à·Šà¶´à¶­à·”à·€à¶šà·Š à¶…à¶»à¶¹à¶±à·Šà¶±</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>

@@ -1,0 +1,605 @@
+/* ==========================================================================
+   Galapitiyagama Sanasa Bank (GSCS Bank) - Master Stylesheet
+   Theme: #0B0D7C (Sanasa Deep Royal Blue) & #DF0178 (Sanasa Magenta Pink)
+   Inspired by Clean Sri Lanka (cleansrilanka.gov.lk) Modern Creative Design
+   ========================================================================== */
+
+:root {
+  --bank-primary: #0B0D7C;
+  --bank-primary-dark: #070954;
+  --bank-primary-light: #181DA8;
+  --bank-accent: #DF0178;
+  --bank-accent-dark: #BA0063;
+  --bank-accent-light: #F41B8E;
+  
+  --bank-pink-gradient: linear-gradient(135deg, #DF0178 0%, #BA0063 100%);
+  --bank-blue-gradient: linear-gradient(135deg, #0B0D7C 0%, #181DA8 100%);
+  --bank-hero-gradient: linear-gradient(90deg, rgba(7, 9, 84, 0.92) 0%, rgba(11, 13, 124, 0.78) 35%, rgba(11, 13, 124, 0.18) 58%, rgba(11, 13, 124, 0.0) 75%);
+  
+  --bg-slate: #f8fafc;
+  --card-border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --shadow-card: 0 10px 30px -5px rgba(11, 13, 124, 0.08), 0 8px 15px -6px rgba(11, 13, 124, 0.04);
+  --shadow-hover: 0 20px 35px -5px rgba(11, 13, 124, 0.16), 0 10px 18px -6px rgba(223, 1, 120, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', system-ui, -apple-system, sans-serif;
+  color: var(--text-main);
+  background-color: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bank-primary);
+}
+
+/* Top utility bar */
+.top-bar-bg {
+  background: #05073E;
+  color: #cbd5e1;
+}
+
+/* Header Glassmorphism & Shadow */
+.header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  transition: all 0.3s ease;
+}
+
+.header-sticky.scrolled {
+  box-shadow: 0 4px 25px rgba(11, 13, 124, 0.12);
+}
+
+/* Navigation Link Underline Effect */
+.nav-link {
+  position: relative;
+  font-weight: 600;
+  color: #1e293b;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--bank-accent);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2.5px;
+  bottom: -4px;
+  left: 0;
+  background: var(--bank-accent);
+  transition: width 0.25s ease;
+  border-radius: 2px;
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+  width: 100%;
+}
+
+/* Hero Section & Slider */
+.hero-slider-container {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+  background: #070954;
+}
+
+@media (max-width: 768px) {
+  .hero-slider-container {
+    height: 540px;
+  }
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform: scale(1.04);
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: 60% center;
+  filter: brightness(0.95);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bank-hero-gradient);
+}
+
+@media (max-width: 768px) {
+  .hero-overlay {
+    background: linear-gradient(180deg, rgba(7, 9, 84, 0.85) 0%, rgba(11, 13, 124, 0.60) 60%, rgba(11, 13, 124, 0.25) 100%) !important;
+  }
+}
+
+/* Quick Tools Floating Card */
+.quick-tools-bar {
+  margin-top: -55px;
+  position: relative;
+  z-index: 30;
+}
+
+.tool-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-left-width: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Section Heading & Badges (Clean Sri Lanka Style) */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.section-badge-pink {
+  background: #fdf2f8;
+  color: #be185d;
+  border: 1px solid #fbcfe8;
+}
+
+.section-badge-blue {
+  background: #eff6ff;
+  color: #0B0D7C;
+  border: 1px solid #bfdbfe;
+}
+
+.section-badge-green {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: var(--bank-primary);
+  line-height: 1.25;
+}
+
+@media (min-width: 640px) {
+  .section-title {
+    font-size: 2.25rem;
+  }
+}
+
+.accent-border-left {
+  border-left: 4px solid var(--bank-accent);
+  padding-left: 1rem;
+}
+
+/* Stats Cards (Clean Sri Lanka Impact Style) */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--bank-pink-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.stat-card:hover::after {
+  transform: scaleX(1);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--bank-primary);
+}
+
+/* Product Card Styling */
+.product-card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--bank-blue-gradient);
+  transition: background 0.3s ease;
+}
+
+.product-card:hover::before {
+  background: var(--bank-pink-gradient);
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+  border-color: #fbcfe8;
+}
+
+.product-card:hover .product-icon-wrap {
+  background: var(--bank-pink-gradient);
+  color: #ffffff;
+  transform: scale(1.08) rotate(3deg);
+}
+
+.product-icon-wrap {
+  transition: all 0.3s ease;
+}
+
+/* Radial gradient utility for phone glow blob */
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+/* Smart COOP phone mockup container height */
+.phone-mockup-container {
+  position: relative;
+  width: 100%;
+  height: 360px;
+}
+
+@media (min-width: 640px) {
+  .phone-mockup-container {
+    height: 440px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .phone-mockup-container {
+    height: 520px;
+  }
+}
+
+/* Digital Section Background */
+.digital-section-bg {
+  background: linear-gradient(135deg, #05073E 0%, #0B0D7C 40%, #070954 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.feature-pill:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(223, 1, 120, 0.5);
+  transform: translateX(4px);
+}
+
+/* Range Slider Styling for Calculators */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 6px;
+  background: #e2e8f0;
+  outline: none;
+  transition: background 0.2s;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bank-accent);
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(223, 1, 120, 0.5);
+  border: 2px solid #ffffff;
+  transition: transform 0.15s ease;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* News Cards */
+.news-card {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 1.125rem;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  position: relative;
+}
+
+.news-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+  border-color: #fbcfe8;
+}
+
+.news-card:hover .news-img {
+  transform: scale(1.06);
+}
+
+.news-img {
+  transition: transform 0.5s ease;
+}
+
+/* Testimonial Cards */
+.testimonial-card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  border: 1px solid #e2e8f0;
+  padding: 1.75rem;
+  position: relative;
+  transition: all 0.35s ease;
+  overflow: hidden;
+}
+
+.testimonial-card::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  font-size: 6rem;
+  font-weight: 900;
+  color: rgba(11, 13, 124, 0.05);
+  line-height: 1;
+  font-family: Georgia, serif;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+  border-color: #fbcfe8;
+}
+
+/* Contact Info Card */
+.contact-info-card {
+  background: linear-gradient(135deg, var(--bank-primary), var(--bank-primary-dark));
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dot pattern & Blobs */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(11, 13, 124, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.blob-shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Reveal classes - Safe default: fully visible so content never disappears */
+.reveal, .reveal-left, .reveal-right {
+  opacity: 1;
+  transform: none;
+}
+
+/* Badges */
+.badge-pink {
+  background-color: #fdf2f8;
+  color: #be185d;
+  border: 1px solid #fbcfe8;
+}
+
+.badge-blue {
+  background-color: #eff6ff;
+  color: #0B0D7C;
+  border: 1px solid #bfdbfe;
+}
+
+/* Modals */
+.modal-backdrop {
+  background-color: rgba(5, 7, 62, 0.78);
+  backdrop-filter: blur(5px);
+}
+
+/* Ticker marquee animation */
+@keyframes tickerAnim {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: tickerAnim 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Toast Notifications */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: #0B0D7C;
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideInUp 0.3s ease forwards;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 5px solid var(--bank-accent);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ==========================================================================
+   ADMIN PANEL — Sidebar Navigation Tab Buttons
+   ========================================================================== */
+
+/* Base inactive state */
+button.admin-tab-btn {
+  position: relative;
+  cursor: pointer !important;
+  user-select: none;
+  color: #94a3b8 !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 0.75rem;
+  transition: background 0.2s ease, color 0.18s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  pointer-events: auto !important;
+}
+
+button.admin-tab-btn > * {
+  pointer-events: none !important;
+}
+
+button.admin-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.09) !important;
+  color: #e2e8f0 !important;
+  transform: translateX(3px);
+}
+
+/* Active tab — pink gradient highlight */
+button.admin-tab-btn.active {
+  background: linear-gradient(135deg, #DF0178 0%, #BA0063 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  box-shadow: 0 3px 16px rgba(223, 1, 120, 0.5) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  transform: translateX(3px) !important;
+}
+
+button.admin-tab-btn.active i,
+button.admin-tab-btn.active span,
+button.admin-tab-btn.active > * {
+  color: #ffffff !important;
+}
+
+/* Left accent bar on active tab */
+button.admin-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 15%;
+  height: 70%;
+  width: 4px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 8px rgba(255,255,255,0.55);
+  pointer-events: none;
+}
+
+/* Invert notification badge in active tab */
+button.admin-tab-btn.active span[id$="-badge"] {
+  background: #ffffff !important;
+  color: #BA0063 !important;
+  font-weight: 900;
+}

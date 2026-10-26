@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Galapitiyagama Sanasa Bank (GSCS Bank)</title>
+  
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bank: {
+              navy: '#0B0D7C',
+              dark: '#070954',
+              blue: '#181DA8',
+              pink: '#DF0178',
+              fuchsia: '#BA0063',
+              light: '#f8fafc'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Sinhala"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Sinhala -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Custom Master Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen">
+
+  <!-- ================= AUTH GATE: LOGIN MODAL ================= -->
+  <div id="admin-login-view" class="fixed inset-0 z-50 bg-gradient-to-br from-[#0B0D7C] via-[#070954] to-[#05073E] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 relative">
+      <div class="text-center mb-6">
+        <img src="assets/images/gscs-logo.png" alt="GSCS Logo" class="h-20 mx-auto mb-3 object-contain">
+        <h2 class="text-xl font-black text-[#0B0D7C]">පරිපාලක පිවිසුම</h2>
+        <p class="text-xs text-slate-500 font-semibold mt-1">GSCS Bank Admin Management Portal</p>
+      </div>
+
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">පරිශීලක නාමය (Username)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"><i class="fa-solid fa-user-shield"></i></span>
+            <input type="text" id="admin-user" required value="admin" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">මුරපදය (Password)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"><i class="fa-solid fa-key"></i></span>
+            <input type="password" id="admin-pass" required value="sanasa123" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-[#0B0D7C] to-[#181DA8] hover:from-[#070954] hover:to-[#0B0D7C] text-white shadow-lg shadow-indigo-900/20 transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-lock text-xs text-amber-400"></i>
+          <span>පද්ධතියට පිවිසෙන්න (Login)</span>
+        </button>
+
+        <div class="pt-3 text-center">
+          <a href="index.html" class="text-xs font-bold text-slate-500 hover:text-[#0B0D7C] flex items-center justify-center gap-1.5 transition-colors">
+            <i class="fa-solid fa-arrow-left text-xs"></i> ප්‍රධාන වෙබ් අඩවියට පිවිසෙන්න
+          </a>
+        </div>
+
+        <div class="p-3 rounded-xl bg-pink-50 border border-pink-200 text-pink-900 text-[11px] leading-relaxed">
+          <span class="font-bold">Default Demo Login:</span><br>
+          Username: <code class="font-mono font-bold text-[#0B0D7C]">admin</code> | Password: <code class="font-mono font-bold text-[#DF0178]">sanasa123</code>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD APP VIEW ================= -->
+  <div id="admin-app-view" class="hidden flex min-h-screen">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-72 bg-[#05073E] text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800">
+      
+      <!-- Bank Brand & Logo -->
+      <div class="p-5 border-b border-slate-800/80 flex items-center gap-3">
+        <img src="assets/images/gscs-logo.png" alt="GSCS Logo" class="h-10 bg-white rounded-lg p-1 object-contain">
+        <div class="overflow-hidden">
+          <h1 class="text-sm font-extrabold text-white tracking-tight truncate">GSCS BANK ADMIN</h1>
+          <p class="text-[10px] text-pink-400 font-bold truncate">Galapitiyagama Sanasa</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex-grow p-4 space-y-2 text-xs font-semibold overflow-y-auto overflow-x-hidden">
+        <button data-tab="overview" onclick="window.switchAdminTab('overview')" class="admin-tab-btn active w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-chart-pie w-5 text-center text-sm text-pink-400"></i>
+          <span>දළ විශ්ලේෂණය (Overview)</span>
+        </button>
+
+        <button data-tab="news" onclick="window.switchAdminTab('news')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-bullhorn w-5 text-center text-sm text-amber-400"></i>
+          <span>පුවත් සහ නිවේදන (News)</span>
+        </button>
+
+        <button data-tab="services" onclick="window.switchAdminTab('services')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-boxes-stacked w-5 text-center text-sm text-sky-400"></i>
+          <span>බැංකු සේවා (Services & Products)</span>
+        </button>
+
+        <button data-tab="rates" onclick="window.switchAdminTab('rates')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-percent w-5 text-center text-sm text-emerald-400"></i>
+          <span>පොලී අනුපාත (Interest Rates)</span>
+        </button>
+
+        <button data-tab="sliders" onclick="window.switchAdminTab('sliders')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-sliders w-5 text-center text-sm text-indigo-400"></i>
+          <span>ප්‍රධාන බැනර් (Hero Banners)</span>
+        </button>
+
+        <button data-tab="bankinfo" onclick="window.switchAdminTab('bankinfo')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-building-columns w-5 text-center text-sm text-yellow-400"></i>
+          <span>බැංකු විස්තර (Bank Profile & Alert)</span>
+        </button>
+
+        <button data-tab="inquiries" onclick="window.switchAdminTab('inquiries')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-inbox w-5 text-center text-sm text-pink-400"></i>
+          <span class="flex-grow">විමසීම් ලිපිගොනුව (Inquiries)</span>
+          <span id="sidebar-inq-badge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#DF0178] text-white">0</span>
+        </button>
+
+        <button data-tab="applications" onclick="window.switchAdminTab('applications')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-address-card w-5 text-center text-sm text-emerald-400"></i>
+          <span class="flex-grow">සාමාජික අයදුම්පත් (Applications)</span>
+          <span id="sidebar-apps-badge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#DF0178] text-white">0</span>
+        </button>
+
+        <button data-tab="loanpayments" onclick="window.switchAdminTab('loanpayments')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-money-bill-transfer w-5 text-center text-sm text-amber-400"></i>
+          <span class="flex-grow">ණය වාරික ගෙවීම් (Loan Payments)</span>
+          <span id="sidebar-lp-badge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#DF0178] text-white">0</span>
+        </button>
+
+        <button data-tab="smartcoop" onclick="window.switchAdminTab('smartcoop')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-solid fa-mobile-screen-button w-5 text-center text-sm text-pink-400"></i>
+          <span class="flex-grow">Smart COOP අයදුම්පත්</span>
+          <span id="sidebar-sc-badge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#DF0178] text-white">0</span>
+        </button>
+
+        <button data-tab="sync" onclick="window.switchAdminTab('sync')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
+          <i class="fa-brands fa-github w-5 text-center text-sm text-slate-300"></i>
+          <span>GitHub Pages & Sync</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Bottom Profile / View Live Site -->
+      <div class="p-4 border-t border-slate-800/80 space-y-2">
+        <a href="index.html" target="_blank" class="w-full py-2.5 px-3 rounded-xl bg-slate-800/80 hover:bg-[#0B0D7C] text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors border border-slate-700">
+          <i class="fa-solid fa-arrow-up-right-from-square text-xs text-pink-400"></i>
+          <span>සජීවී වෙබ් අඩවිය (View Site)</span>
+        </a>
+
+        <button onclick="window.adminLogout()" class="w-full py-2 px-3 rounded-xl text-slate-400 hover:text-red-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>පද්ධතියෙන් ඉවත්වන්න (Logout)</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col min-w-0 bg-slate-100 overflow-y-auto">
+      
+      <!-- Top Action Bar -->
+      <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div>
+          <h2 id="current-tab-title" class="text-xl font-black text-[#0B0D7C]">දළ විශ්ලේෂණය (Overview)</h2>
+          <p class="text-xs text-slate-500">ගලපිටියගම සනස සමූපකාර බැංකු කළමනාකරණ පද්ධතිය</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Live Auto-Sync Active</span>
+          </span>
+
+          <button onclick="window.bankStore.exportJSON()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+            <i class="fa-solid fa-download text-[#0B0D7C]"></i>
+            <span>Backup JSON</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Panels -->
+      <div class="p-6 sm:p-8 space-y-8 flex-grow">
+
+        <!-- ================= TAB 1: OVERVIEW ================= -->
+        <section id="panel-overview" class="admin-panel space-y-8">
+          <!-- Stat Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-blue-50 text-[#0B0D7C] flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-bullhorn"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">පුවත් සහ නිවේදන</span>
+                <div id="ov-news-count" class="text-2xl font-black text-slate-900">0</div>
+                <p class="text-[11px] text-slate-500">සක්‍රීය ප්‍රකාශන</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-pink-50 text-[#DF0178] flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-boxes-stacked"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">බැංකු සේවා වර්ග</span>
+                <div id="ov-services-count" class="text-2xl font-black text-slate-900">0</div>
+                <p class="text-[11px] text-slate-500">ඉතුරුම්, ණය හා තැන්පතු</p>
+              </div>
+            </div>
+
+            <div onclick="window.switchAdminTab('applications')" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4 cursor-pointer hover:border-emerald-500 transition-colors">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-address-card"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">සාමාජික අයදුම්පත්</span>
+                <div id="ov-apps-count" class="text-2xl font-black text-slate-900">0</div>
+                <p id="ov-apps-pending" class="text-[11px] text-emerald-600 font-bold">0ක් පොරොත්තු ලේඛනයේ</p>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl font-bold">
+                <i class="fa-solid fa-inbox"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">ලැබුණු විමසීම්</span>
+                <div id="ov-inq-count" class="text-2xl font-black text-slate-900">0</div>
+                <p class="text-[11px] text-slate-500">වෙබ් අඩවිය හරහා</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Actions & Breaking Notice Status -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+              <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                <h3 class="font-extrabold text-[#0B0D7C] text-base">නවතම විමසීම් සහ අයදුම්පත් (Recent Inquiries)</h3>
+                <button onclick="window.switchAdminTab('inquiries')" class="text-xs font-bold text-pink-600 hover:text-pink-700">සියල්ල බලන්න &gt;&gt;</button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left">
+                  <thead class="bg-slate-50 text-slate-500 uppercase font-bold">
+                    <tr>
+                      <th class="py-2.5 px-3">නම (Name)</th>
+                      <th class="py-2.5 px-3">දුරකථනය</th>
+                      <th class="py-2.5 px-3">සේවාව</th>
+                      <th class="py-2.5 px-3">දිනය</th>
+                      <th class="py-2.5 px-3">තත්ත්වය</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ov-recent-inquiries" class="divide-y divide-slate-100">
+                    <!-- Injected -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Urgent Breaking Banner Status -->
+            <div class="bg-gradient-to-br from-[#0B0D7C] to-[#070954] text-white rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-xs font-bold uppercase tracking-wider text-pink-400">විශේෂ දැනුම්දීම් පුවරුව</span>
+                  <span id="ov-urgent-badge" class="px-2 py-0.5 rounded text-[10px] font-black bg-pink-500 text-white">ACTIVE</span>
+                </div>
+                <h4 class="font-bold text-sm text-white mb-2">ඉහළ සිරස්තල නිවේදනය (Top Banner Notice)</h4>
+                <p id="ov-urgent-text" class="text-xs text-slate-300 leading-relaxed italic line-clamp-4">
+                  -
+                </p>
+              </div>
+
+              <div class="pt-6">
+                <button onclick="window.switchAdminTab('bankinfo')" class="w-full py-2.5 rounded-xl font-bold text-xs bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white transition-all shadow-md">
+                  නිවේදනය සංස්කරණය කරන්න
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+
+
+        <!-- ================= TAB 2: NEWS & ANNOUNCEMENTS ================= -->
+        <section id="panel-news" class="admin-panel space-y-6 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">පුවත් සහ නිවේදන කළමනාකරණය</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියේ ප්‍රදර්ශනය වන පුවත්, මහා සභා නිවේදන හා ප්‍රවර්ධන</p>
+            </div>
+            <button onclick="window.openNewsEditor()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white transition-all shadow-md flex items-center gap-2">
+              <i class="fa-solid fa-plus"></i>
+              <span>නව පුවතක් එක් කරන්න (Add News)</span>
+            </button>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-4">පින්තූරය</th>
+                    <th class="py-3 px-4">මාතෘකාව (Title)</th>
+                    <th class="py-3 px-4">වර්ගය (Category)</th>
+                    <th class="py-3 px-4">දිනය</th>
+                    <th class="py-3 px-4">Urgent?</th>
+                    <th class="py-3 px-4 text-right">ක්‍රියා (Actions)</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-news-table-body" class="divide-y divide-slate-100">
+                  <!-- Injected -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+
+        <!-- ================= TAB 3: SERVICES & PRODUCTS ================= -->
+        <section id="panel-services" class="admin-panel space-y-6 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">බැංකු සේවා සහ නිෂ්පාදන (Products & Services)</h3>
+              <p class="text-xs text-slate-500">ඉතුරුම්, ස්ථාවර තැන්පතු, ණය සහ සාමාජික සුබසාධන පහසුකම්</p>
+            </div>
+            <button onclick="window.openProductEditor()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#0B0D7C] hover:bg-[#070954] text-white transition-all shadow-md flex items-center gap-2">
+              <i class="fa-solid fa-plus text-amber-400"></i>
+              <span>නව සේවාවක් එක් කරන්න</span>
+            </button>
+          </div>
+
+          <div id="admin-products-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Injected -->
+          </div>
+        </section>
+
+
+
+        <!-- ================= TAB 4: INTEREST RATES ================= -->
+        <section id="panel-rates" class="admin-panel space-y-8 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">දෛනික පොලී අනුපාත කළමනාකරණය</h3>
+              <p class="text-xs text-slate-500">මෙහි සිදුකරන වෙනස්කම් වෙබ් අඩවියේ පොලී පුවරුවට සහ මූල්‍ය ගණකයන්ට සජීවීව බලපායි.</p>
+            </div>
+            <button onclick="window.saveAllRatesFromForm()" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-md flex items-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i>
+              <span>පොලී අනුපාත සුරකින්න (Save Rates)</span>
+            </button>
+          </div>
+
+          <!-- 1. Fixed Deposits Table -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-extrabold text-[#0B0D7C] text-sm flex items-center gap-2">
+                <i class="fa-solid fa-vault text-pink-600"></i> ස්ථාවර තැන්පතු පොලී අනුපාත (Fixed Deposits)
+              </h4>
+              <button onclick="window.addNewFdRow()" class="text-xs font-bold text-pink-600 hover:underline">
+                + තවත් කාලසීමාවක් එක් කරන්න
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold uppercase">
+                  <tr>
+                    <th class="py-2.5 px-3">කාලසීමාව (Tenure)</th>
+                    <th class="py-2.5 px-3">කල්පිරෙන විට වාර්ෂික පොලිය (%)</th>
+                    <th class="py-2.5 px-3">මාසිකව ගෙවන පොලිය (%)</th>
+                    <th class="py-2.5 px-3">අවම තැන්පතුව (LKR)</th>
+                    <th class="py-2.5 px-3 text-center">Popular?</th>
+                    <th class="py-2.5 px-3 text-right">Delete</th>
+                  </tr>
+                </thead>
+                <tbody id="rates-edit-fd-body" class="divide-y divide-slate-100">
+                  <!-- Injected -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 2. Savings Accounts Table -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <h4 class="font-extrabold text-[#0B0D7C] text-sm mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-piggy-bank text-amber-500"></i> ඉතුරුම් ගිණුම් පොලී අනුපාත (Savings Accounts)
+            </h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold uppercase">
+                  <tr>
+                    <th class="py-2.5 px-3">ගිණුම් නම</th>
+                    <th class="py-2.5 px-3">වාර්ෂික පොලිය (Rate)</th>
+                    <th class="py-2.5 px-3">අවම ශේෂය</th>
+                    <th class="py-2.5 px-3">විශේෂ සටහන (Note)</th>
+                  </tr>
+                </thead>
+                <tbody id="rates-edit-sa-body" class="divide-y divide-slate-100">
+                  <!-- Injected -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. Loans Table -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <h4 class="font-extrabold text-[#0B0D7C] text-sm mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> ණය පහසුකම් පොලී අනුපාත (Loans & Credit)
+            </h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-600 font-bold uppercase">
+                  <tr>
+                    <th class="py-2.5 px-3">ණය යෝජනා ක්‍රමය</th>
+                    <th class="py-2.5 px-3">පොලී අනුපාතය</th>
+                    <th class="py-2.5 px-3">උපරිම මුදල</th>
+                    <th class="py-2.5 px-3">උපරිම කාලය</th>
+                  </tr>
+                </thead>
+                <tbody id="rates-edit-ln-body" class="divide-y divide-slate-100">
+                  <!-- Injected -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+
+        <!-- ================= TAB 5: HERO BANNERS ================= -->
+        <section id="panel-sliders" class="admin-panel space-y-6 hidden">
+          <div>
+            <h3 class="text-lg font-bold text-[#0B0D7C]">ප්‍රධාන බැනර් සහ ස්ලයිඩර් (Hero Slider Management)</h3>
+            <p class="text-xs text-slate-500">මුල් පිටුවේ ඉහළින්ම දිස්වන ප්‍රවර්ධන බැනර් 3 සංස්කරණය කරන්න.</p>
+          </div>
+
+          <div id="admin-slides-container" class="space-y-6">
+            <!-- Injected -->
+          </div>
+        </section>
+
+
+
+        <!-- ================= TAB 6: BANK PROFILE & URGENT ALERT ================= -->
+        <section id="panel-bankinfo" class="admin-panel space-y-6 hidden">
+          <div>
+            <h3 class="text-lg font-bold text-[#0B0D7C]">බැංකු තොරතුරු සහ විශේෂ නිවේදන පාලනය</h3>
+            <p class="text-xs text-slate-500">බැංකුවේ නම, දුරකථන, ලිපිනය, කාර්යාල වේලාවන් සහ වෙබ් අඩවියේ උඩින්ම පෙන්වන නිවේදනය.</p>
+          </div>
+
+          <form id="bank-info-form" class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+            
+            <!-- Urgent Top Alert Section -->
+            <div class="p-5 rounded-2xl bg-pink-50 border border-pink-200 space-y-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 class="font-extrabold text-[#0B0D7C] text-sm">ඉහළ විශේෂ නිවේදනය (Top Breaking Alert)</h4>
+                  <p class="text-xs text-slate-500">මෙය සක්‍රීය කළ විට මුළු වෙබ් අඩවියේම උඩින්ම රතු/කහ පැහැයෙන් පෙන්වනු ලැබේ.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="info-urgent-active" class="sr-only peer">
+                  <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#DF0178]"></div>
+                </label>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">නිවේදන පාඨය (Sinhala Alert Text)</label>
+                <input type="text" id="info-urgent-text" class="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+            </div>
+
+            <!-- Bank Identity Details -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">බැංකුවේ නම (Sinhala)</label>
+                <input type="text" id="info-name-si" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">බැංකුවේ නම (English)</label>
+                <input type="text" id="info-name-en" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">ලියාපදිංචි අංකය (Reg Number)</label>
+                <input type="text" id="info-regno" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">ශ්‍රී ලංකා මහ බැංකු අනුමැතිය (CBSL Note)</label>
+                <input type="text" id="info-cbsl" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+            </div>
+
+            <!-- Contact Numbers & Email -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">ක්ෂණික ඇමතුම් (Hotline / Phone)</label>
+                <input type="text" id="info-hotline" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp අංකය (Country code සහිතව)</label>
+                <input type="text" id="info-whatsapp" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">විද්‍යුත් තැපෑල (Email)</label>
+                <input type="email" id="info-email" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+            </div>
+
+            <!-- Address & Hours -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">ලිපිනය (Address)</label>
+                <input type="text" id="info-address" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">විවෘත වේලාවන් (Business Hours)</label>
+                <input type="text" id="info-hours" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex justify-end">
+              <button type="submit" class="px-6 py-3 rounded-xl font-bold text-xs bg-[#0B0D7C] hover:bg-[#070954] text-white shadow-md transition-all flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk text-pink-400"></i>
+                <span>බැංකු විස්තර සුරකින්න (Save Bank Profile)</span>
+              </button>
+            </div>
+
+          </form>
+        </section>
+
+
+
+        <!-- ================= TAB 7: INQUIRIES INBOX ================= -->
+        <section id="panel-inquiries" class="admin-panel space-y-6 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">පාරිභෝගික විමසීම් සහ ණය ඉල්ලුම්පත් (Inquiries Inbox)</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියේ ආකෘති පත්‍ර හරහා පාරිභෝගිකයන් විසින් එවන ලද පණිවිඩ</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="window.filterInquiries('all')" class="inq-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white">සියල්ල</button>
+              <button onclick="window.filterInquiries('pending')" class="inq-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Pending</button>
+              <button onclick="window.filterInquiries('replied')" class="inq-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Replied</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-4">පාරිභෝගිකයා</th>
+                    <th class="py-3 px-4">දුරකථනය</th>
+                    <th class="py-3 px-4">විද්‍යුත් තැපෑල</th>
+                    <th class="py-3 px-4">අදාළ සේවාව</th>
+                    <th class="py-3 px-4">දිනය</th>
+                    <th class="py-3 px-4">තත්ත්වය</th>
+                    <th class="py-3 px-4 text-right">ක්‍රියා</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-inquiries-table-body" class="divide-y divide-slate-100">
+                  <!-- Injected -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB: MEMBERSHIP APPLICATIONS ================= -->
+        <section id="panel-applications" class="admin-panel space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">සාමාජික අයදුම්පත් කළමනාකරණය (Membership Applications)</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියෙන් ලැබුණු සාමාජික අයදුම්පත්, E-අත්සන් සහ මහජන බැංකු රිසිට්පත් විස්තර</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input type="text" id="admin-apps-search" placeholder="නම / ජ.හැ. / Ref සොයන්න..." oninput="window.filterApplications()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              <button onclick="window.setAppFilter('all')" class="app-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white">සියල්ල</button>
+              <button onclick="window.setAppFilter('pending')" class="app-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Pending</button>
+              <button onclick="window.setAppFilter('approved')" class="app-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Approved</button>
+              <button onclick="window.setAppFilter('rejected')" class="app-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Rejected</button>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-4">යොමු අංකය / දිනය</th>
+                    <th class="py-3 px-4">අයදුම්කරුගේ නම & ජ.හැ.</th>
+                    <th class="py-3 px-4">දුරකථනය</th>
+                    <th class="py-3 px-4">ගෙවීම (රු. 6,000)</th>
+                    <th class="py-3 px-4">රිසිට්පත</th>
+                    <th class="py-3 px-4">අත්සන</th>
+                    <th class="py-3 px-4">තත්ත්වය</th>
+                    <th class="py-3 px-4 text-right">ක්‍රියාකාරකම්</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-apps-table-body" class="divide-y divide-slate-100">
+                  <!-- Injected by admin.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: LOAN INSTALLMENT PAYMENTS -->
+        <section id="panel-loanpayments" class="admin-panel space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">ණය වාරික ගෙවීම් කළමනාකරණය (Loan Installment Payments)</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියෙන් යොමු කළ ණය ගෙවීම් රිසිට්පත් සහ WhatsApp / SMS</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input type="text" id="admin-lp-search" placeholder="නම / සාමාජික අංකය..." oninput="window.filterLoanPayments()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              <button onclick="window.setLpFilter('all')" class="lp-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white">සියල්ල</button>
+              <button onclick="window.setLpFilter('pending')" class="lp-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Pending</button>
+              <button onclick="window.setLpFilter('confirmed')" class="lp-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Confirmed</button>
+              <button onclick="window.setLpFilter('rejected')" class="lp-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Rejected</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-4">යොමු අංකය / දිනය</th>
+                    <th class="py-3 px-4">සාමාජිකයාගේ නම / අංකය</th>
+                    <th class="py-3 px-4">ණය වර්ගය</th>
+                    <th class="py-3 px-4">දුරකථනය</th>
+                    <th class="py-3 px-4">ගෙවූ මුදල</th>
+                    <th class="py-3 px-4">රිසිට්පත</th>
+                    <th class="py-3 px-4">තත්ත්වය</th>
+                    <th class="py-3 px-4 text-right">ක්‍රියාකාරකම්</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-lp-table-body" class="divide-y divide-slate-100">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB: SMART COOP APPLICATIONS ================= -->
+        <section id="panel-smartcoop" class="admin-panel space-y-6 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">Smart COOP ජංගම යෙදුම් අයදුම්පත් කළමනාකරණය</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියෙන් ලියාපදිංචි වූ Smart COOP ඩිජිටල් අයදුම්පත්, E-අත්සන් සහ A4 මුද්‍රණය</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input type="text" id="admin-sc-search" placeholder="නම / ගිණුම් අංකය / Ref..." oninput="window.filterSmartCoopApps()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              <button onclick="window.setScFilter('all')" class="sc-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white">සියල්ල</button>
+              <button onclick="window.setScFilter('pending')" class="sc-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Pending</button>
+              <button onclick="window.setScFilter('activated')" class="sc-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Activated</button>
+              <button onclick="window.setScFilter('rejected')" class="sc-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200">Rejected</button>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-4">යොමු අංකය / දිනය</th>
+                    <th class="py-3 px-4">ගිණුම් අංකය</th>
+                    <th class="py-3 px-4">අයදුම්කරුගේ නම & ජ.හැ.</th>
+                    <th class="py-3 px-4">දුරකථනය / Username</th>
+                    <th class="py-3 px-4">අත්සන</th>
+                    <th class="py-3 px-4">තත්ත්වය</th>
+                    <th class="py-3 px-4 text-right">ක්‍රියාකාරකම්</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-sc-table-body" class="divide-y divide-slate-100">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 8: GITHUB PAGES & DATA SYNC ================= -->
+        <section id="panel-sync" class="admin-panel space-y-6 hidden">
+          <div>
+            <h3 class="text-lg font-bold text-[#0B0D7C]">GitHub Pages සහ දත්ත සමමුහුර්තකරණය (Data Persistence)</h3>
+            <p class="text-xs text-slate-500">ඔබගේ වෙබ් අඩවිය GitHub Pages හි සජීවීව පවතින විට දත්ත කළමනාකරණය කරන ආකාරය</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Card 1: JSON Export & Import -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+              <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#0B0D7C] flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-file-code"></i>
+              </div>
+              <h4 class="font-extrabold text-slate-900 text-sm">දත්ත ගොනුව බාගත කිරීම (JSON Export & Import)</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                පරිපාලක පුවරුවෙන් ඔබ සිදුකළ සියලුම වෙනස්කම් (පුවත්, පොලී, සේවා) අඩංගු <code class="font-mono text-pink-600 bg-pink-50 px-1 py-0.5 rounded">data.json</code> ගොනුව ක්ලික් එකකින් බාගත කරගන්න. ඔබට අවශ්‍ය ඕනෑම අවස්ථාවක මෙම ගොනුවෙන් නැවත දත්ත යථා තත්ත්වයට පත් කළ හැක.
+              </p>
+              <div class="pt-2 flex flex-wrap gap-3">
+                <button onclick="window.bankStore.exportJSON()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#0B0D7C] text-white hover:bg-[#070954] transition-all flex items-center gap-2">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Download data.json</span>
+                </button>
+                <label class="px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer transition-all flex items-center gap-2">
+                  <i class="fa-solid fa-upload"></i>
+                  <span>Upload data.json</span>
+                  <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="window.handleJSONUpload(event)">
+                </label>
+              </div>
+            </div>
+
+            <!-- Card 2: Firebase Realtime Cloud Sync -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <h4 class="font-extrabold text-slate-900 text-sm">Firebase Cloud Sync (විකල්ප - නොමිලේ)</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                ඔබ පරිපාලක පුවරුවෙන් කරන වෙනස්කම් ලෝකයේ ඕනෑම තැනක සිට වෙබ් අඩවිය නරඹන සෑම සාමාජිකයෙකුටම <strong>ක්ෂණිකව සජීවීව</strong> පෙනීමට අවශ්‍ය නම්, නොමිලේ Firebase Firestore ගිණුමක් සම්බන්ධ කළ හැක.
+              </p>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 mb-1">Firebase Configuration (JSON snippet):</label>
+                <textarea id="firebase-config-input" rows="3" placeholder='{"apiKey": "...", "projectId": "...", "authDomain": "..."}' class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-mono focus:outline-none focus:border-[#0B0D7C]"></textarea>
+              </div>
+              <button onclick="window.saveFirebaseConfig()" class="px-4 py-2 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white transition-all">
+                Save Cloud Sync Config
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Reset to Factory Defaults -->
+          <div class="p-5 rounded-2xl bg-red-50 border border-red-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h4 class="font-bold text-red-900 text-sm">නැවත පෙරනිමි දත්ත පිහිටුවීම (Reset to Factory Defaults)</h4>
+              <p class="text-xs text-red-700">සියලුම වෙනස්කම් මකා දමා මුල් දත්ත නැවත පිහිටුවීමට අවශ්‍ය නම් මෙය භාවිතා කරන්න.</p>
+            </div>
+            <button onclick="window.confirmResetDefaults()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-red-600 hover:bg-red-700 text-white transition-all whitespace-nowrap">
+              Reset All Data
+            </button>
+          </div>
+        </section>
+
+
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ================= MODAL: NEWS EDITOR ================= -->
+  <div id="modal-news-editor" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <button onclick="window.closeNewsEditor()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h3 id="news-editor-title" class="text-lg font-black text-[#0B0D7C] mb-4">පුවතක් හෝ නිවේදනයක් පළ කිරීම</h3>
+
+      <form id="news-editor-form" class="space-y-4">
+        <input type="hidden" id="edit-news-id">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">මාතෘකාව (Title - Sinhala) *</label>
+          <input type="text" id="edit-news-title" required placeholder="නිවේදනයේ ප්‍රධාන මාතෘකාව" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">මාතෘකාව (Title - English Optional)</label>
+          <input type="text" id="edit-news-title-en" placeholder="English Title" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">වර්ගය (Category) *</label>
+            <select id="edit-news-category" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              <option value="Notice">මහා සභා නිවේදන (Notice)</option>
+              <option value="Digital Banking">ඩිජිටල් බැංකුකරණය (Digital Banking)</option>
+              <option value="Promotion">ණය හා තැන්පතු ප්‍රවර්ධන (Promotion)</option>
+              <option value="Agriculture">කෘෂිකාර්මික හා ගොවි (Agriculture)</option>
+              <option value="Dividend">ලාභාංශ බෙදාහැරීම (Dividend)</option>
+              <option value="Community">සාමාජික සුබසාධන (Community)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">පළකළ දිනය (Date) *</label>
+            <input type="date" id="edit-news-date" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">පින්තූරයේ URL (Image Path) *</label>
+          <input type="text" id="edit-news-image" required placeholder="assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-[#0B0D7C]">
+          <div class="flex items-center gap-2 mt-1.5 text-[11px] text-slate-500">
+            <span>Preset තෝරන්න:</span>
+            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/gscs-logo.png'" class="text-pink-600 hover:underline">Official Logo</button> |
+            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png'" class="text-pink-600 hover:underline">Smart COOP</button> |
+            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png'" class="text-pink-600 hover:underline">Branch Officer</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">කෙටි සාරාංශය (Short Summary) *</label>
+          <textarea id="edit-news-summary" rows="2" required placeholder="වෙබ් අඩවියේ කාඩ්පතෙහි පෙනෙන කෙටි විස්තරය..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs focus:outline-none focus:border-[#0B0D7C]"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">සම්පූර්ණ විස්තරය (Full Article Content) *</label>
+          <textarea id="edit-news-content" rows="5" required placeholder="සම්පූර්ණ නිවේදන පාඨය මෙහි ඇතුළත් කරන්න..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs focus:outline-none focus:border-[#0B0D7C]"></textarea>
+        </div>
+
+        <div class="flex items-center gap-2 pt-2">
+          <input type="checkbox" id="edit-news-urgent" class="w-4 h-4 rounded text-[#DF0178]">
+          <label for="edit-news-urgent" class="text-xs font-bold text-slate-700 cursor-pointer">
+            Mark as URGENT (වෙබ් අඩවියේ ඉහළින්ම විශේෂ ලකුණක් පෙන්වන්න)
+          </label>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <button type="button" onclick="window.closeNewsEditor()" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700">අවලංගු කරන්න</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white shadow-md">සුරකින්න (Save Article)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PRODUCT/SERVICE EDITOR ================= -->
+  <div id="modal-product-editor" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+      <button onclick="window.closeProductEditor()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h3 id="product-editor-title" class="text-lg font-black text-[#0B0D7C] mb-4">බැංකු සේවාවක් සංස්කරණය</h3>
+
+      <form id="product-editor-form" class="space-y-4">
+        <input type="hidden" id="edit-prod-id">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">සේවා කාණ්ඩය (Category) *</label>
+          <select id="edit-prod-category" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+            <option value="savings">ඉතුරුම් (Savings Scheme)</option>
+            <option value="deposits">ස්ථාවර තැන්පතු (Fixed Term Deposits)</option>
+            <option value="loans">ණය පහසුකම් (Loans & Credit)</option>
+            <option value="welfare">සාමාජික සුබසාධනය (Member Welfare)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">සේවාවේ නම (Title) *</label>
+          <input type="text" id="edit-prod-title" required placeholder="උදා: සනස ස්ථාවර තැන්පතු" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Badge ටැගය (උදා: 13.50% පොලිය / අඩුම පොලිය)</label>
+          <input type="text" id="edit-prod-badge" placeholder="ජනප්‍රියයි / 8.50% පොලිය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">අයිකනය (Icon Key)</label>
+          <select id="edit-prod-icon" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+            <option value="piggy-bank">Piggy Bank (ඉතුරුම්)</option>
+            <option value="baby">Baby / Child (ළමා)</option>
+            <option value="vault">Vault / Safe (තැන්පතු)</option>
+            <option value="sprout">Sprout / Agri (ගොවි)</option>
+            <option value="coins">Coins / Gold (රන් ණය)</option>
+            <option value="hand-holding-heart">Heart / Welfare (සුබසාධන)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">විස්තරය (Description) *</label>
+          <textarea id="edit-prod-desc" rows="3" required placeholder="සේවාව පිළිබඳ කෙටි හැඳින්වීමක්..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs focus:outline-none focus:border-[#0B0D7C]"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">ප්‍රධාන වරප්‍රසාද (Key Features - එක් පේළියකට එකක් බැගින්) *</label>
+          <textarea id="edit-prod-features" rows="4" required placeholder="අවම ආරම්භක තැන්පතුව රු. 500 පමණි&#10;මාසිකව පොලී බැරවීම&#10;ණය ලබාගැනීමේ ඇපකරයක් ලෙස යොදාගත හැක" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs focus:outline-none focus:border-[#0B0D7C]"></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <button type="button" onclick="window.closeProductEditor()" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700">අවලංගු කරන්න</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl font-bold text-xs bg-[#0B0D7C] hover:bg-[#070954] text-white shadow-md">සුරකින්න (Save Product)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: APPLICATION DETAILS & REVIEW ================= -->
+  <div id="app-detail-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto border border-slate-200">
+      <button onclick="window.closeAppDetailModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="border-b border-slate-200 pb-4 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span class="inline-block px-2.5 py-1 rounded text-[11px] font-extrabold bg-pink-100 text-[#DF0178] mb-1">සාමාජික අයදුම්පත් විස්තරය</span>
+          <h3 class="text-xl font-bold text-[#0B0D7C] flex items-center gap-2">
+            <span id="adm-app-ref">GSCS-MEM-XXXX</span>
+          </h3>
+          <p id="adm-app-submitted" class="text-xs text-slate-500">යොමු කළ දිනය: -</p>
+        </div>
+        <div id="adm-app-status-badge">
+          <!-- Status Badge Injected -->
+        </div>
+      </div>
+
+      <div id="adm-app-content" class="space-y-6 text-xs sm:text-sm">
+        <!-- Content injected dynamically by admin.js -->
+      </div>
+
+      <!-- Action Footer -->
+      <div class="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button id="adm-app-approve-btn" class="px-4 py-2 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-check"></i> <span>අනුමත කරන්න (Approve)</span>
+          </button>
+          <button id="adm-app-reject-btn" class="px-4 py-2 rounded-xl font-bold text-xs bg-red-600 hover:bg-red-700 text-white transition-all shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-ban"></i> <span>ප්‍රතික්ෂේප කරන්න (Reject)</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="adm-app-print-btn" class="px-4 py-2 rounded-xl font-bold text-xs bg-[#0B0D7C] hover:bg-[#070954] text-white transition-all shadow flex items-center gap-1.5">
+            <i class="fa-solid fa-print"></i> <span>මුද්‍රණය කරන්න (Print)</span>
+          </button>
+          <button onclick="window.closeAppDetailModal()" class="px-4 py-2 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+            වසන්න
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/defaultData.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

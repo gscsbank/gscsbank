@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 85" width="440" height="85">
+  <defs>
+    <linearGradient id="sanasaBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B0D7C"/>
+      <stop offset="100%" stop-color="#070954"/>
+    </linearGradient>
+    <linearGradient id="sanasaPinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DF0178"/>
+      <stop offset="100%" stop-color="#BA0063"/>
+    </linearGradient>
+  </defs>
+  <!-- Emblem Container -->
+  <g transform="translate(10, 8)">
+    <rect width="68" height="68" rx="18" fill="url(#sanasaBlueGrad)"/>
+    <circle cx="34" cy="34" r="28" fill="none" stroke="url(#sanasaPinkGrad)" stroke-width="2" opacity="0.7"/>
+    <path d="M34 14 L50 22 V36 C50 46 43 54 34 57 C25 54 18 46 18 36 V22 Z" fill="#05073E" stroke="url(#sanasaPinkGrad)" stroke-width="1.8"/>
+    <path d="M34 20 C36 26 43 31 41 39 C40 44 35 48 34 49 C33 48 28 44 27 39 C25 31 32 26 34 20 Z" fill="url(#sanasaPinkGrad)"/>
+    <circle cx="34" cy="34" r="2.8" fill="#ffffff"/>
+  </g>
+  <!-- Brand Typography -->
+  <g transform="translate(94, 30)">
+    <text font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="900" font-size="26" fill="#0B0D7C" letter-spacing="1">GSCS <tspan fill="#DF0178">BANK</tspan></text>
+  </g>
+  <g transform="translate(94, 52)">
+    <text font-family="'Noto Sans Sinhala', 'Segoe UI', system-ui, sans-serif" font-weight="700" font-size="12.5" fill="#1e293b">ගලපිටියගම සනස සමූපකාර බැංකුව</text>
+  </g>
+  <g transform="translate(94, 70)">
+    <text font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="600" font-size="10.5" fill="#64748b" letter-spacing="0.5">GALAPITIYAGAMA SANASA COOP BANK • EST. 1988</text>
+  </g>
+</svg>

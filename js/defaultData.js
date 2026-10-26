@@ -1,0 +1,747 @@
+// defaultData.js - Official Bank Data for Galapitiyagama Sanasa Co-operative Society (GSCS Bank)
+// Established 24th March 1987 | Reg No: Kuli/395 | Nikaweratiya
+window.DEFAULT_BANK_DATA = {
+  bankInfo: {
+    name: "Galapitiyagama Sanasa Co-operative Society (GSCS Bank)",
+    sinhalaName: "ගලපිටියාගම සණස බැංකුව",
+    shortName: "GSCS BANK",
+    tagline: "Empowering Your Financial Future - ඔබගේ මූල්‍ය අනාගතය සවිබල ගැන්වීම",
+    taglineEn: "Empowering Your Financial Future",
+    regNo: "Kuli/395 (Co-operative Societies Act No. 5 of 1972)",
+    establishedDate: "24th March 1987",
+    centralBankApproval: "Special Approval from Central Bank of Sri Lanka to Accept Deposits",
+    hotline: "+94 37 22 60 658",
+    phoneDisplay: "037 22 60 658",
+    mobile: "+94 77 123 4567",
+    whatsapp: "94771234567",
+    email: "galapitiyagama.sanasa@gmail.com",
+    address: "නො. 247, පුත්තලම් පාර, ගලපිටියාගම, නිකවැරටිය",
+    addressEn: "No 247, Puttalam Road, Galapitiyagama, Nikaweratiya, Sri Lanka",
+    workingHours: "සඳුදා - සෙනසුරාදා: පෙ.ව. 9.00 - ප.ව. 3.30 | ඉරිදා සහ පෝය දිනවල හා වෙළඳ නිවාඩු දිනයන්හි: වසා ඇත",
+    workingHoursEn: "Mon - Sat: 9:00 AM - 3:30 PM | Sun, Poya & Mercantile Holidays: Closed",
+    urgentNotice: "විශේෂ නිවේදනය: 2026 වාර්ෂික මහා සභා රැස්වීම නොවැම්බර් 15 වන දින පැවැත්වේ. ස්ථාවර තැන්පතු සඳහා ඉහළම පොලිය සහ සහනදායී ණය පහසුකම් දැන් ක්‍රියාත්මකයි.",
+    urgentNoticeEn: "Special Announcement: 2026 Annual General Meeting will be held soon. Highest deposit rates and concessionary loans are now active.",
+    urgentNoticeActive: true,
+    stats: {
+      members: "1,000+",
+      customers: "5,000+",
+      welfare: "400+",
+      yearsOfTrust: "39+ Years"
+    },
+    aboutParagraphs: [
+      "Galapitiyagama Sanasa Co-operative Society is a duly registered co-operative financial institution under the Co-operative Societies Act No. 5 of 1972. The Society was established and registered on 24th March 1987 under registration number Kuli/395, and operates with special approval from the Central Bank of Sri Lanka to accept deposits.",
+      "With a strong commitment to financial stability and trust, Galapitiyagama Sanasa offers some of the most competitive deposit interest rates in the financial market, while ensuring maximum security and reliability for all deposits entrusted to us.",
+      "We provide a wide range of loan facilities at minimum interest rates, designed to support the diverse financial needs of our members and to promote sustainable economic growth."
+    ]
+  },
+
+  partners: [
+    { name: "Co-operative Development Dept", sinhala: "සමූපකාර සංවර්ධන දෙපාර්තමේන්තුව", img: "assets/images/wix/d7b655_4bdcb90a89044578a6597f6d5b6d450a~mv2.png" },
+    { name: "Sanasa Nikaweratiya Union", sinhala: "නිකවැරටිය සණස සමිති සංගමය", img: "assets/images/wix/d7b655_388f0b3cad8947d49787de2a3e8b7550~mv2.jpg" },
+    { name: "Sanasa General Insurance", sinhala: "සණස ජෙනරල් ඉන්ෂුවරන්ස්", img: "assets/images/wix/d7b655_4c548e68d7c94ce3bd2afc5837944cef~mv2.jpg" },
+    { name: "ACCU", sinhala: "ACCU - ආසියානු ණය සංගම් සම්මේලනය", img: "assets/images/wix/d7b655_993e4991747c407fb4437ade352f3faf~mv2.png" },
+    { name: "ACUNEL", sinhala: "ACUNEL ආයතනය", img: "assets/images/wix/d7b655_cf25aa23467e4ac9a99c9f8e879513fc~mv2.jpg" },
+    { name: "SDB Bank PLC", sinhala: "සණස සංවර්ධන බැංකුව", img: "assets/images/wix/d7b655_c62d9dfafe16439a9eec3e538bb77228~mv2.jpg" },
+    { name: "Smart COOP", sinhala: "Smart COOP ඩිජිටල් බැංකු පද්ධතිය", img: "assets/images/partners/smart-coop.png" },
+    { name: "SAP CENTER", sinhala: "SAP CENTER නිකවැරටිය", img: "assets/images/partners/sap-center.png" }
+  ],
+
+  heroSlides: [
+    {
+      id: "slide-vehicle",
+      badge: "ස්වශක්ති වාහන ණය පහසුකම්",
+      badgeEn: "Swashakthi Vehicle Loans",
+      title: "ඔබේ වාහන සිහිනය සැබෑ කරගන්න ස්වශක්ති වාහන ණය",
+      titleEn: "Empowering Mobility with Swashakthi Vehicle Loans",
+      desc: "වාහනයේ තක්සේරු වටිනාකමින් 70% දක්වා ණය මුදලක්, මාස 60 දක්වා පහසු මාසික වාරික සහ අවම ලියකියවිලි සහිතව කඩිනමින් ලබාගන්න.",
+      descEn: "Drive your dream vehicle with up to 70% financing of vehicle valuation, flexible repayment up to 60 months, and minimal paperwork.",
+      ctaText: "වාහන ණය විස්තර",
+      ctaTextEn: "Explore Vehicle Loans",
+      ctaLink: "#loans",
+      bgImage: "assets/images/swashakthi-vehicle-loan.jpg",
+      bgPosition: "center 30%"
+    },
+    {
+      id: "slide-consulting",
+      badge: "නොමිලේ ව්‍යාපාර උපදේශන සේවාව",
+      badgeEn: "Free Business Advisory",
+      title: "ඔබේ ව්‍යාපාරික සිහින දිනවන්න නොමිලේ ව්‍යාපාර උපදේශන සේවාව",
+      titleEn: "Complimentary Business Advisory & Consulting Services",
+      desc: "නව ව්‍යාපාර ඇරඹීමට, මූල්‍ය කළමනාකරණයට සහ ව්‍යාපාර දියුණු කරගැනීමට අවශ්‍ය වෘත්තීය මඟපෙන්වීම සහ උපදේශනය අප බැංකුවෙන් ඔබට නොමිලේ ලබාදෙයි.",
+      descEn: "Empowering budding entrepreneurs and local business owners with expert guidance, financial planning, and business growth strategies completely free of charge.",
+      ctaText: "නොමිලේ උපදෙස් ලබාගන්න",
+      ctaTextEn: "Get Free Advisory",
+      ctaLink: "#contact",
+      bgImage: "assets/images/business-consulting.jpg",
+      bgPosition: "center center"
+    },
+    {
+      id: "slide-children",
+      badge: "මිණිකැට සහ කිඩ්ස් ප්ලස් | ළමා ඉතුරුම්",
+      badgeEn: "Children's Savings | Miniketa & Kids Plus",
+      title: "දරු දැරියන්ගේ අනාගතය සවිබල ගන්වන සණස ළමා ඉතුරුම්",
+      titleEn: "Nurturing the Future Through Children’s Savings",
+      desc: "කුඩා කල සිටම දරුවාට ඉතුරුම් පුරුද්ද, මූල්‍ය විනය සහ අනාගත අධ්‍යාපනික සුරක්ෂිතතාවය ගොඩනගන ඉහළම ප්‍රතිලාභ සහිත ළමා ඉතුරුම් ගිණුම්.",
+      descEn: "Our children’s savings accounts empower young minds with financial awareness and long-term security from the very beginning.",
+      ctaText: "ළමා ඉතුරුම් විස්තර",
+      ctaTextEn: "Open Child Account",
+      ctaLink: "#savings",
+      bgImage: "assets/images/wix/d7b655_765700e21932483592218e0cf04f02e2~mv2.png",
+      bgPosition: "55% center"
+    },
+    {
+      id: "slide-corporate",
+      badge: "ව්‍යාපාරික හා ආයතනික සේවා",
+      badgeEn: "Corporate & Business Banking",
+      title: "දේශයේ ව්‍යවසායක සහ ආයතනික ක්ෂේත්‍රය සවිබල ගැන්වීම",
+      titleEn: "Empowering the Corporate Sector of the Country",
+      desc: "දේශීය ආර්ථිකයට සක්‍රීයව දායක වන කුඩා හා මධ්‍ය පරිමාණ ව්‍යාපාරිකයන් සහ ව්‍යවසායකයින් වෙනුවෙන් සැකසූ බහුවිධ සමූපකාර බැංකු විසඳුම්.",
+      descEn: "Our multifaceted co-operative banking solutions are designed to support businesses that contribute to the national economy.",
+      ctaText: "ව්‍යාපාරික ණය පහසුකම්",
+      ctaTextEn: "Business Solutions",
+      ctaLink: "#savings",
+      bgImage: "assets/images/wix/d7b655_a38cfc4e0120483990aa57158cfc8aa7~mv2.png",
+      bgPosition: "60% center"
+    },
+    {
+      id: "slide-fd",
+      badge: "සෞභාග්‍යා ස්ථාවර තැන්පත් | 13.50% දක්වා",
+      badgeEn: "Fixed Deposits | Up to 13.50%",
+      title: "ස්ථාවර තැන්පතු තුළින් ඔබේ මූල්‍ය ස්ථාවරත්වය තහවුරු කරගන්න",
+      titleEn: "Empowering Financial Stability Through Fixed Deposits",
+      desc: "ශ්‍රී ලංකා මහ බැංකුවේ අනුමැතිය සහ පූර්ණ සමූපකාර ආරක්ෂාව යටතේ ඔබේ ඉතුරුම් සුරක්ෂිත කරමින් උපරිම මාසික හෝ කල්පිරෙන ප්‍රතිලාභ ලබාගන්න.",
+      descEn: "Our secure and reliable fixed deposit solutions are designed to protect your savings, generate steady returns, and support long term financial growth.",
+      ctaText: "ප්‍රතිලාභ ගණනය කරන්න",
+      ctaTextEn: "Calculate Returns",
+      ctaLink: "#calculators",
+      bgImage: "assets/images/wix/d7b655_1b4fd94ffefd422ba176febf9ac07f3f~mv2.png",
+      bgPosition: "65% center"
+    },
+    {
+      id: "slide-youth",
+      badge: "Next Gen තරුණ ඉතුරුම්",
+      badgeEn: "Next Gen Youth Savings",
+      title: "හෙට දින ජයගන්නා තරුණ පරපුරේ මූල්‍ය අනාගතය",
+      titleEn: "Empowering the Future Generation of the Nation",
+      desc: "තරුණ ප්‍රජාවගේ උසස් අධ්‍යාපන, වෘත්තීය සහ ජීවන සිහින ජයගැනීමට මූල්‍ය විනය සහ ඩිජිටල් බැංකු පහසුව ලබාදෙන සුවිශේෂී තරුණ ඉතුරුම්.",
+      descEn: "Our youth focused savings solutions are designed to nurture financial discipline, encourage smart saving habits, and secure a stronger, more confident future for the next generation.",
+      ctaText: "තරුණ ඉතුරුම් විස්තර",
+      ctaTextEn: "Explore Youth Savings",
+      ctaLink: "#savings",
+      bgImage: "assets/images/wix/d7b655_f24014d42f2148cf9e6432e0831f53d8~mv2.png",
+      bgPosition: "60% center"
+    },
+    {
+      id: "slide-smart-coop",
+      badge: "Smart COOP Mobile App",
+      badgeEn: "Smart Digital Banking",
+      title: "සමස්ත බැංකු සේවාවන් දැන් ඔබේ ස්මාර්ට් දුරකථනයෙන්",
+      titleEn: "All the Banking Services, Now at Your Fingertips",
+      desc: "ගිණුම් ශේෂ පරීක්ෂාව, තැන්පතු හා ණය කළමනාකරණය, සහ බිල්පත් ගෙවීම් ඕනෑම මොහොතක පහසුවෙන්ම ඔබගේ ජංගම දුරකථනයෙන් සිදුකරන්න.",
+      descEn: "Enjoy seamless 24/7 digital co-operative banking with our Smart COOP mobile application — check balances, manage deposits, and pay utility bills.",
+      ctaText: "Smart COOP විස්තර",
+      ctaTextEn: "Explore Smart COOP",
+      ctaLink: "#digital-banking",
+      bgImage: "assets/images/wix/d7b655_cdff3a89bc3247198222d8a5fc9009e1~mv2.png",
+      bgPosition: "60% center"
+    }
+  ],
+
+  interestRates: {
+    fixedDeposits: [
+      { id: "fd-1", tenure: "මාස 3 (3 Months)", tenureEn: "3 Months", annualRate: "11.25%", monthlyRate: "10.75%", minDeposit: "රු. 10,000" },
+      { id: "fd-2", tenure: "මාස 6 (6 Months)", tenureEn: "6 Months", annualRate: "12.00%", monthlyRate: "11.50%", minDeposit: "රු. 10,000" },
+      { id: "fd-3", tenure: "මාස 9 (9 Months)", tenureEn: "9 Months", annualRate: "12.50%", monthlyRate: "12.00%", minDeposit: "රු. 10,000" },
+      { id: "fd-4", tenure: "මාස 12 / වසර 1 (12 Months)", tenureEn: "12 Months (1 Year)", annualRate: "13.00%", monthlyRate: "12.50%", minDeposit: "රු. 25,000", popular: true },
+      { id: "fd-5", tenure: "මාස 24 / වසර 2 (24 Months)", tenureEn: "24 Months (2 Years)", annualRate: "13.25%", monthlyRate: "12.75%", minDeposit: "රු. 25,000" },
+      { id: "fd-6", tenure: "මාස 60 / වසර 5 (60 Months)", tenureEn: "60 Months (5 Years)", annualRate: "13.50%", monthlyRate: "13.00%", minDeposit: "රු. 50,000", popular: true }
+    ],
+    savingsAccounts: [
+      { id: "sa-1", name: "සාමාජික ඉතුරුම් ගිණුම", nameEn: "Member Savings Account", rate: "4.00% p.a.", minBalance: "රු. 500", note: "සාමාජිකයින් සඳහාම වෙන්වූ ඉතුරුම් ගිණුම (4% පොලිය)" },
+      { id: "sa-2", name: "බාහිර තැන්පත් ගිණුම", nameEn: "Non-Member / External Savings", rate: "3.50% p.a.", minBalance: "රු. 1,000", note: "සාමාජික නොවන්නන් සඳහා ඉතුරුම් සහ මුදල් ගනුදෙනු" },
+      { id: "sa-3", name: "දිරිය වනිතා ඉතුරුම් ගිණුම", nameEn: "Diriya Vanitha Women's Savings", rate: "5.50% p.a.", minBalance: "රු. 500", note: "දිරියෙන් ගොඩනැගෙන දිරිය කාන්තාවන් වෙනුවෙන්" },
+      { id: "sa-4", name: "මිණිකැට ළමා ගිණුම", nameEn: "Miniketa Children's Savings", rate: "6.00% p.a.", minBalance: "රු. 250", note: "මූල්‍ය වෙළඳපොල අසම සම 6%ක ඉහළම පොලියක්" },
+      { id: "sa-5", name: "කිඩ්ස් ප්ලස් ළමා ඉතුරුම් ගිණුම", nameEn: "Kids Plus School Children's Savings", rate: "6.00% p.a.", minBalance: "රු. 250", note: "පාසල් යන ළමුන් සඳහාම විශේෂ ළමා ඉතුරුම් ගිණුම (අසමසම 6% පොලිය)" },
+      { id: "sa-6", name: "Next Gen තරුණ ඉතුරුම් ගිණුම", nameEn: "Next Gen Youth Savings", rate: "5.00% p.a.", minBalance: "රු. 500", note: "තරුණ පරපුරේ මූල්‍ය අනාගතය වෙනුවෙන්" }
+    ],
+    loans: [
+      { id: "ln-1", name: "සාමාජික සාමාන්‍ය ණය", nameEn: "Member Regular Loan", rate: "11.00% p.a.", maxAmount: "රු. 500,000", maxPeriod: "මාස 36", category: "Personal" },
+      { id: "ln-2", name: "දිගු කාලීන ණය", nameEn: "Long-term Loan", rate: "11.50% p.a.", maxAmount: "රු. 5,000,000", maxPeriod: "මාස 120", category: "Housing" },
+      { id: "ln-3", name: "ක්ෂණික ණය", nameEn: "Instant Express Loan", rate: "12.00% p.a.", maxAmount: "රු. 60,000", maxPeriod: "මාස 12", category: "Instant" },
+      { id: "ln-4", name: "අතමාරු ණය", nameEn: "Short-term Cash Loan (Athamaru)", rate: "1.00% / මාසිකව", maxAmount: "රු. 400,000", maxPeriod: "මාස 1 - 2", category: "ShortTerm" },
+      { id: "ln-5", name: "උත්සව ණය", nameEn: "Festival & Occasion Loan", rate: "10.50% p.a.", maxAmount: "රු. 150,000", maxPeriod: "මාස 12", category: "Festival" },
+      { id: "ln-6", name: "ව්‍යාපාරික ණය", nameEn: "Commercial & Business Loan", rate: "12.00% p.a.", maxAmount: "රු. 6,000,000", maxPeriod: "මාස 24", category: "Business" },
+      { id: "ln-7", name: "ස්වශක්ති වාහන ණය", nameEn: "Swashakthi Vehicle Loan", rate: "12.00% p.a.", maxAmount: "වටිනාකමින් 70%", maxPeriod: "මාස 60", category: "Vehicle" },
+      { id: "ln-8", name: "උපකරණ ණය", nameEn: "Equipment & Machinery Loan", rate: "11.50% p.a.", maxAmount: "රු. 1,500,000", maxPeriod: "මාස 36", category: "Equipment" },
+      { id: "ln-9", name: "සුහුරු ගොවි ණය", nameEn: "Suhuru Smart Agri Loan", rate: "9.50% p.a.", maxAmount: "රු. 200,000", maxPeriod: "මාස 36", category: "Agri" }
+    ]
+  },
+
+  products: [
+    // --- 1. SAVINGS ACCOUNTS ---
+    {
+      id: "prod-1",
+      category: "savings",
+      icon: "user-shield",
+      image: "assets/images/Product images/සාමාජික ඉතුරුම් ගිණුම.jpg",
+      title: "සාමාජික ඉතුරුම් ගිණුම",
+      titleEn: "Member Savings Account",
+      badge: "4.00% පොලිය",
+      badgeEn: "4.00% Interest",
+      desc: "ගලපිටියාගම සණස බැංකුවේ සාමාජිකයින් සඳහාම වෙන්වූ සුවිශේෂී ඉතුරුම් ගිණුම, 4%ක ආකර්ෂණීය වාර්ෂික පොලියක් සමඟින්.",
+      descEn: "Exclusive savings account reserved solely for Sanasa members offering 4% attractive annual interest.",
+      features: [
+        "සාමාජිකයින් සඳහාම වෙන්වූ විශේෂ 4%ක පොලිය",
+        "දෛනික ශේෂය මත මාසිකව පොලී බැරවීම",
+        "ණය පහසුකම් ලබාගැනීමේදී විශේෂ ප්‍රමුඛතාවය",
+        "Smart COOP ඩිජිටල් බැංකු පිවිසුම"
+      ],
+      featuresEn: [
+        "Exclusive 4% annual interest for members",
+        "Monthly interest calculated on daily balances",
+        "High priority eligibility for member loans",
+        "Smart COOP digital banking access"
+      ]
+    },
+    {
+      id: "prod-2",
+      category: "savings",
+      icon: "building-columns",
+      image: "assets/images/Product images/බාහිර තැන්පත් ගිණුම.jpg",
+      title: "බාහිර තැන්පත් ගිණුම",
+      titleEn: "Non-Member / External Savings",
+      badge: "සාමාජික නොවන",
+      badgeEn: "For Non-Members",
+      desc: "සාමාජිකත්වය නොමැතිව ඕනෑම අයෙකුට විවෘත කළ හැකි, ආරක්ෂිත සහ නම්‍යශීලී ඉතුරුම් ගිණුම් පහසුකම.",
+      descEn: "Flexible savings and transaction account available for anyone without prior membership requirements.",
+      features: [
+        "සාමාජික නොවන්නන් සඳහාද පහසුවෙන්ම ආරම්භ කළ හැක",
+        "ඕනෑම මොහොතක තැන්පත් කිරීම හා ආපසු ගැනීම",
+        "තරඟකාරී ආකර්ෂණීය දෛනික පොලී ප්‍රතිලාභ",
+        "කඩිනම් ගිණුම් ප්‍රකාශන සහ විස්තර"
+      ],
+      featuresEn: [
+        "Open to anyone without prior membership",
+        "Flexible deposits and withdrawals anytime",
+        "Competitive interest on daily balance",
+        "Instant statements and balance verification"
+      ]
+    },
+    {
+      id: "prod-3",
+      category: "savings",
+      icon: "person-dress",
+      image: "assets/images/Product images/දිරිය වනිතා ඉතුරුම් ගිණුම.jpg",
+      title: "දිරිය වනිතා ඉතුරුම් ගිණුම",
+      titleEn: "Diriya Vanitha Women's Savings",
+      badge: "දිරිය කාන්තාවන්ට",
+      badgeEn: "Women's Empowerment",
+      desc: "දිරියෙන් නැගීසිටින කාන්තාවන්ගේ ආර්ථික සුරක්ෂිතතාවය සහ ස්වයං රැකියා සිහින සැබෑ කරන විශේෂ ඉතුරුම් ගිණුම.",
+      descEn: "Dedicated savings scheme crafted to uplift industrious women with higher returns and micro-business guidance.",
+      features: [
+        "සාමාන්‍ය ගිණුම් වලට වඩා ඉහළ වාර්ෂික පොලියක්",
+        "ස්වයං රැකියා හා ව්‍යවසායක ණය සඳහා විශේෂ පහසුකම්",
+        "ජාත්‍යන්තර කාන්තා දිනයේදී විශේෂ තිළිණ හා දීමනා",
+        "පවුලේ ආර්ථික කළමනාකරණ උපදේශනය"
+      ],
+      featuresEn: [
+        "Higher annual yield than standard savings",
+        "Privileged access to self-employment loans",
+        "Special gifts on International Women's Day",
+        "Family financial empowerment guidance"
+      ]
+    },
+    {
+      id: "prod-4",
+      category: "savings",
+      icon: "gem",
+      image: "assets/images/Product images/මිණිකැට ළමා ගිණුම.jpg",
+      title: "මිණිකැට ළමා ගිණුම",
+      titleEn: "Miniketa Children's Savings",
+      badge: "6% අසම සම පොලිය",
+      badgeEn: "Unmatched 6% Rate",
+      desc: "මූල්‍ය වෙළඳපොලේ අසම සම 6%ක ඉහළම පොලියක් සමඟින් ඔබේ දරුවාගේ අනාගතය සවිබල ගන්වන විශේෂ ළමා ගිණුම.",
+      descEn: "Market-leading 6% interest designed to build a solid financial foundation for your precious child.",
+      features: [
+        "මූල්‍ය වෙළඳපොලේ අසම සම 6%ක උපරිම පොලියක්",
+        "තැන්පතු සඳහා 5,000 ගුණාකාරයන්ට විශේෂ ත්‍යාග",
+        "අනාගතය දිනන මිණිකැට පොඩ්ඩන්ට දෙමව්පියන් විසින් ලබාදිය යුතුම ආයෝජනය",
+        "වයස 18 දී ස්ථාවර තැන්පතුවක් බවට පත්කිරීමේ අවස්ථාව"
+      ],
+      featuresEn: [
+        "Unrivaled 6% p.a. interest in the market",
+        "Special gifts for deposit milestones in multiples of 5,000",
+        "The ultimate investment by parents for children conquering the future",
+        "Direct conversion to Fixed Deposit at 18 years"
+      ]
+    },
+    {
+      id: "prod-5",
+      category: "savings",
+      icon: "graduation-cap",
+      image: "assets/images/Product images/කිඩ්ස් ප්ලස් ළමා ඉතුරුම් ගිණුම.jpg",
+      title: "කිඩ්ස් ප්ලස් ළමා ඉතුරුම් ගිණුම",
+      titleEn: "Kids Plus School Savings",
+      badge: "අසමසම 6% පොලිය",
+      badgeEn: "Unmatched 6% Rate",
+      desc: "පාසල් යන ළමුන් සඳහාම විශේෂයෙන් සකස් කළ, අධ්‍යාපන අවශ්‍යතා හා ඉතුරුම් පුරුද්ද දිරිගන්වන ළමා ගිණුම.",
+      descEn: "Specially formulated for school-going children to encourage smart saving habits and education funding.",
+      features: [
+        "විභාග සමත්වීමේදී ශිෂ්‍යත්ව හා විශේෂ ත්‍යාග, සහ අසමසම 6% පොලිය",
+        "පාසල් ඉතුරුම් මධ්‍යස්ථානය තුළදීම තැන්පත් කිරීමේ හැකියාව",
+        "ළමා ඉතුරුම් දිරිගැන්වීමේ විශේෂ වැඩසටහන්",
+        "මාසික ඉතුරුම් දිරිගැන්වීමේ බෝනස් ප්‍රතිලාභ"
+      ],
+      featuresEn: [
+        "Scholarship rewards & special gifts upon exam success, and unmatched 6% interest rate",
+        "Ability to deposit directly within the school savings center",
+        "Saving-habit orientation programs",
+        "Monthly incentive bonuses on regular savings"
+      ]
+    },
+    {
+      id: "prod-6",
+      category: "savings",
+      icon: "bolt",
+      image: "assets/images/Product images/Next Gen තරුණ ඉතුරුම් ගිණුම.jpg",
+      title: "Next Gen තරුණ ඉතුරුම් ගිණුම",
+      titleEn: "Next Gen Youth Savings",
+      badge: "තරුණ පරපුරට",
+      badgeEn: "Youth Focused",
+      desc: "නූතන තරුණ පරපුරේ උසස් අධ්‍යාපන, වෘත්තීය සහ ජීවන සිහින ජයගැනීමට ශක්තියක් වන ඩිජිටල් තරුණ ඉතුරුම් ගිණුම.",
+      descEn: "Designed for youth stepping into careers or higher education with modern digital banking convenience.",
+      features: [
+        "වයස 18-35 අතර තරුණ තරුණියන් වෙනුවෙන්",
+        "Smart COOP ඩිජිටල් ඇප් පිවිසුම සහ ක්ෂණික ගනුදෙනු",
+        "උසස් අධ්‍යාපන හා ස්වයං රැකියා / ව්‍යාපාර සඳහා ප්‍රමුඛතාවය",
+        "ආකර්ෂණීය ඉතුරුම් සැලසුම් හා මඟපෙන්වීම"
+      ],
+      featuresEn: [
+        "Tailored for youth aged 18 to 35 years",
+        "Instant Smart COOP digital access",
+        "Priority for higher study and self-employment / business loans",
+        "Structured goal-based savings plans"
+      ]
+    },
+
+    // --- 2. FIXED DEPOSITS ---
+    {
+      id: "prod-7",
+      category: "deposits",
+      icon: "vault",
+      image: "assets/images/Product images/සෞභාග්‍යා ස්ථාවර තැන්පත්.jpg",
+      title: "සෞභාග්‍යා ස්ථාවර තැන්පත්",
+      titleEn: "Soubhagya Fixed Deposits",
+      badge: "මාස 3, 6, 9, 12, 24, 60",
+      badgeEn: "3, 6, 9, 12, 24, 60 Months",
+      desc: "මාස 3, 6, 9, 12, 24 සහ 60 නම්‍යශීලී කාලසීමාවන් සහිතව, උපරිම ආරක්ෂාව සහ ඉහළම ප්‍රතිලාභ පිරිනමන ස්ථාවර තැන්පතු සේවාව.",
+      descEn: "High-yield fixed term deposits with flexible tenures of 3, 6, 9, 12, 24, and 60 months with complete co-operative security.",
+      features: [
+        "මාස 3, 6, 9, 12, 24, 60 තෝරාගත හැකි නම්‍යශීලී කාලසීමා",
+        "පොලිය මාසිකව ලබාගැනීම හෝ කල්පිරෙන විට ලබාගැනීම",
+        "තැන්පතුවෙන් 90% දක්වා අත්තිකාරම් ණය පහසුකම්",
+        "ශ්‍රී ලංකා මහ බැංකුවේ අනුමැතිය සහ සමූපකාර දෙපාර්තමේන්තුවේ අධීක්ෂණය"
+      ],
+      featuresEn: [
+        "Flexible choices: 3, 6, 9, 12, 24, and 60 months",
+        "Monthly payout or compound maturity payout",
+        "Loan facility up to 90% of deposit as advance",
+        "Regulated security under Cooperative Dept & CBSL"
+      ]
+    },
+
+    // --- 3. LOANS ---
+    {
+      id: "prod-8",
+      category: "loans",
+      icon: "handshake",
+      image: "assets/images/Product images/සාමාජික සාමාන්‍ය ණය.jpg",
+      title: "සාමාජික සාමාන්‍ය ණය",
+      titleEn: "Member Regular Loan",
+      badge: "සාමාජිකයින්ට",
+      badgeEn: "Member Special",
+      desc: "සණස සාමාජිකයින්ගේ විවිධ පෞද්ගලික හා පවුලේ මූල්‍ය අවශ්‍යතා වෙනුවෙන් සහන පොලියට ලබාදෙන සාමාන්‍ය ණය.",
+      descEn: "Standard affordable personal financing for members with convenient monthly installment options.",
+      features: [
+        "සාමාජිකයින් සඳහාම වෙන්වූ සහනදායී පොලී අනුපාතික",
+        "මාසික හීනවෙන ශේෂ වාරික වලින් ආපසු ගෙවීමේ පහසුව",
+        "අවම ලියකියවිලි හා සාමාජික ඇපකර මත කඩිනම් අනුමැතිය",
+        "රු. 500,000/- දක්වා ණය මුදල්"
+      ],
+      featuresEn: [
+        "Concessionary interest rates for members",
+        "Decreasing balance monthly installment repayment plan",
+        "Minimal documentation on member guarantees",
+        "Financing up to LKR 500,000"
+      ]
+    },
+    {
+      id: "prod-9",
+      category: "loans",
+      icon: "house-chimney",
+      image: "assets/images/Product images/දිගු කාලීන ණය.jpg",
+      title: "දිගු කාලීන ණය",
+      titleEn: "Long-term Loan",
+      badge: "වසර 10 දක්වා",
+      badgeEn: "Up to 10 Years",
+      desc: "නිවාස ඉදිකිරීම්, ඉඩම් මිලදී ගැනීම් හෝ විශාල පවුලේ ආයෝජන සඳහා දිගු කලක් පුරා පහසුවෙන් ගෙවීමට ලබාදෙන ණය.",
+      descEn: "Long-tenure financing suitable for home construction, land acquisitions, and major investments.",
+      features: [
+        "මාස 120 (වසර 10) දක්වා දීර්ඝ ගෙවීමේ කාලයක්",
+        "රු. 5,000,000/- දක්වා ඉහළ ණය මුදලක්",
+        "නම්‍යශීලී වාරික සැලසුම්",
+        "නෛතික සහ තාක්ෂණික මඟපෙන්වීම නොමිලේ"
+      ],
+      featuresEn: [
+        "Extended repayment terms up to 120 months",
+        "High loan ceilings up to LKR 5,000,000",
+        "Flexible installment schedules",
+        "Complimentary technical and legal advice"
+      ]
+    },
+    {
+      id: "prod-10",
+      category: "loans",
+      icon: "bolt",
+      image: "assets/images/Product images/ක්ෂණික ණය.jpg",
+      title: "ක්ෂණික ණය",
+      titleEn: "Instant Express Loan",
+      badge: "ක්ෂණික අනුමැතිය",
+      badgeEn: "Fast Approval",
+      desc: "හදිසි වෛද්‍ය ප්‍රතිකාර හෝ අනපේක්ෂිත හදිසි අවශ්‍යතාවයකදී පැය කිහිපයකින් අතටම ලබාදෙන ක්ෂණික ණය පහසුකම.",
+      descEn: "Express disbursement within hours for urgent medical, household, or family needs.",
+      features: [
+        "පැය කිහිපයක් ඇතුළත කඩිනම් අනුමැතිය",
+        "අවම ලියකියවිලි සහ සාමාජික ඇපකරු දෙදෙනෙකු මත පැය කිහිපයකින් ලබාගත හැකිය",
+        "රු. 60,000/- දක්වා හදිසි ණය මුදල්",
+        "මාස 12 දක්වා පහසු ආපසු ගෙවීම"
+      ],
+      featuresEn: [
+        "Fast approval within a few hours",
+        "Minimal documents — disbursed on 2 member guarantors within hours",
+        "Emergency loan amounts up to LKR 60,000",
+        "Flexible repayment up to 12 months"
+      ]
+    },
+    {
+      id: "prod-11",
+      category: "loans",
+      icon: "hand-holding-dollar",
+      image: "assets/images/Product images/අතමාරු ණය.jpg",
+      title: "අතමාරු ණය",
+      titleEn: "Short-term Cash Loan (Athamaru)",
+      badge: "කෙටි කාලීන",
+      badgeEn: "Short-term Cash",
+      desc: "දෛනික හෝ මාසික කෙටි කාලීන හදිසි මුදල් හිඟතා පියවා ගැනීමට ලබාදෙන ඉතා කඩිනම් අතමාරු ණය පහසුකම.",
+      descEn: "Ultra-fast short-term liquidity loan to bridge temporary cash flow constraints seamlessly.",
+      features: [
+        "ඉතාම සරල හා කඩිනම් ක්‍රියාවලිය",
+        "රු. 400,000/- දක්වා ක්ෂණිකව අතමාරු මුදල්",
+        "මාස 1 සිට 2 දක්වා කෙටි කාලයකින් පියවීමේ පහසුව",
+        "සාධාරණ මාසික පොලී ගණනය"
+      ],
+      featuresEn: [
+        "Simplest, quickest bridge financing",
+        "Up to LKR 400,000 instant cash advance",
+        "Settlement within 1 to 2 months",
+        "Fair, transparent daily/monthly interest"
+      ]
+    },
+    {
+      id: "prod-12",
+      category: "loans",
+      icon: "gifts",
+      image: "assets/images/Product images/උත්සව ණය.jpg",
+      title: "උත්සව ණය",
+      titleEn: "Festival & Occasion Loan",
+      badge: "උත්සව අවස්ථාවන්ට",
+      badgeEn: "Special Occasions",
+      desc: "සාමාජිකයින්ගේ උත්සව අවස්ථාවන් සඳහා (මංගල, අවමංගල, උපන්දින සැමරුම් ආදී) විශේෂ සහන පොලියට පිරිනැමේ.",
+      descEn: "Tailored loans for member celebrations and occasions (weddings, funerals, birthdays, and family milestones).",
+      features: [
+        "විශේෂ සහන පොලී අනුපාතික",
+        "රු. 150,000/- දක්වා ණය මුදල්",
+        "අවම ලියකියවිලි වලින් එසැනින් ලබාගැනීමේ හැකියාව",
+        "මාස 12කින් පහසුවෙන් පියවිය හැකි වාරික"
+      ],
+      featuresEn: [
+        "Special concessionary interest rates",
+        "Financing up to LKR 150,000",
+        "Instant approval on minimal documentation",
+        "12 easy monthly installments"
+      ]
+    },
+    {
+      id: "prod-13",
+      category: "loans",
+      icon: "briefcase",
+      image: "assets/images/Product images/ව්‍යාපාරික ණය.jpg",
+      title: "ව්‍යාපාරික ණය",
+      titleEn: "Commercial & Business Loan",
+      badge: "ව්‍යාපාර දියුණුවට",
+      badgeEn: "Business Growth",
+      desc: "ප්‍රදේශයේ කුඩා හා මධ්‍ය පරිමාණ ව්‍යවසායකයින්ගේ, වෙළඳසැල් හා නිෂ්පාදන ව්‍යාපාර දියුණු කිරීමට ලබාදෙන ණය පහසුකම.",
+      descEn: "Empowering local MSMEs and entrepreneurs with working capital and capital expansion finance.",
+      features: [
+        "රු. 6,000,000/- දක්වා ව්‍යාපාර ණය මුදල්",
+        "කාරක ප්‍රාග්ධනය හා ව්‍යාපාරික උපකරණ මිලදී ගැනීමට",
+        "මාස 24 දක්වා නම්‍යශීලී වාරික සැලසුම්",
+        "ව්‍යවසායක උපදේශන හා බැංකු මඟපෙන්වීම"
+      ],
+      featuresEn: [
+        "Business loans up to LKR 6,000,000",
+        "Working capital and equipment expansion",
+        "Repayment terms up to 24 months",
+        "Co-operative enterprise consulting support"
+      ]
+    },
+    {
+      id: "prod-14",
+      category: "loans",
+      icon: "motorcycle",
+      image: "assets/images/Product images/ස්වශක්ති වාහන ණය.jpg",
+      title: "ස්වශක්ති වාහන ණය",
+      titleEn: "Swashakthi Vehicle Loan",
+      badge: "ස්වශක්ති වාහන",
+      badgeEn: "Vehicle Finance",
+      desc: "යතුරුපැදි, ත්‍රිරෝද රථ හෝ වාණිජ ප්‍රවාහන වාහන පහසුවෙන් මිලදී ගැනීම සඳහා පිරිනමන ස්වශක්ති වාහන ණය.",
+      descEn: "Affordable vehicle loans for motorcycles, three-wheelers, and commercial vehicles with easy processing.",
+      features: [
+        "වාහනයේ තක්සේරු වටිනාකමින් 70% දක්වා ණය මුදලක්",
+        "මාස 60 දක්වා පහසු මාසික වාරික",
+        "අවම ලියකියවිලි අවම ගාස්තු",
+        "කඩිනම් ලියාපදිංචි සහ රක්ෂණ සහාය"
+      ],
+      featuresEn: [
+        "Up to 70% financing of vehicle valuation",
+        "Terms up to 60 convenient months",
+        "Minimal paperwork and lowest charges",
+        "Insurance and registry facilitation"
+      ]
+    },
+    {
+      id: "prod-15",
+      category: "loans",
+      icon: "screwdriver-wrench",
+      image: "assets/images/Product images/උපකරණ ණය.jpg",
+      title: "උපකරණ ණය",
+      titleEn: "Equipment & Machinery Loan",
+      badge: "යන්ත්‍රෝපකරණ",
+      badgeEn: "Machinery & Tools",
+      desc: "කර්මාන්ත, ඉදිකිරීම්, ගෘහ භාණ්ඩ හෝ වෘත්තීය උපකරණ හා යන්ත්‍ර සූත්‍ර මිලදී ගැනීම සඳහා ලබාදෙන විශේෂ ණය.",
+      descEn: "Targeted equipment, furniture, and machinery financing for small industries, workshops, and household crafts.",
+      features: [
+        "නවීන යන්ත්‍රෝපකරණ මිලදී ගැනීමට රු. 1,500,000/- දක්වා",
+        "මාස 36 දක්වා ආපසු ගෙවීමේ කාලය",
+        "සාමාජික ඇප දෙකක් මත ලබාගත හැක",
+        "නිෂ්පාදන ධාරිතාව වැඩි කිරීමට සෘජු ශක්තියක්"
+      ],
+      featuresEn: [
+        "Financing up to LKR 1,500,000 for tools & equipment",
+        "Flexible repayment terms up to 36 months",
+        "Secured on two member guarantors",
+        "Direct boost to productivity and earnings"
+      ]
+    },
+    {
+      id: "prod-16",
+      category: "loans",
+      icon: "seedling",
+      image: "assets/images/Product images/සුහුරු ගොවි ණය.jpg",
+      title: "සුහුරු ගොවි ණය",
+      titleEn: "Suhuru Smart Agri Loan",
+      badge: "සුහුරු ගොවිතැනට",
+      badgeEn: "Smart Agriculture",
+      desc: "සාමාජික කෘෂිකාර්මික අවශ්‍යතා සඳහාම විශේෂ වූ ණය.",
+      descEn: "Specialized agricultural credit tailored specifically for members' cultivation and farming requirements.",
+      features: [
+        "ගොවි ප්‍රජාව වෙනුවෙන් අවම සහන ණය පොලිය",
+        "රු. 200,000/- දක්වා ගොවි ණය",
+        "අස්වනු නෙලීමේ චක්‍රයට ගැලපෙන සහනදායී ගෙවීම් කාල",
+        "නවීන කෘෂිකාර්මික උපදේශන හා කාබනික ගොවිතැන් සහය"
+      ],
+      featuresEn: [
+        "Lowest concessionary interest rate for the farming community",
+        "Agri limits up to LKR 200,000",
+        "Repayment aligned with harvest periods",
+        "Smart farming support and advisory"
+      ]
+    },
+
+    // --- 4. WELFARE MEMBERSHIP ---
+    {
+      id: "prod-17",
+      category: "welfare",
+      icon: "hand-holding-heart",
+      image: "assets/images/Product images/සුභ සාධන සාමාජිකත්වය.jpg",
+      title: "සුභ සාධන සාමාජිකත්වය",
+      titleEn: "Welfare & Member Care",
+      badge: "පූර්ණ සුභ සාධනය",
+      badgeEn: "Full Welfare Care",
+      desc: "සාමාජික ඔබගේ සහ පවුලේ සැමගේ සතුටේදී මෙන්ම දුකේදීද ළඟින්ම හිඳිමින් පිරිනමන අසමසම සුබසාධන රැකවරණය සහ ප්‍රජා සත්කාරය.",
+      descEn: "Comprehensive cooperative welfare services offering medical grants, bereavement aid, event amenities, and family support.",
+      features: [
+        "රෝහල් ප්‍රතිලාභ: රෝහල්ගතවීම් සඳහා මූල්‍ය ආධාර",
+        "අවමංගල්‍ය ප්‍රතිලාභ: පවුලේ සාමාජිකයෙකුගේ වියෝවකදී කඩිනම් ආධාර",
+        "උත්සව භාණ්ඩ: අවමංගල්‍යයකදී අවශ්‍ය භාණ්ඩ නොමිලේ ලබාදීම මෙන්ම අවමංගල්‍යයකදී ආහාරවේල ලබාදීම සහ අටපිරිකර ලබාදීම",
+        "සාමාජික සුබසාධන හා ආර්ථික සංවර්ධන අත්වැල"
+      ],
+      featuresEn: [
+        "Hospitalization grants: Financial aid for hospital stays",
+        "Bereavement aid: Prompt relief on the passing of a family member",
+        "Event equipment & services: Free funeral equipment, meals provided during funerals, and Atapirikara contributions",
+        "Cooperative member welfare and community empowerment"
+      ]
+    }
+  ],
+
+  newsAndAnnouncements: [
+    {
+      id: "news-1",
+      category: "Notice",
+      categoryEn: "Notice",
+      badgeColor: "bg-[#0B0D7C]",
+      title: "ගලපිටියගම සනස සමූපකාර සමිතියේ 2026 වාර්ෂික මහා සභා රැස්වීම",
+      titleEn: "Annual General Meeting (AGM) 2026 Announcement",
+      date: "2026-10-15",
+      image: "assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png",
+      summary: "ගලපිටියාගම සණස බැංකුවේ වාර්ෂික මහා සභා රැස්වීම නිකවැරටිය සමිති ශාලාවේදී පැවැත්වීමට තීරණය කර ඇත.",
+      summaryEn: "The Annual General Meeting of Galapitiyagama Sanasa Co-operative Society will be held at the Society Hall, Nikaweratiya.",
+      content: "ගලපිටියාගම සණස බැංකුවේ ගරු සාමාජික සාමාජිකාවන් වෙත දැනුම්දීමයි.\n\nඅප බැංකුවේ වාර්ෂික මහා සභා රැස්වීම නිකවැරටිය ප්‍රධාන සමිති ශ්‍රවණාගාරයේදී පැවැත්වේ.\n\nන්‍යාය පත්‍රය:\n1. පසුගිය වසරේ වාර්තාව හා ගිණුම් ප්‍රකාශනය සභාගත කිරීම\n2. වාර්ෂික ලාභාංශ බෙදාහැරීම අනුමත කිරීම\n3. නව අධ්‍යක්ෂ මණ්ඩල සාමාජිකයින් තෝරාපත් කරගැනීම\n4. සාමාජික යෝජනා සලකා බැලීම\n\nසියලුම ගරු සාමාජික භවතුන් නියමිත වේලාවට සහභාගී වන ලෙස ගෞරවයෙන් ඇරයුම් කරමු.\n\n- ලේකම්, ගලපිටියාගම සණස බැංකුව.",
+      urgent: true
+    },
+    {
+      id: "news-2",
+      category: "Digital Banking",
+      categoryEn: "Digital Banking",
+      badgeColor: "bg-[#DF0178]",
+      title: "Smart COOP Mobile App හරහා ඩිජිටල් බැංකුකරණය අරඹන්න",
+      titleEn: "Experience Modern Digital Banking with Smart COOP App",
+      date: "2026-10-01",
+      image: "assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png",
+      summary: "ඔබගේ සියලුම සනස ගිණුම් කටයුතු නිවසේ සිටම ඔබගේ ජංගම දුරකථනයෙන් සිදුකරගැනීමට Smart COOP යෙදුම දැන් බාගත කරගන්න.",
+      summaryEn: "All banking services now at your fingertips with Smart COOP mobile app. Download today for instant account access.",
+      content: "ගලපිටියගම සනස බැංකුවේ සාමාජික ඔබට දැන් වඩාත් පහසු සහ ආරක්ෂිත ඩිජිටල් බැංකු සේවාවක් ලබාදීම සඳහා Smart COOP App හඳුන්වා දී ඇත.\n\nප්‍රධාන පහසුකම්:\n- ඕනෑම වේලාවක ගිණුම් ශේෂ පරීක්ෂාව\n- තැන්පතු සහ ණය ගිණුම් විස්තර ලබාගැනීම\n- අන්තර් බැංකු මුදල් හුවමාරු (Fund Transfers)\n- බිල්පත් ගෙවීම් (Utility Bill Payments)\n\nයෙදුම සක්‍රීය කරගැනීමට අදම අපගේ ප්‍රධාන කාර්යාලය අමතන්න.",
+      urgent: false
+    },
+    {
+      id: "news-3",
+      category: "Agriculture",
+      categoryEn: "Agriculture",
+      badgeColor: "bg-emerald-600",
+      title: "යල කන්නයේ ගොවිබිමට සහන පොලී වගා ණය නිකුත් කිරීම",
+      titleEn: "Concessionary Yala Season Cultivation Loans Disbursement",
+      date: "2026-09-20",
+      image: "assets/images/wix/d7b655_017323ee6e6c473d9cea6f9d6613dc3c~mv2.png",
+      summary: "කෘෂිකාර්මික උපකරණ, බීජ සහ පොහොර මිලදී ගැනීම සඳහා වාර්ෂික 9.50% සහන පොලී අනුපාතයක් යටතේ ණය මුදල් නිකුත් කෙරේ.",
+      summaryEn: "Special low interest cultivation credit at 9.50% p.a. for local farmers in Galapitiyagama and Nikaweratiya.",
+      content: "ගලපිටියගම සහ අවට ප්‍රදේශවල ගොවි මහතුන් වෙනුවෙන් කඩිනම් වගා ණය යෝජනා ක්‍රමයක් ක්‍රියාත්මක කර ඇත. අස්වනු නෙලා විකිණීමෙන් පසු මුදල් පියවීමේ සහන කාල සහිතව ණය මුදල් ලබාගත හැක.",
+      urgent: false
+    }
+  ],
+
+  testimonials: [
+    {
+      id: "t-1",
+      name: "W.M. සුසන්ත වන්නිනායක මහතා",
+      role: "කෘෂි ව්‍යවසායක - ගලපිටියාගම",
+      icon: "fa-solid fa-user-tie",
+      iconBg: "bg-indigo-100",
+      iconColor: "text-indigo-600",
+      quote: "වසර ගණනාවක් තිස්සේ මගේ ගොවිතැන් කටයුතුවලට අතහිත දුන්නේ ගලපිටියාගම සණස බැංකුවයි. අවම ලියකියවිලි සහිත සහන පොලී ණය නිසා අද මට සාර්ථක ගොවිපලක් පවත්වාගෙන යන්න පුළුවන් වෙලා තියෙනවා."
+    },
+    {
+      id: "t-2",
+      name: "සුලෝචනා සඳමාලි මහත්මිය",
+      role: "ව්‍යවසායිකා - ගලපිටියාගම",
+      icon: "fa-solid fa-user-tie",
+      iconBg: "bg-indigo-100",
+      iconColor: "text-indigo-600",
+      quote: "ව්‍යාපාරික ණය පහසුකමෙන් අඟුරු කම්හලක් ආරම්භ කළ මට අද සේවකයින් විශාල ප්‍රමාණයකට රැකියා දෙන්න හැකියාව ලැබුණා. සණස බැංකුවේ කාර්ය මණ්ඩලයේ සුහදශීලී සේවය අගය කරමි."
+    },
+    {
+      id: "t-3",
+      name: "ධර්මදාස විජේසිංහ මහතා",
+      role: "විශ්‍රාමික ගුරුභවතා - ගලපිටියාගම",
+      icon: "fa-solid fa-user-tie",
+      iconBg: "bg-indigo-100",
+      iconColor: "text-indigo-600",
+      quote: "ස්ථාවර තැන්පතු සඳහා මාසිකව ලැබෙන ඉහළම පොලිය මගේ විශ්‍රාම දිවිය සැපවත් කර ඇත. ශ්‍රී ලංකා මහ බැංකුවේ අනුමැතිය සහ සමූපකාර නීතියට යටත් බැවින් බියක් නැතිව මුදල් තැන්පත් කළ හැක."
+    }
+  ],
+
+  inquiries: [
+    {
+      id: "inq-101",
+      name: "Kavindu Perera",
+      phone: "0714589632",
+      email: "kavindu.p@gmail.com",
+      service: "ගොවි හා වගා ණය",
+      message: "යල කන්නයේ අක්කර 4 ක වී වගාව සඳහා රු. ලක්ෂ 5 ක ණයක් ලබාගැනීමට අවශ්‍ය සුදුසුකම් සහ ඇපකර පිළිබඳව විස්තර දැනගැනීමට කැමැත්තෙමි.",
+      date: "2026-10-18 14:25",
+      status: "pending"
+    },
+    {
+      id: "inq-102",
+      name: "Mrs. M. Fernando",
+      phone: "0778945612",
+      email: "fernando.m@yahoo.com",
+      service: "සනස ස්ථාවර තැන්පතු",
+      message: "වසර 2ක කාලයකට රුපියල් මිලියනයක ස්ථාවර තැන්පතුවක් දැමූ විට මාසිකව ලැබෙන පොලී ආදායම කොපමණද?",
+      date: "2026-10-17 09:15",
+      status: "replied"
+    }
+  ],
+
+  membershipApplications: [
+    {
+      id: "mem-sample-1",
+      refId: "GSCS-MEM-2026-1001",
+      fullName: "හේරත් මුදියන්සේලාගේ සුනිල් ශාන්ත හේරත්",
+      nameWithInitials: "එච්.එම්. සුනිල් ශාන්ත හේරත්",
+      nameEnglishCaps: "H.M. SUNIL SHANTHA HERATH",
+      nic: "198214502369",
+      gender: "පිරිමි",
+      dob: "1982-05-14",
+      maritalStatus: "විවාහක",
+      address: "නො. 42, පුස්සැල්ල, ගලපිටියාගම, නිකවැරටිය",
+      city: "නිකවැරටිය",
+      gnDivision: "ගලපිටියාගම - 241",
+      religion: "බෞද්ධ",
+      phone: "0771234567",
+      whatsapp: "0771234567",
+      email: "sunil.herath@gmail.com",
+      // Nominee details
+      nomineeName: "කේ.එම්. මාලනී කුමාරිහාමි",
+      nomineeNic: "198565401234",
+      nomineeGender: "ගැහැණු",
+      nomineeRelationship: "බිරිඳ",
+      // Business / Employment details
+      businessName: "හේරත් ට්‍රේඩර්ස්",
+      occupation: "ව්‍යාපාරික / කෘෂිකාර්මික",
+      businessAddress: "කුරුණෑගල පාර, නිකවැරටිය",
+      businessPhone: "0372260123",
+      // Payment details
+      shareCapital: 5000,
+      savingsDeposit: 1000,
+      totalPaid: 6000,
+      bankAccount: "People's Bank - 124200110064754",
+      paymentRef: "PB-DEP-998822",
+      receiptImage: "assets/images/peoples-bank-account.png",
+      signatureImage: "",
+      submittedAt: "2026-10-24 10:30",
+      status: "pending"
+    }
+  ],
+
+  branches: [
+    {
+      name: "ගලපිටියාගම සණස බැංකු කාර්යාලය",
+      nameEn: "Galapitiyagama SANASA Bank Office",
+      address: "නො. 247, පුත්තලම් පාර, ගලපිටියගම, නිකවැරටිය",
+      phone: "+94 37 22 60 658",
+      hours: "පෙ.ව. 9.00 - ප.ව. 3.30"
+    }
+  ]
+};
+

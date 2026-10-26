@@ -1,0 +1,8 @@
+﻿{
+    "name":  "run_command",
+    "args":  {
+                 "CommandLine":  "cmd.exe /c \"findstr /n /c:\\\"\u003c!-- ================= HERO CAROUSEL\\\" C:\\Users\\indun\\.gemini\\antigravity\\brain\\09bee199-0b1d-42e9-a6e1-81c0a1cfb797\\.system_generated\\logs\\transcript.jsonl\"",
+                 "WaitMsBeforeAsync":  5000,
+                 "toolSummary":  "Find in compact transcript.jsonl"
+             }
+}
