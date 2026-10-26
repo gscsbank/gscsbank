@@ -1,4 +1,4 @@
-﻿// chatbot.js - "Chat GeeSee" (GSCS Bank's Virtual Assistant)
+// chatbot.js - "Chat GeeSee" (GSCS Bank's Virtual Assistant)
 // Inspired by Commercial Bank's Virtual Assistant (ChatC) UX & Design
 
 (function() {
@@ -251,15 +251,15 @@
     // Inline styles used for reliable mobile rendering
     const launcherHtml = `
       <!-- Floating Launcher Button -->
-      <div id="chat-geesee-launcher" onclick="window.chatGeeSeeOpen()" title="Chat GeeSee"
-        style="position:fixed;bottom:18px;right:14px;z-index:9998;cursor:pointer;display:flex;align-items:flex-end;filter:drop-shadow(0 6px 20px rgba(11,13,124,0.28));-webkit-tap-highlight-color:transparent;">
-        <div style="position:relative;flex-shrink:0;">
+      <div id="chat-geesee-launcher" role="button" tabindex="0" onclick="window.chatGeeSeeOpen(event)" title="Chat GeeSee"
+        style="position:fixed;bottom:18px;right:14px;z-index:9998;cursor:pointer;display:flex;align-items:flex-end;filter:drop-shadow(0 6px 20px rgba(11,13,124,0.28));-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
+        <div style="position:relative;flex-shrink:0;pointer-events:none;">
           <img src="assets/images/chat-geesee-avatar.png" alt="Chat GeeSee"
             style="width:58px;height:58px;object-fit:contain;border-radius:50%;background:#fff;padding:3px;box-shadow:0 4px 16px rgba(11,13,124,0.20);border:2.5px solid #FEE500;display:block;">
           <span style="position:absolute;bottom:3px;right:3px;width:12px;height:12px;border-radius:50%;background:#22c55e;border:2px solid #fff;box-shadow:0 0 0 2px rgba(34,197,94,0.3);"></span>
         </div>
         <div id="chat-geesee-label"
-          style="margin-left:-8px;padding:6px 14px 6px 18px;background:linear-gradient(90deg,#FEE500,#FFEB3B);border:2px solid rgba(11,13,124,0.15);border-radius:0 20px 20px 0;box-shadow:0 4px 14px rgba(11,13,124,0.12);display:flex;flex-direction:column;justify-content:center;line-height:1.3;">
+          style="pointer-events:none;margin-left:-8px;padding:6px 14px 6px 18px;background:linear-gradient(90deg,#FEE500,#FFEB3B);border:2px solid rgba(11,13,124,0.15);border-radius:0 20px 20px 0;box-shadow:0 4px 14px rgba(11,13,124,0.12);display:flex;flex-direction:column;justify-content:center;line-height:1.3;">
           <div style="display:flex;align-items:center;gap:4px;">
             <span style="font-size:10px;font-weight:600;color:#374151;">Chat with</span>
             <span style="font-size:12px;font-weight:900;color:#0B0D7C;">Chat GeeSee!</span>
@@ -271,8 +271,8 @@
       </div>
 
       <!-- Close button (visible when chat is open) -->
-      <button id="chat-geesee-toggle-btn" onclick="window.chatGeeSeeClose()"
-        style="position:fixed;bottom:18px;right:14px;z-index:9999;width:50px;height:50px;border-radius:14px;background:#fff;border:2px solid #e2e8f0;color:#475569;box-shadow:0 6px 22px rgba(0,0,0,0.16);display:none;align-items:center;justify-content:center;cursor:pointer;font-size:18px;-webkit-tap-highlight-color:transparent;">
+      <button id="chat-geesee-toggle-btn" onclick="window.chatGeeSeeClose(event)"
+        style="position:fixed;bottom:18px;right:14px;z-index:9999;width:50px;height:50px;border-radius:14px;background:#fff;border:2px solid #e2e8f0;color:#475569;box-shadow:0 6px 22px rgba(0,0,0,0.16);display:none;align-items:center;justify-content:center;cursor:pointer;font-size:18px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
@@ -379,6 +379,15 @@
       inputEl.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); window.chatGeeSeeSendMessage(); }
       });
+    }
+
+    // Touch event listener for mobile devices to guarantee click response
+    const launcherEl = document.getElementById('chat-geesee-launcher');
+    if (launcherEl) {
+      launcherEl.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        window.chatGeeSeeOpen(e);
+      }, { passive: false });
     }
   }
 
@@ -491,40 +500,55 @@
   }
 
   // Open Chat Window
-  window.chatGeeSeeOpen = function() {
+  window.chatGeeSeeOpen = function(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     const launcher = document.getElementById('chat-geesee-launcher');
     const modal = document.getElementById('chat-geesee-modal');
     const toggleBtn = document.getElementById('chat-geesee-toggle-btn');
     if (!modal) return;
 
-    if (launcher) launcher.classList.add('hidden');
-    if (toggleBtn) toggleBtn.classList.remove('hidden');
+    applyModalSizing();
 
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-      modal.classList.remove('scale-95', 'opacity-0');
-      modal.classList.add('scale-100', 'opacity-100');
-    }, 10);
+    if (launcher) launcher.style.display = 'none';
+    if (toggleBtn) toggleBtn.style.display = 'flex';
+
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+      modal.style.transform = 'scale(1)';
+      modal.style.opacity = '1';
+    });
 
     const input = document.getElementById('chat-geesee-input');
-    if (input) input.focus();
+    if (input) {
+      setTimeout(() => {
+        // Only focus automatically on non-touch devices to avoid iOS/Android keyboard jumping
+        if (window.innerWidth >= 640) input.focus();
+      }, 100);
+    }
   };
 
   // Close / Minimize Chat Window
-  window.chatGeeSeeClose = function() {
+  window.chatGeeSeeClose = function(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     const launcher = document.getElementById('chat-geesee-launcher');
     const modal = document.getElementById('chat-geesee-modal');
     const toggleBtn = document.getElementById('chat-geesee-toggle-btn');
     if (!modal) return;
 
-    modal.classList.remove('scale-100', 'opacity-100');
-    modal.classList.add('scale-95', 'opacity-0');
+    modal.style.transform = 'scale(0.94)';
+    modal.style.opacity = '0';
 
     setTimeout(() => {
-      modal.classList.add('hidden');
-      if (toggleBtn) toggleBtn.classList.add('hidden');
-      if (launcher) launcher.classList.remove('hidden');
-    }, 250);
+      modal.style.display = 'none';
+      if (toggleBtn) toggleBtn.style.display = 'none';
+      if (launcher) launcher.style.display = 'flex';
+    }, 220);
   };
 
   // Reset Conversation
