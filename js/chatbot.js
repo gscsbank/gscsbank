@@ -1,4 +1,4 @@
-// chatbot.js - "Chat GeeSee" (GSCS Bank's Virtual Assistant)
+﻿// chatbot.js - "Chat GeeSee" (GSCS Bank's Virtual Assistant)
 // Inspired by Commercial Bank's Virtual Assistant (ChatC) UX & Design
 
 (function() {
@@ -245,107 +245,123 @@
     };
   }
 
-  // Build the Widget DOM
+  // Build the Widget DOM - Mobile-First Design
   function initChatGeeSee() {
-    // 1. Floating Launcher (Bottom Right)
-    const launcherHtml = `
-      <div id="chat-geesee-launcher" class="fixed bottom-5 right-5 z-40 flex items-center cursor-pointer select-none group transition-all duration-300 hover:scale-105" onclick="window.chatGeeSeeOpen()" title="Chat with Chat GeeSee!">
-        <!-- Assistant Avatar Graphic -->
-        <div class="relative w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 z-10 transition-transform group-hover:-translate-y-1">
-          <img src="assets/images/chat-geesee-avatar.png" alt="Chat GeeSee" class="w-full h-full object-contain filter drop-shadow-xl">
-          <!-- Pulse Online Green Dot -->
-          <span class="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-400/40 animate-pulse"></span>
-        </div>
 
-        <!-- Yellow ComBank style banner -->
-        <div class="-ml-3 pl-5 pr-4 py-2 sm:py-2.5 rounded-2xl sm:rounded-full bg-gradient-to-r from-[#FEE500] via-[#FFEB3B] to-[#FEE500] text-slate-900 border-2 border-[#0B0D7C]/20 shadow-xl flex flex-col justify-center transition-all group-hover:shadow-2xl">
-          <div class="flex items-center gap-1.5 leading-none">
-            <span class="text-[11px] sm:text-xs font-semibold text-slate-800">Chat with</span>
-            <span class="text-xs sm:text-sm font-black text-[#0B0D7C] tracking-tight">Chat GeeSee!</span>
+    // Inline styles used for reliable mobile rendering
+    const launcherHtml = `
+      <!-- Floating Launcher Button -->
+      <div id="chat-geesee-launcher" onclick="window.chatGeeSeeOpen()" title="Chat GeeSee"
+        style="position:fixed;bottom:18px;right:14px;z-index:9998;cursor:pointer;display:flex;align-items:flex-end;filter:drop-shadow(0 6px 20px rgba(11,13,124,0.28));-webkit-tap-highlight-color:transparent;">
+        <div style="position:relative;flex-shrink:0;">
+          <img src="assets/images/chat-geesee-avatar.png" alt="Chat GeeSee"
+            style="width:58px;height:58px;object-fit:contain;border-radius:50%;background:#fff;padding:3px;box-shadow:0 4px 16px rgba(11,13,124,0.20);border:2.5px solid #FEE500;display:block;">
+          <span style="position:absolute;bottom:3px;right:3px;width:12px;height:12px;border-radius:50%;background:#22c55e;border:2px solid #fff;box-shadow:0 0 0 2px rgba(34,197,94,0.3);"></span>
+        </div>
+        <div id="chat-geesee-label"
+          style="margin-left:-8px;padding:6px 14px 6px 18px;background:linear-gradient(90deg,#FEE500,#FFEB3B);border:2px solid rgba(11,13,124,0.15);border-radius:0 20px 20px 0;box-shadow:0 4px 14px rgba(11,13,124,0.12);display:flex;flex-direction:column;justify-content:center;line-height:1.3;">
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:10px;font-weight:600;color:#374151;">Chat with</span>
+            <span style="font-size:12px;font-weight:900;color:#0B0D7C;">Chat GeeSee!</span>
           </div>
-          <div class="flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-pink-700 mt-0.5">
-            <i class="fa-solid fa-sparkles text-[8px] text-pink-600"></i>
-            <span>GSCS Bank Virtual Assistant</span>
+          <div style="font-size:9px;font-weight:700;color:#be185d;">
+            <i class="fa-solid fa-sparkles" style="font-size:8px;color:#db2777;margin-right:2px;"></i>GSCS Virtual Assistant
           </div>
         </div>
       </div>
 
-      <!-- Floating Close Button when open (Seen in screenshot 2 bottom right) -->
-      <button id="chat-geesee-toggle-btn" class="fixed bottom-5 right-5 z-50 w-12 h-12 rounded-2xl bg-white border-2 border-slate-300 text-slate-700 shadow-2xl hidden flex items-center justify-center hover:bg-slate-100 hover:text-red-500 transition-all cursor-pointer" onclick="window.chatGeeSeeClose()" title="Close Assistant">
-        <i class="fa-solid fa-xmark text-lg"></i>
+      <!-- Close button (visible when chat is open) -->
+      <button id="chat-geesee-toggle-btn" onclick="window.chatGeeSeeClose()"
+        style="position:fixed;bottom:18px;right:14px;z-index:9999;width:50px;height:50px;border-radius:14px;background:#fff;border:2px solid #e2e8f0;color:#475569;box-shadow:0 6px 22px rgba(0,0,0,0.16);display:none;align-items:center;justify-content:center;cursor:pointer;font-size:18px;-webkit-tap-highlight-color:transparent;">
+        <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <!-- Main Chat Modal Window -->
-      <div id="chat-geesee-modal" class="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[410px] max-w-[430px] h-[580px] sm:h-[620px] max-h-[85vh] bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden hidden transition-all duration-300 transform scale-95 opacity-0">
-        
-        <!-- Header: Deep Sanasa Blue with curve & controls -->
-        <div class="bg-gradient-to-r from-[#0B0D7C] via-[#0E1196] to-[#181DA8] text-white p-4 sm:p-4.5 flex items-center justify-between border-b border-white/10 flex-shrink-0 shadow-md">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-full bg-white/20 p-0.5 border border-white/30 flex items-center justify-center overflow-hidden">
-              <img src="assets/images/chat-geesee-avatar.png" alt="GeeSee" class="w-full h-full object-contain">
+      <!-- Chat Window (size controlled by JS) -->
+      <div id="chat-geesee-modal"
+        style="position:fixed;z-index:9997;background:#fff;display:none;flex-direction:column;overflow:hidden;transition:transform 0.22s ease,opacity 0.22s ease;transform:scale(0.94);opacity:0;box-shadow:0 20px 60px rgba(11,13,124,0.28);">
+
+        <!-- Header -->
+        <div style="background:linear-gradient(90deg,#0B0D7C,#0E1196,#181DA8);color:#fff;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.3);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+              <img src="assets/images/chat-geesee-avatar.png" alt="GeeSee" style="width:100%;height:100%;object-fit:contain;">
             </div>
-            <div>
-              <h3 class="font-extrabold text-sm sm:text-base leading-tight tracking-tight text-white flex items-center gap-1.5">
-                <span>GSCS Bank's Virtual Assistant</span>
-              </h3>
-              <p class="text-[10px] sm:text-[11px] text-emerald-300 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Chat GeeSee • 24/7 Online</span>
-              </p>
+            <div style="min-width:0;">
+              <div style="font-weight:800;font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GSCS Bank's Virtual Assistant</div>
+              <div style="font-size:10px;color:#86efac;display:flex;align-items:center;gap:4px;margin-top:2px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;"></span>
+                Chat GeeSee &bull; 24/7 Online
+              </div>
             </div>
           </div>
-
-          <!-- Header Action Icons (Bell, Refresh, Minimize) -->
-          <div class="flex items-center gap-1 text-white/80">
-            <button onclick="window.chatGeeSeeShowAlert()" class="w-8 h-8 rounded-full hover:bg-white/15 flex items-center justify-center text-xs transition-colors" title="Notice">
+          <div style="display:flex;align-items:center;gap:2px;flex-shrink:0;">
+            <button onclick="window.chatGeeSeeShowAlert()" style="width:34px;height:34px;border-radius:50%;background:transparent;border:none;color:rgba(255,255,255,0.8);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;-webkit-tap-highlight-color:transparent;">
               <i class="fa-regular fa-bell"></i>
             </button>
-            <button onclick="window.chatGeeSeeReset()" class="w-8 h-8 rounded-full hover:bg-white/15 flex items-center justify-center text-xs transition-colors" title="Restart Chat">
+            <button onclick="window.chatGeeSeeReset()" style="width:34px;height:34px;border-radius:50%;background:transparent;border:none;color:rgba(255,255,255,0.8);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;-webkit-tap-highlight-color:transparent;">
               <i class="fa-solid fa-rotate-right"></i>
             </button>
-            <button onclick="window.chatGeeSeeClose()" class="w-8 h-8 rounded-full hover:bg-white/15 flex items-center justify-center text-sm transition-colors" title="Minimize">
+            <button onclick="window.chatGeeSeeClose()" style="width:34px;height:34px;border-radius:50%;background:transparent;border:none;color:rgba(255,255,255,0.8);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;-webkit-tap-highlight-color:transparent;">
               <i class="fa-solid fa-chevron-down"></i>
             </button>
           </div>
         </div>
 
-        <!-- Chat Body (Scrollable messages) -->
-        <div id="chat-geesee-messages" class="flex-grow p-4 overflow-y-auto space-y-4 bg-slate-50 text-xs sm:text-sm">
-          <!-- Injected dynamically -->
+        <!-- Messages -->
+        <div id="chat-geesee-messages"
+          style="flex:1;overflow-y:auto;padding:13px;background:#f8fafc;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;">
         </div>
 
-        <!-- Quick Menu Drawer (Slides up when hamburger is tapped) -->
-        <div id="chat-geesee-quickmenu" class="hidden bg-white border-t border-slate-200 p-3 shadow-lg max-h-48 overflow-y-auto space-y-1.5 transition-all text-xs flex-shrink-0">
-          <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
-            <span class="font-bold text-slate-700">ක්ෂණික මෙනුව (Quick Topics)</span>
-            <button onclick="window.chatGeeSeeToggleQuickMenu()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+        <!-- Quick Menu -->
+        <div id="chat-geesee-quickmenu"
+          style="display:none;background:#fff;border-top:1px solid #e2e8f0;padding:10px 12px;max-height:200px;overflow-y:auto;flex-shrink:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:7px;border-bottom:1px solid #f1f5f9;margin-bottom:8px;">
+            <span style="font-weight:700;font-size:11px;color:#374151;">ක්ෂණික මෙනුව</span>
+            <button onclick="window.chatGeeSeeToggleQuickMenu()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:15px;padding:0;line-height:1;"><i class="fa-solid fa-xmark"></i></button>
           </div>
-          <div class="grid grid-cols-2 gap-1.5 pt-1">
-            <button onclick="window.chatGeeSeeSendPrompt('General Information')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">🏛️ බැංකු තොරතුරු</button>
-            <button onclick="window.chatGeeSeeSendPrompt('Products & Services')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">💳 ණය සහ තැන්පතු</button>
-            <button onclick="window.chatGeeSeeSendPrompt('Interest Rates')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">📊 පොලී අනුපාත</button>
-            <button onclick="window.chatGeeSeeSendPrompt('FD Calculator')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">🧮 තැන්පතු ගණකය</button>
-            <button onclick="window.chatGeeSeeSendPrompt('Smart COOP App')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">📲 Smart COOP</button>
-            <button onclick="window.chatGeeSeeSendPrompt('Membership')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">🤝 සාමාජික අයදුම්පත</button>
-            <button onclick="window.chatGeeSeeSendPrompt('Loan Installment')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">💵 ණය වාරික ගෙවීම්</button>
-            <button onclick="window.chatGeeSeeSendPrompt('Branch & Hotlines')" class="text-left px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-pink-50 hover:text-[#DF0178] border border-slate-200 font-semibold truncate">📍 ශාඛාව & දුරකථන</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <button onclick="window.chatGeeSeeSendPrompt('General Information')" style="text-align:left;padding:7px 9px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600;color:#374151;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;">🏛️ බැංකු</button>
+            <button onclick="window.chatGeeSeeSendPrompt('Products & Services')" style="text-align:left;padding:7px 9px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600;color:#374151;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;">💳 ණය</button>
+            <button onclick="window.chatGeeSeeSendPrompt('Interest Rates')" style="text-align:left;padding:7px 9px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600;color:#374151;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;">📊 පොලී</button>
+            <button onclick="window.chatGeeSeeSendPrompt('Smart COOP App')" style="text-align:left;padding:7px 9px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600;color:#374151;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;">📲 Smart COOP</button>
+            <button onclick="window.chatGeeSeeSendPrompt('Membership')" style="text-align:left;padding:7px 9px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600;color:#374151;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;">🤝 සාමාජිකත්වය</button>
+            <button onclick="window.chatGeeSeeSendPrompt('Branch & Hotlines')" style="text-align:left;padding:7px 9px;border-radius:9px;background:#f8fafc;border:1px solid #e2e8f0;font-size:11px;font-weight:600;color:#374151;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;-webkit-tap-highlight-color:transparent;">📍 ශාඛාව</button>
           </div>
         </div>
 
-        <!-- Input Bar (Matching ComBank layout) -->
-        <div class="p-3 bg-white border-t border-slate-200/90 flex items-center gap-2 flex-shrink-0">
-          <button onclick="window.chatGeeSeeToggleQuickMenu()" class="w-9 h-9 rounded-xl hover:bg-slate-100 text-slate-600 flex items-center justify-center transition-colors flex-shrink-0" title="Quick Menu">
-            <i class="fa-solid fa-bars text-sm"></i>
+        <!-- Input Bar -->
+        <div style="padding:9px 12px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+          <button onclick="window.chatGeeSeeToggleQuickMenu()"
+            style="width:40px;height:40px;border-radius:12px;background:#f1f5f9;border:none;color:#475569;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;-webkit-tap-highlight-color:transparent;">
+            <i class="fa-solid fa-bars"></i>
           </button>
-          <div class="relative flex-grow">
-            <input type="text" id="chat-geesee-input" placeholder="Type your message here..." class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-300 rounded-full px-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#0B0D7C] transition-all pr-10 shadow-inner">
-            <button onclick="window.chatGeeSeeSendMessage()" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#0B0D7C] hover:bg-[#DF0178] text-white flex items-center justify-center text-xs transition-colors shadow">
-              <i class="fa-solid fa-paper-plane text-[10px]"></i>
+          <div style="position:relative;flex:1;">
+            <input type="text" id="chat-geesee-input"
+              placeholder="ඔබේ ප්‍රශ්නය ලියන්න..."
+              style="width:100%;background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:99px;padding:10px 44px 10px 15px;font-size:13px;outline:none;font-family:inherit;box-sizing:border-box;-webkit-appearance:none;color:#1e293b;">
+            <button onclick="window.chatGeeSeeSendMessage()"
+              style="position:absolute;right:5px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:#0B0D7C;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;-webkit-tap-highlight-color:transparent;">
+              <i class="fa-solid fa-paper-plane"></i>
             </button>
           </div>
         </div>
 
       </div>
+
+      <style>
+        @keyframes gsFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        #chat-geesee-launcher { animation: gsFloat 3s ease-in-out infinite; }
+        #chat-geesee-launcher:hover, #chat-geesee-launcher:active { animation: none; transform: scale(0.97); }
+        #chat-geesee-input:focus { border-color: #0B0D7C !important; background: #fff !important; }
+        #chat-geesee-messages::-webkit-scrollbar { width: 3px; }
+        #chat-geesee-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .gs-btn-action { display:inline-flex;align-items:center;gap:5px;padding:8px 13px;border-radius:10px;background:#0B0D7C;color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.18s;font-family:inherit;margin:3px 2px;-webkit-tap-highlight-color:transparent; }
+        .gs-btn-action:hover,.gs-btn-action:active { background:#DF0178; }
+        .gs-btn-pill { display:inline-block;padding:6px 12px;border-radius:99px;background:#fff;color:#374151;border:1.5px solid #e2e8f0;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:inherit;margin:2px;-webkit-tap-highlight-color:transparent; }
+        .gs-btn-pill:hover,.gs-btn-pill:active { background:#fef9c3;border-color:#fbbf24; }
+        .gs-welcome-pill { display:block;width:100%;text-align:center;padding:10px 14px;border-radius:99px;background:#fff;color:#0B0D7C;border:2px solid rgba(11,13,124,0.22);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.18s;font-family:inherit;margin-bottom:8px;box-sizing:border-box;-webkit-tap-highlight-color:transparent; }
+        .gs-welcome-pill:hover,.gs-welcome-pill:active { background:#0B0D7C;color:#fff;border-color:#0B0D7C; }
+      </style>
     `;
 
     const div = document.createElement('div');
@@ -353,21 +369,56 @@
     div.innerHTML = launcherHtml;
     document.body.appendChild(div);
 
-    // Initial render of welcome card
+    applyModalSizing();
+    window.addEventListener('resize', applyModalSizing);
+
     renderWelcomeScreen();
 
-    // Setup input enter listener
     const inputEl = document.getElementById('chat-geesee-input');
     if (inputEl) {
       inputEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          window.chatGeeSeeSendMessage();
-        }
+        if (e.key === 'Enter') { e.preventDefault(); window.chatGeeSeeSendMessage(); }
       });
     }
   }
 
+  // Responsive sizing: Mobile = full screen, Desktop = floating panel
+  function applyModalSizing() {
+    const modal    = document.getElementById('chat-geesee-modal');
+    const label    = document.getElementById('chat-geesee-label');
+    const launcher = document.getElementById('chat-geesee-launcher');
+    if (!modal) return;
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    if (vw < 640) {
+      // MOBILE: Fills entire screen like a native app
+      modal.style.left    = '0';
+      modal.style.right   = '0';
+      modal.style.top     = '0';
+      modal.style.bottom  = '0';
+      modal.style.width   = '100%';
+      modal.style.height  = '100%';
+      modal.style.maxHeight = '100%';
+      modal.style.borderRadius = '0';
+      // Hide label text on mobile launcher (avatar only)
+      if (label) label.style.display = 'none';
+    } else {
+      // DESKTOP / TABLET: Compact floating panel
+      const w = Math.min(420, vw - 48);
+      const h = Math.min(650, vh - 110);
+      modal.style.left   = '';
+      modal.style.right  = '20px';
+      modal.style.bottom = '90px';
+      modal.style.top    = '';
+      modal.style.width  = w + 'px';
+      modal.style.height = h + 'px';
+      modal.style.maxHeight = '';
+      modal.style.borderRadius = '22px';
+      if (label) label.style.display = 'flex';
+    }
+  }
   // Render the initial ComBank-style Welcome Card
   function renderWelcomeScreen() {
     const container = document.getElementById('chat-geesee-messages');
