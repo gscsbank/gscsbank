@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /downloads/
 
-Sitemap: https://gscsbank.lk/sitemap.xml
+Sitemap: https://gscsbank.github.io/gscsbank/sitemap.xml
