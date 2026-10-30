@@ -71,7 +71,32 @@
         this.notify();
         this.syncToFirebase();
       } catch (err) {
-        console.error('Failed to save bank data to localStorage:', err);
+        console.warn('LocalStorage save quota protection active:', err);
+        try {
+          // If quota reached, strip large base64 strings from local storage copy only (keeping in-memory and cloud intact)
+          const lightweightCopy = JSON.parse(JSON.stringify(this.data));
+          if (Array.isArray(lightweightCopy.loanPayments)) {
+            lightweightCopy.loanPayments.forEach(p => {
+              if (p.receiptImage && p.receiptImage.startsWith('data:image')) p.receiptImage = '';
+            });
+          }
+          if (Array.isArray(lightweightCopy.membershipApplications)) {
+            lightweightCopy.membershipApplications.forEach(a => {
+              if (a.receiptImage && a.receiptImage.startsWith('data:image')) a.receiptImage = '';
+              if (a.signatureImage && a.signatureImage.startsWith('data:image')) a.signatureImage = '';
+            });
+          }
+          if (Array.isArray(lightweightCopy.smartCoopApplications)) {
+            lightweightCopy.smartCoopApplications.forEach(s => {
+              if (s.signatureImage && s.signatureImage.startsWith('data:image')) s.signatureImage = '';
+            });
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(lightweightCopy));
+          this.notify();
+        } catch (innerErr) {
+          console.error('Critical storage quota:', innerErr);
+          this.notify(); // still notify UI so buttons and state continue working!
+        }
       }
     }
 

@@ -1086,28 +1086,67 @@ document.addEventListener('DOMContentLoaded', () => {
     if (placeholder) placeholder.classList.remove('hidden');
   };
 
-  window.handleReceiptSelected = (input) => {
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      if (file.size > 7 * 1024 * 1024) {
-        alert('කරුණාකර 7MB ට අඩු රිසිට්පත් ගොනුවක් තෝරන්න.');
-        input.value = '';
+  // Safe client-side image compressor: keeps image quality while reducing size to <100KB
+  function compressImageFile(file, maxWidth = 900, maxHeight = 900, quality = 0.65) {
+    return new Promise((resolve) => {
+      if (!file || !file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result || '');
+        reader.onerror = () => resolve('');
+        reader.readAsDataURL(file);
         return;
       }
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        uploadedReceiptBase64 = e.target.result;
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+          if (w > maxWidth || h > maxHeight) {
+            if (w > h) {
+              h = Math.round((h * maxWidth) / w);
+              w = maxWidth;
+            } else {
+              w = Math.round((w * maxHeight) / h);
+              h = maxHeight;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => resolve(e.target.result || '');
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  }
+
+  window.handleReceiptSelected = async (input) => {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const nameEl = document.getElementById('receipt-file-name');
+      if (nameEl) nameEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>රිසිට්පත සූදානම් කරමින්...</span>`;
+
+      try {
+        uploadedReceiptBase64 = await compressImageFile(file, 900, 900, 0.65);
         const prompt = document.getElementById('receipt-upload-prompt');
         const container = document.getElementById('receipt-preview-container');
         const img = document.getElementById('receipt-preview-img');
-        const nameEl = document.getElementById('receipt-file-name');
         if (prompt) prompt.classList.add('hidden');
         if (container) container.classList.remove('hidden');
         if (img) img.src = uploadedReceiptBase64;
-        if (nameEl) nameEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${file.name} සාර්ථකව තෝරාගන්නා ලදී</span>`;
-      };
-      reader.readAsDataURL(file);
+        if (nameEl) nameEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> <span>${file.name} සාර්ථකව තෝරාගන්නා ලදී</span>`;
+      } catch (err) {
+        console.error('Receipt compression error:', err);
+      }
     }
   };
 
@@ -1353,23 +1392,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  window.handleLoanReceiptSelected = (input) => {
+  window.handleLoanReceiptSelected = async (input) => {
     const file = input.files && input.files[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('ගොනුවේ ප්‍රමාණය උපරිම 5MB විය යුතුය!');
-      input.value = '';
-      return;
-    }
+    const prompt = document.getElementById('lp-receipt-upload-prompt');
+    const previewCont = document.getElementById('lp-receipt-preview-container');
+    const previewImg = document.getElementById('lp-receipt-preview-img');
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedLoanReceiptBase64 = e.target.result;
-      const prompt = document.getElementById('lp-receipt-upload-prompt');
-      const previewCont = document.getElementById('lp-receipt-preview-container');
-      const previewImg = document.getElementById('lp-receipt-preview-img');
-
+    try {
+      uploadedLoanReceiptBase64 = await compressImageFile(file, 900, 900, 0.65);
       if (prompt) prompt.classList.add('hidden');
       if (previewCont) previewCont.classList.remove('hidden');
       if (previewImg) {
@@ -1380,8 +1412,9 @@ document.addEventListener('DOMContentLoaded', () => {
           previewImg.src = 'assets/images/gscs-logo.png';
         }
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Loan receipt error:', err);
+    }
   };
 
   window.clearLoanReceiptUpload = () => {

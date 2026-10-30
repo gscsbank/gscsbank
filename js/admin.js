@@ -147,6 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (window.bankStore.getAppsScriptUrl && window.bankStore.getAppsScriptUrl()) {
       window.syncFromCloud(false);
+      if (!window._cloudSyncTimer) {
+        window._cloudSyncTimer = setInterval(() => {
+          if (document.visibilityState === 'visible' && window.syncFromCloud) {
+            window.syncFromCloud(false);
+          }
+        }, 25000);
+      }
     }
 
     // Listen to changes
@@ -846,7 +853,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await window.bankStore.fetchFromAppsScript();
       if (res.success) {
         if (badgeText) badgeText.textContent = 'Cloud Sync Connected';
-        if (msgEl) msgEl.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> සාර්ථකව සම්බන්ධ විය! Google Sheet එකෙන් සජීවී දත්ත සමමුහුර්ත (sync) විය.</span>`;
+        // Immediately re-render all submission tables
+        try { renderInquiriesTable(); } catch(e) {}
+        try { renderApplicationsTable(); } catch(e) {}
+        try { renderLoanPaymentsTable(); } catch(e) {}
+        try { renderSmartCoopTable(); } catch(e) {}
+        try { renderFeedbackTable(); } catch(e) {}
+        try { renderOverview(); } catch(e) {}
+
         if (showFeedback) {
           showAdminToast('Google Sheet එකෙන් නවතම දත්ත සාර්ථකව ලබාගන්නා ලදී!');
         }
