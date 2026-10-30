@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (document.visibilityState === 'visible' && window.syncFromCloud) {
             window.syncFromCloud(false);
           }
-        }, 25000);
+        }, 60000); // increased to 60s to reduce re-render frequency
       }
     }
 
@@ -195,10 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cross-tab Instant Sync: when website (index.html) submits in another tab
     window.addEventListener('storage', (e) => {
       if (e.key === 'GSCS_BANK_DATA_V12') {
-        if (window.bankStore && window.bankStore.loadData) {
-          window.bankStore.data = window.bankStore.loadData();
-          window.bankStore.notify();
-        }
+        // Re-render directly from current in-memory store (safe — no loadData() risk)
+        try { renderOverview(); } catch(e) {}
+        try { renderInquiriesTable(); } catch(e) {}
+        try { renderApplicationsTable(); } catch(e) {}
+        try { renderLoanPaymentsTable(); } catch(e) {}
+        try { renderSmartCoopTable(); } catch(e) {}
+        try { renderFeedbackTable(); } catch(e) {}
       }
     });
   }
