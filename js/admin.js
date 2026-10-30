@@ -140,6 +140,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set initial active tab state
     window.switchAdminTab(currentTab || 'overview');
 
+    // Populate Apps Script URL input if present
+    const appScriptInput = document.getElementById('appscript-url-input');
+    if (appScriptInput && window.bankStore.getAppsScriptUrl) {
+      appScriptInput.value = window.bankStore.getAppsScriptUrl();
+    }
+    if (window.bankStore.getAppsScriptUrl && window.bankStore.getAppsScriptUrl()) {
+      window.syncFromCloud(false);
+    }
+
     // Listen to changes
     window.addEventListener('bankDataUpdated', () => {
       try { renderOverview(); } catch(e) {}
@@ -584,6 +593,26 @@ document.addEventListener('DOMContentLoaded', () => {
     showAdminToast('ස්ලයිඩරය සාර්ථකව සුරකින ලදී.');
   };
 
+  window.saveAllSliders = () => {
+    const cards = document.querySelectorAll('#admin-slides-container [data-slide-id]');
+    cards.forEach(card => {
+      const id = card.dataset.slideId;
+      if (id) {
+        const updated = {
+          id: id,
+          badge: card.querySelector('.slide-badge') ? card.querySelector('.slide-badge').value : '',
+          ctaText: card.querySelector('.slide-cta') ? card.querySelector('.slide-cta').value : '',
+          title: card.querySelector('.slide-title') ? card.querySelector('.slide-title').value : '',
+          desc: card.querySelector('.slide-desc') ? card.querySelector('.slide-desc').value : '',
+          bgImage: card.querySelector('.slide-bg') ? card.querySelector('.slide-bg').value : '',
+          ctaLink: '#savings'
+        };
+        window.bankStore.saveHeroSlide(updated);
+      }
+    });
+    showAdminToast('සියලුම ස්ලයිඩර් සාර්ථකව සුරකින ලදී!');
+  };
+
   // --- 6. Bank Info Form ---
   function renderBankInfoForm() {
     const info = window.bankStore.getBankInfo();
@@ -775,6 +804,66 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     reader.readAsText(file);
+  };
+
+  // --- Google Apps Script / Google Sheets Cloud Sync ---
+  window.saveAppsScriptUrlFromAdmin = () => {
+    const el = document.getElementById('appscript-url-input');
+    const msgEl = document.getElementById('appscript-sync-msg');
+    const val = el ? el.value.trim() : '';
+
+    if (!val) {
+      if (confirm('Google Apps Script URL එක ඉවත් කිරීමට අවශ්‍ය බව තහවුරු කරන්න?')) {
+        window.bankStore.saveAppsScriptUrl('');
+        if (msgEl) msgEl.textContent = 'Apps Script URL ඉවත් කරන ලදී.';
+        showAdminToast('Google Apps Script URL එක ඉවත් කරන ලදී.');
+      }
+      return;
+    }
+
+    if (!val.startsWith('http')) {
+      alert('කරුණාකර නිවැරදි Web App URL එකක් ඇතුළත් කරන්න (e.g. https://script.google.com/...)');
+      return;
+    }
+
+    window.bankStore.saveAppsScriptUrl(val);
+    if (msgEl) msgEl.textContent = 'සැකසුම සාර්ථකව සුරකින ලදී. සජීවීව පරීක්ෂා කරමින්...';
+    showAdminToast('Google Apps Script URL එක සාර්ථකව සුරකින ලදී!');
+    window.syncFromCloud(true);
+  };
+
+  window.syncFromCloud = async (showFeedback = true) => {
+    const icon = document.getElementById('admin-sync-icon');
+    const label = document.getElementById('admin-sync-label');
+    const badgeText = document.getElementById('cloud-sync-status-text');
+    const msgEl = document.getElementById('appscript-sync-msg');
+
+    if (icon) icon.classList.add('fa-spin');
+    if (label) label.textContent = 'Syncing...';
+    if (badgeText) badgeText.textContent = 'Syncing from Cloud...';
+
+    try {
+      const res = await window.bankStore.fetchFromAppsScript();
+      if (res.success) {
+        if (badgeText) badgeText.textContent = 'Cloud Sync Connected';
+        if (msgEl) msgEl.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> සාර්ථකව සම්බන්ධ විය! Google Sheet එකෙන් සජීවී දත්ත සමමුහුර්ත (sync) විය.</span>`;
+        if (showFeedback) {
+          showAdminToast('Google Sheet එකෙන් නවතම දත්ත සාර්ථකව ලබාගන්නා ලදී!');
+        }
+      } else {
+        if (badgeText) badgeText.textContent = 'Sync Idle';
+        if (msgEl) msgEl.innerHTML = `<span class="text-amber-600 font-semibold"><i class="fa-solid fa-triangle-exclamation"></i> ${res.error}</span>`;
+        if (showFeedback && res.error !== 'No Apps Script Web App URL configured.') {
+          alert('Cloud Sync දෝෂයක්: ' + res.error);
+        }
+      }
+    } catch (err) {
+      if (badgeText) badgeText.textContent = 'Sync Error';
+      if (msgEl) msgEl.innerHTML = `<span class="text-red-600 font-semibold"><i class="fa-solid fa-circle-xmark"></i> දෝෂයක්: ${err.message}</span>`;
+    } finally {
+      if (icon) icon.classList.remove('fa-spin');
+      if (label) label.textContent = 'Sync Cloud';
+    }
   };
 
   // --- Firebase Config Save ---

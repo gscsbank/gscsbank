@@ -2,6 +2,7 @@
 (function() {
   const STORAGE_KEY = 'GSCS_BANK_DATA_V12';  // Bumped version → Updated product images (.jpg)
   const FIREBASE_CONFIG_KEY = 'GSCS_FIREBASE_CONFIG';
+  const APPS_SCRIPT_CONFIG_KEY = 'GSCS_APPS_SCRIPT_URL';
 
   class BankStore {
     constructor() {
@@ -9,6 +10,12 @@
       this.listeners = [];
       this.firebaseInitialized = false;
       this.initFirebaseIfConfigured();
+      this.loadRepoDataJson();
+      if (this.getAppsScriptUrl()) {
+        setTimeout(() => {
+          this.fetchFromAppsScript().catch(() => {});
+        }, 800);
+      }
     }
 
     loadData() {
@@ -17,14 +24,14 @@
         if (stored) {
           const parsed = JSON.parse(stored);
           if (parsed && parsed.bankInfo) {
-            // Deep-merge: keep default products, rates and members intact unless admin edited
+            // Deep-merge: keep admin edited data if available, fallback to defaults
             return {
               ...window.DEFAULT_BANK_DATA,
               ...parsed,
-              products: window.DEFAULT_BANK_DATA.products,           // always use fresh products
-              interestRates: window.DEFAULT_BANK_DATA.interestRates, // always use fresh rates
-              heroSlides: window.DEFAULT_BANK_DATA.heroSlides,       // always use fresh slides
-              partners: window.DEFAULT_BANK_DATA.partners            // always use fresh partners
+              products: (parsed.products && parsed.products.length) ? parsed.products : window.DEFAULT_BANK_DATA.products,
+              interestRates: (parsed.interestRates && parsed.interestRates.fixedDeposits) ? parsed.interestRates : window.DEFAULT_BANK_DATA.interestRates,
+              heroSlides: (parsed.heroSlides && parsed.heroSlides.length) ? parsed.heroSlides : window.DEFAULT_BANK_DATA.heroSlides,
+              partners: (parsed.partners && parsed.partners.length) ? parsed.partners : window.DEFAULT_BANK_DATA.partners
             };
           }
         }
@@ -32,6 +39,30 @@
         console.error('Failed to parse stored bank data, falling back to defaults:', err);
       }
       return JSON.parse(JSON.stringify(window.DEFAULT_BANK_DATA));
+    }
+
+    async loadRepoDataJson() {
+      try {
+        const res = await fetch('data.json?_t=' + Date.now());
+        if (res.ok) {
+          const repoData = await res.json();
+          if (repoData && repoData.bankInfo) {
+            console.log('[Store] Live data.json loaded from repository.');
+            this.data = {
+              ...this.data,
+              ...repoData,
+              inquiries: this.data.inquiries || repoData.inquiries || [],
+              membershipApplications: this.data.membershipApplications || repoData.membershipApplications || [],
+              loanPayments: this.data.loanPayments || repoData.loanPayments || [],
+              smartCoopApplications: this.data.smartCoopApplications || repoData.smartCoopApplications || [],
+              feedbacks: this.data.feedbacks || repoData.feedbacks || []
+            };
+            this.notify();
+          }
+        }
+      } catch (err) {
+        // data.json not found in root, fallback silently
+      }
     }
 
     save() {
@@ -212,6 +243,7 @@
       };
       this.data.inquiries.unshift(newInq);
       this.save();
+      this.syncToAppsScript('submit', 'inquiry', newInq);
       return newInq;
     }
 
@@ -220,12 +252,14 @@
       if (inq) {
         inq.status = status;
         this.save();
+        this.syncToAppsScript('updateStatus', 'inquiry', { id, status });
       }
     }
 
     deleteInquiry(id) {
       this.data.inquiries = (this.data.inquiries || []).filter(i => i.id !== id);
       this.save();
+      this.syncToAppsScript('delete', 'inquiry', { id });
     }
 
     // --- Membership Applications ---
@@ -247,6 +281,7 @@
       };
       this.data.membershipApplications.unshift(newApp);
       this.save();
+      this.syncToAppsScript('submit', 'membership', newApp);
       return newApp;
     }
 
@@ -257,12 +292,14 @@
         if (notes) app.reviewNotes = notes;
         app.reviewedAt = new Date().toLocaleDateString();
         this.save();
+        this.syncToAppsScript('updateStatus', 'membership', { id, status, notes });
       }
     }
 
     deleteMembershipApplication(id) {
       this.data.membershipApplications = (this.data.membershipApplications || []).filter(a => a.id !== id);
       this.save();
+      this.syncToAppsScript('delete', 'membership', { id });
     }
 
     // --- Loan Installment Payments ---
@@ -284,6 +321,7 @@
       };
       this.data.loanPayments.unshift(newPayment);
       this.save();
+      this.syncToAppsScript('submit', 'loan_payment', newPayment);
       return newPayment;
     }
 
@@ -294,12 +332,14 @@
         if (notes) p.reviewNotes = notes;
         p.reviewedAt = new Date().toLocaleDateString();
         this.save();
+        this.syncToAppsScript('updateStatus', 'loan_payment', { id, status, notes });
       }
     }
 
     deleteLoanPayment(id) {
       this.data.loanPayments = (this.data.loanPayments || []).filter(x => x.id !== id);
       this.save();
+      this.syncToAppsScript('delete', 'loan_payment', { id });
     }
 
     // --- Member Feedback (සාමාජික ප්‍රතිපෝෂණ) ---
@@ -322,6 +362,7 @@
       };
       this.data.feedbacks.unshift(newFeedback);
       this.save();
+      this.syncToAppsScript('submit', 'feedback', newFeedback);
       return newFeedback;
     }
 
@@ -332,6 +373,7 @@
         if (notes) fb.reviewNotes = notes;
         fb.reviewedAt = new Date().toLocaleDateString();
         this.save();
+        this.syncToAppsScript('updateStatus', 'feedback', { id, status, notes });
       }
     }
 
@@ -341,12 +383,14 @@
         fb.publishedAsTestimonial = true;
         fb.status = 'approved';
         this.save();
+        this.syncToAppsScript('updateStatus', 'feedback', { id, status: 'approved', notes: 'Published as Testimonial' });
       }
     }
 
     deleteFeedback(id) {
       this.data.feedbacks = (this.data.feedbacks || []).filter(f => f.id !== id);
       this.save();
+      this.syncToAppsScript('delete', 'feedback', { id });
     }
 
     // --- Smart COOP App Registration Applications ---
@@ -368,6 +412,7 @@
       };
       this.data.smartCoopApplications.unshift(newApp);
       this.save();
+      this.syncToAppsScript('submit', 'smart_coop', newApp);
       return newApp;
     }
 
@@ -378,12 +423,14 @@
         if (notes) a.reviewNotes = notes;
         a.reviewedAt = new Date().toLocaleDateString();
         this.save();
+        this.syncToAppsScript('updateStatus', 'smart_coop', { id, status, notes });
       }
     }
 
     deleteSmartCoopApplication(id) {
       this.data.smartCoopApplications = (this.data.smartCoopApplications || []).filter(x => x.id !== id);
       this.save();
+      this.syncToAppsScript('delete', 'smart_coop', { id });
     }
 
     // --- JSON Backup & Restore ---
@@ -477,6 +524,116 @@
       } catch (e) {
         console.warn('Firebase sync note:', e.message);
       }
+    }
+
+    // --- Google Apps Script / Google Sheets Cloud Sync Engine ---
+    getAppsScriptUrl() {
+      if (window.GSCS_CONFIG && window.GSCS_CONFIG.APPS_SCRIPT_URL) {
+        return window.GSCS_CONFIG.APPS_SCRIPT_URL.trim();
+      }
+      return (localStorage.getItem(APPS_SCRIPT_CONFIG_KEY) || '').trim();
+    }
+
+    saveAppsScriptUrl(url) {
+      if (!url) {
+        localStorage.removeItem(APPS_SCRIPT_CONFIG_KEY);
+      } else {
+        localStorage.setItem(APPS_SCRIPT_CONFIG_KEY, url.trim());
+      }
+      if (window.GSCS_CONFIG) {
+        window.GSCS_CONFIG.APPS_SCRIPT_URL = url ? url.trim() : '';
+      }
+    }
+
+    syncToAppsScript(action, type, data) {
+      const url = this.getAppsScriptUrl();
+      if (!url) {
+        console.log(`[Store] Note: Apps Script URL not configured yet. Record saved locally (${type}).`);
+        return Promise.resolve(null);
+      }
+
+      const payload = {
+        action: action,
+        type: type,
+        data: data || {},
+        id: data && data.id ? data.id : undefined,
+        status: data && data.status ? data.status : undefined,
+        notes: data && data.notes !== undefined ? data.notes : undefined
+      };
+
+      return fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        console.log(`[AppsScript Sync] POST ${action} for ${type} sent successfully.`);
+        return { success: true };
+      }).catch(err => {
+        console.warn(`[AppsScript Sync Notice] ${action} ${type}:`, err);
+        return { success: false, error: err.message };
+      });
+    }
+
+    async fetchFromAppsScript() {
+      const url = this.getAppsScriptUrl();
+      if (!url) {
+        return { success: false, error: 'No Apps Script Web App URL configured.' };
+      }
+      try {
+        const queryUrl = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'action=getAll&_t=' + Date.now();
+        const res = await fetch(queryUrl);
+        const json = await res.json();
+        if (json && json.status === 'success' && json.data) {
+          this.mergeCloudData(json.data);
+          this.notify();
+          return { success: true, data: json.data };
+        } else {
+          return { success: false, error: json.message || 'Invalid server response' };
+        }
+      } catch (err) {
+        console.warn('[AppsScript Fetch Notice]', err);
+        return { success: false, error: err.message };
+      }
+    }
+
+    mergeCloudData(cloudData) {
+      if (!cloudData) return;
+
+      const mergeList = (localList = [], remoteList = []) => {
+        const map = new Map();
+        // Insert remote items first
+        remoteList.forEach(item => {
+          const key = item.id || item.refId;
+          if (key) map.set(key, item);
+        });
+        // Insert any local items that are not in remote yet (preserving pending offline entries)
+        localList.forEach(item => {
+          const key = item.id || item.refId;
+          if (key && !map.has(key)) {
+            map.set(key, item);
+          }
+        });
+        return Array.from(map.values());
+      };
+
+      if (Array.isArray(cloudData.inquiries)) {
+        this.data.inquiries = mergeList(this.data.inquiries, cloudData.inquiries);
+      }
+      if (Array.isArray(cloudData.loanPayments)) {
+        this.data.loanPayments = mergeList(this.data.loanPayments, cloudData.loanPayments);
+      }
+      if (Array.isArray(cloudData.membershipApplications)) {
+        this.data.membershipApplications = mergeList(this.data.membershipApplications, cloudData.membershipApplications);
+      }
+      if (Array.isArray(cloudData.smartCoopApplications)) {
+        this.data.smartCoopApplications = mergeList(this.data.smartCoopApplications, cloudData.smartCoopApplications);
+      }
+      if (Array.isArray(cloudData.feedbacks)) {
+        this.data.feedbacks = mergeList(this.data.feedbacks, cloudData.feedbacks);
+      }
+
+      this.save();
     }
   }
 

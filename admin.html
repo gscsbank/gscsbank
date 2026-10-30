@@ -197,9 +197,14 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <button id="admin-cloud-sync-btn" onclick="window.syncFromCloud(true)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0B0D7C] hover:bg-[#181DA8] text-white shadow-sm transition-all cursor-pointer">
+            <i class="fa-solid fa-arrows-rotate" id="admin-sync-icon"></i>
+            <span id="admin-sync-label">Sync Cloud</span>
+          </button>
+
+          <span id="cloud-sync-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Live Auto-Sync Active</span>
+            <span id="cloud-sync-status-text">Cloud Sync Ready</span>
           </span>
 
           <button onclick="window.bankStore.exportJSON()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
@@ -472,9 +477,15 @@
 
         <!-- ================= TAB 5: HERO BANNERS ================= -->
         <section id="panel-sliders" class="admin-panel space-y-6 hidden">
-          <div>
-            <h3 class="text-lg font-bold text-[#0B0D7C]">ප්‍රධාන බැනර් සහ ස්ලයිඩර් (Hero Slider Management)</h3>
-            <p class="text-xs text-slate-500">මුල් පිටුවේ ඉහළින්ම දිස්වන ප්‍රවර්ධන බැනර් 3 සංස්කරණය කරන්න.</p>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">ප්‍රධාන බැනර් සහ ස්ලයිඩර් (Hero Slider Management)</h3>
+              <p class="text-xs text-slate-500">මුල් පිටුවේ ඉහළින්ම දිස්වන ප්‍රවර්ධන බැනර් 3 සංස්කරණය කරන්න.</p>
+            </div>
+            <button onclick="window.saveAllSliders()" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-[#0B0D7C] hover:bg-[#070954] text-white transition-all shadow-md flex items-center gap-2">
+              <i class="fa-solid fa-floppy-disk text-pink-400"></i>
+              <span>සියලුම Sliders සුරකින්න (Save All Sliders)</span>
+            </button>
           </div>
 
           <div id="admin-slides-container" class="space-y-6">
@@ -754,24 +765,6 @@
               </div>
             </div>
 
-            <!-- Card 2: Firebase Realtime Cloud Sync -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-              <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
-                <i class="fa-solid fa-cloud-arrow-up"></i>
-              </div>
-              <h4 class="font-extrabold text-slate-900 text-sm">Firebase Cloud Sync (විකල්ප - නොමිලේ)</h4>
-              <p class="text-xs text-slate-600 leading-relaxed">
-                ඔබ පරිපාලක පුවරුවෙන් කරන වෙනස්කම් ලෝකයේ ඕනෑම තැනක සිට වෙබ් අඩවිය නරඹන සෑම සාමාජිකයෙකුටම <strong>ක්ෂණිකව සජීවීව</strong> පෙනීමට අවශ්‍ය නම්, නොමිලේ Firebase Firestore ගිණුමක් සම්බන්ධ කළ හැක.
-              </p>
-              <div>
-                <label class="block text-[11px] font-bold text-slate-700 mb-1">Firebase Configuration (JSON snippet):</label>
-                <textarea id="firebase-config-input" rows="3" placeholder='{"apiKey": "...", "projectId": "...", "authDomain": "..."}' class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-mono focus:outline-none focus:border-[#0B0D7C]"></textarea>
-              </div>
-              <button onclick="window.saveFirebaseConfig()" class="px-4 py-2 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white transition-all">
-                Save Cloud Sync Config
-              </button>
-            </div>
-
           </div>
 
           <!-- Reset to Factory Defaults -->
@@ -1018,6 +1011,7 @@
 
   <!-- Scripts -->
   <script src="js/defaultData.js"></script>
+  <script src="js/api-config.js"></script>
   <script src="js/store.js"></script>
   <script src="js/admin.js"></script>
 </body>
