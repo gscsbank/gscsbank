@@ -146,11 +146,16 @@
         this.data.newsAndAnnouncements.unshift(newItem);
       }
       this.save();
+      // Sync to Google Sheets cloud
+      const savedItem = idx >= 0 ? this.data.newsAndAnnouncements[idx] : this.data.newsAndAnnouncements[0];
+      this.syncToAppsScript('submit', 'news', savedItem);
     }
 
     deleteNewsItem(id) {
       this.data.newsAndAnnouncements = (this.data.newsAndAnnouncements || []).filter(n => n.id !== id);
       this.save();
+      // Delete from Google Sheets cloud
+      this.syncToAppsScript('delete', 'news', { id: id });
     }
 
     // --- Interest Rates CRUD ---
@@ -590,7 +595,6 @@
         status: data && data.status ? data.status : undefined,
         notes: data && data.notes !== undefined ? data.notes : undefined
       };
-
       return fetch(url, {
         method: 'POST',
         mode: 'no-cors',
@@ -678,6 +682,15 @@
       }
       if (Array.isArray(cloudData.feedbacks)) {
         this.data.feedbacks = mergeList(this.data.feedbacks, cloudData.feedbacks);
+      }
+      // Merge news from cloud (admin-managed content)
+      if (Array.isArray(cloudData.newsAndAnnouncements)) {
+        // Convert YES/NO strings from Sheets to booleans
+        const normalizedNews = cloudData.newsAndAnnouncements.map(n => ({
+          ...n,
+          isPublished: n.isPublished === 'YES' || n.isPublished === true
+        }));
+        this.data.newsAndAnnouncements = mergeList(this.data.newsAndAnnouncements || [], normalizedNews);
       }
 
       this.save();
