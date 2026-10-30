@@ -615,8 +615,8 @@
         const res = await fetch(queryUrl);
         const json = await res.json();
         if (json && json.status === 'success' && json.data) {
-          this.mergeCloudData(json.data);
-          this.notify();
+          this.mergeCloudData(json.data); // mergeCloudData → save() → notify() already fires
+          // DO NOT call this.notify() again here — mergeCloudData already triggers it via save()
           return { success: true, data: json.data };
         } else {
           return { success: false, error: json.message || 'Invalid server response' };
