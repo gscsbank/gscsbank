@@ -54,6 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
       try { renderNews(); } catch(e) {}
       try { renderBranches(); } catch(e) {}
     });
+
+    // Auto-fetch latest news & content from Google Sheets cloud on page load
+    // This ensures every visitor sees the latest admin-published content
+    if (window.bankStore && window.bankStore.fetchFromAppsScript) {
+      window.bankStore.fetchFromAppsScript().catch(() => {});
+    }
   }
 
   // --- Helpers ---
