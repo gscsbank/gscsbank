@@ -16,6 +16,30 @@ const tabTitles = {
   feedbacks: 'සාමාජික ප්‍රතිපෝෂණ කළමනාකරණය (Member Feedback)'
 };
 
+// Safe String & Utility Helpers (Prevents any crash if numbers or nulls appear)
+function safeStr(val) {
+  if (val === null || val === undefined) return '';
+  return String(val);
+}
+
+function safeNum(val, fallback = 0) {
+  if (val === null || val === undefined || val === '') return fallback;
+  const cleaned = String(val).replace(/[^0-9.-]/g, '');
+  const n = parseFloat(cleaned);
+  return isNaN(n) ? fallback : n;
+}
+
+function cleanPhoneNum(val) {
+  return safeStr(val).replace(/[^0-9]/g, '');
+}
+
+function makeWaUrl(phone, msg) {
+  const c = cleanPhoneNum(phone);
+  if (!c) return '#';
+  const num = c.startsWith('0') ? c.slice(1) : c;
+  return `https://wa.me/94${num}?text=${encodeURIComponent(msg || '')}`;
+}
+
 let currentTab = 'overview';
 
 // --- Tab Switcher (Defined Immediately on window so it is ALWAYS available) ---
@@ -156,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Listen to changes
+    // Listen to changes (Same Window)
     window.addEventListener('bankDataUpdated', () => {
       try { renderOverview(); } catch(e) {}
       try { renderNewsTable(); } catch(e) {}
@@ -167,74 +191,98 @@ document.addEventListener('DOMContentLoaded', () => {
       try { renderSmartCoopTable(); } catch(e) {}
       try { renderFeedbackTable(); } catch(e) {}
     });
+
+    // Cross-tab Instant Sync: when website (index.html) submits in another tab
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'GSCS_BANK_DATA_V12') {
+        if (window.bankStore && window.bankStore.loadData) {
+          window.bankStore.data = window.bankStore.loadData();
+          window.bankStore.notify();
+        }
+      }
+    });
   }
 
   // --- 1. Overview ---
   function renderOverview() {
-    const data = window.bankStore.getData();
-    const news = window.bankStore.getNews();
-    const prods = window.bankStore.getProducts();
-    const inqs = window.bankStore.getInquiries();
-    const apps = window.bankStore.getMembershipApplications ? window.bankStore.getMembershipApplications() : [];
-    const feedbacks = window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [];
-    const info = window.bankStore.getBankInfo();
+    try {
+      const data = window.bankStore.getData();
+      const news = window.bankStore.getNews();
+      const prods = window.bankStore.getProducts();
+      const inqs = window.bankStore.getInquiries();
+      const apps = window.bankStore.getMembershipApplications ? window.bankStore.getMembershipApplications() : [];
+      const feedbacks = window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [];
+      const info = window.bankStore.getBankInfo();
 
-    document.getElementById('ov-news-count').textContent = news.length;
-    document.getElementById('ov-services-count').textContent = prods.length;
-    document.getElementById('ov-inq-count').textContent = inqs.length;
+      const newsCountEl = document.getElementById('ov-news-count');
+      const prodCountEl = document.getElementById('ov-services-count');
+      const inqCountEl = document.getElementById('ov-inq-count');
+      if (newsCountEl) newsCountEl.textContent = news.length;
+      if (prodCountEl) prodCountEl.textContent = prods.length;
+      if (inqCountEl) inqCountEl.textContent = inqs.length;
 
-    // Feedback count
-    const ovFbCountEl = document.getElementById('ov-fb-count');
-    const ovFbPendingEl = document.getElementById('ov-fb-pending');
-    const fbBadgeEl = document.getElementById('sidebar-fb-badge');
-    const pendingFbs = feedbacks.filter(f => f.status === 'pending');
-    if (ovFbCountEl) ovFbCountEl.textContent = feedbacks.length;
-    if (ovFbPendingEl) ovFbPendingEl.textContent = `${pendingFbs.length}ක් පොරොත්තු ලේඛනයේ`;
-    if (fbBadgeEl) fbBadgeEl.textContent = pendingFbs.length;
+      // Feedback count
+      const ovFbCountEl = document.getElementById('ov-fb-count');
+      const ovFbPendingEl = document.getElementById('ov-fb-pending');
+      const fbBadgeEl = document.getElementById('sidebar-fb-badge');
+      const pendingFbs = feedbacks.filter(f => safeStr(f.status) === 'pending');
+      if (ovFbCountEl) ovFbCountEl.textContent = feedbacks.length;
+      if (ovFbPendingEl) ovFbPendingEl.textContent = `${pendingFbs.length}ක් පොරොත්තු ලේඛනයේ`;
+      if (fbBadgeEl) fbBadgeEl.textContent = pendingFbs.length;
 
-    const appsCountEl = document.getElementById('ov-apps-count');
-    const appsPendingEl = document.getElementById('ov-apps-pending');
-    const appsBadgeEl = document.getElementById('sidebar-apps-badge');
-    const pendingApps = apps.filter(a => a.status === 'pending');
-    if (appsCountEl) appsCountEl.textContent = apps.length;
-    if (appsPendingEl) appsPendingEl.textContent = `${pendingApps.length}ක් පොරොත්තු ලේඛනයේ`;
-    if (appsBadgeEl) appsBadgeEl.textContent = pendingApps.length;
+      const appsCountEl = document.getElementById('ov-apps-count');
+      const appsPendingEl = document.getElementById('ov-apps-pending');
+      const appsBadgeEl = document.getElementById('sidebar-apps-badge');
+      const pendingApps = apps.filter(a => safeStr(a.status) === 'pending');
+      if (appsCountEl) appsCountEl.textContent = apps.length;
+      if (appsPendingEl) appsPendingEl.textContent = `${pendingApps.length}ක් පොරොත්තු ලේඛනයේ`;
+      if (appsBadgeEl) appsBadgeEl.textContent = pendingApps.length;
 
-    const pendingInqs = inqs.filter(i => i.status === 'pending');
-    const badgeEl = document.getElementById('sidebar-inq-badge');
-    if (badgeEl) badgeEl.textContent = pendingInqs.length;
+      const pendingInqs = inqs.filter(i => safeStr(i.status) === 'pending');
+      const badgeEl = document.getElementById('sidebar-inq-badge');
+      if (badgeEl) badgeEl.textContent = pendingInqs.length;
 
-    // Urgent notice
-    const ovUrgentBadge = document.getElementById('ov-urgent-badge');
-    const ovUrgentText = document.getElementById('ov-urgent-text');
-    if (info.urgentNoticeActive) {
-      ovUrgentBadge.textContent = 'ACTIVE';
-      ovUrgentBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-pink-500 text-white';
-    } else {
-      ovUrgentBadge.textContent = 'INACTIVE';
-      ovUrgentBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-slate-600 text-slate-300';
-    }
-    ovUrgentText.textContent = info.urgentNotice || 'කිසිදු විශේෂ නිවේදනයක් ක්‍රියාත්මක නැත.';
-
-    // Recent Inquiries Table (first 4)
-    const recentBody = document.getElementById('ov-recent-inquiries');
-    if (recentBody) {
-      recentBody.innerHTML = inqs.slice(0, 4).map(i => `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="py-2.5 px-3 font-bold text-slate-800">${i.name}</td>
-          <td class="py-2.5 px-3 text-slate-600">${i.phone}</td>
-          <td class="py-2.5 px-3 text-slate-600">${i.service}</td>
-          <td class="py-2.5 px-3 text-slate-400 text-[11px]">${i.date}</td>
-          <td class="py-2.5 px-3">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${i.status === 'replied' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-              ${i.status.toUpperCase()}
-            </span>
-          </td>
-        </tr>
-      `).join('');
-      if (inqs.length === 0) {
-        recentBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">කිසිදු විමසීමක් මෙතෙක් ලැබී නැත.</td></tr>';
+      // Urgent notice
+      const ovUrgentBadge = document.getElementById('ov-urgent-badge');
+      const ovUrgentText = document.getElementById('ov-urgent-text');
+      if (info.urgentNoticeActive) {
+        if (ovUrgentBadge) {
+          ovUrgentBadge.textContent = 'ACTIVE';
+          ovUrgentBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-pink-500 text-white';
+        }
+      } else {
+        if (ovUrgentBadge) {
+          ovUrgentBadge.textContent = 'INACTIVE';
+          ovUrgentBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-slate-600 text-slate-300';
+        }
       }
+      if (ovUrgentText) ovUrgentText.textContent = info.urgentNotice || 'කිසිදු විශේෂ නිවේදනයක් ක්‍රියාත්මක නැත.';
+
+      // Recent Inquiries Table (first 4)
+      const recentBody = document.getElementById('ov-recent-inquiries');
+      if (recentBody) {
+        recentBody.innerHTML = inqs.slice(0, 4).map(i => {
+          const st = safeStr(i.status || 'pending').toLowerCase();
+          return `
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-2.5 px-3 font-bold text-slate-800">${safeStr(i.name)}</td>
+              <td class="py-2.5 px-3 text-slate-600">${safeStr(i.phone)}</td>
+              <td class="py-2.5 px-3 text-slate-600">${safeStr(i.service)}</td>
+              <td class="py-2.5 px-3 text-slate-400 text-[11px]">${safeStr(i.date)}</td>
+              <td class="py-2.5 px-3">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${st === 'replied' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                  ${st.toUpperCase()}
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+        if (inqs.length === 0) {
+          recentBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">කිසිදු විමසීමක් මෙතෙක් ලැබී නැත.</td></tr>';
+        }
+      }
+    } catch (err) {
+      console.error('Error in renderOverview:', err);
     }
   }
 
@@ -640,47 +688,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 7. Inquiries Inbox ---
   function renderInquiriesTable() {
-    const inqs = window.bankStore.getInquiries();
-    const tbody = document.getElementById('admin-inquiries-table-body');
-    if (!tbody) return;
+    try {
+      const inqs = window.bankStore.getInquiries() || [];
+      const tbody = document.getElementById('admin-inquiries-table-body');
+      if (!tbody) return;
 
-    const filtered = inquiryFilter === 'all' ? inqs : inqs.filter(i => i.status === inquiryFilter);
+      const filtered = inquiryFilter === 'all' ? inqs : inqs.filter(i => i.status === inquiryFilter);
 
-    tbody.innerHTML = filtered.map(i => {
-      const cleanPhone = (i.phone || '').replace(/[^0-9]/g, '');
-      const waLink = cleanPhone ? `https://wa.me/94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?text=Hello ${encodeURIComponent(i.name)}, regarding your inquiry at Galapitiyagama Sanasa Bank:` : '#';
+      tbody.innerHTML = filtered.map(i => {
+        const cleanPhone = cleanPhoneNum(i.phone);
+        const waLink = makeWaUrl(cleanPhone, `Hello ${safeStr(i.name)}, regarding your inquiry at Galapitiyagama Sanasa Bank:`);
 
-      return `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${i.name}</div>
-            <div class="text-[11px] text-slate-500 line-clamp-1">${i.message || ''}</div>
-          </td>
-          <td class="py-3 px-4 font-mono">${i.phone}</td>
-          <td class="py-3 px-4 text-slate-600">${i.email || '-'}</td>
-          <td class="py-3 px-4 font-semibold text-slate-800">${i.service}</td>
-          <td class="py-3 px-4 text-slate-400 text-[11px]">${i.date}</td>
-          <td class="py-3 px-4">
-            <button onclick="window.toggleInqStatus('${i.id}', '${i.status === 'replied' ? 'pending' : 'replied'}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold ${i.status === 'replied' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-              ${i.status.toUpperCase()}
-            </button>
-          </td>
-          <td class="py-3 px-4 text-right whitespace-nowrap space-x-2">
-            ${cleanPhone ? `
-              <a href="${waLink}" target="_blank" class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50" title="Reply on WhatsApp">
-                <i class="fa-brands fa-whatsapp text-sm"></i>
-              </a>
-            ` : ''}
-            <button onclick="window.deleteInquiryConfirm('${i.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50" title="Delete">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      `;
-    }).join('');
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${safeStr(i.name)}</div>
+              <div class="text-[11px] text-slate-500 line-clamp-1">${safeStr(i.message)}</div>
+            </td>
+            <td class="py-3 px-4 font-mono">${safeStr(i.phone)}</td>
+            <td class="py-3 px-4 text-slate-600">${safeStr(i.email) || '-'}</td>
+            <td class="py-3 px-4 font-semibold text-slate-800">${safeStr(i.service)}</td>
+            <td class="py-3 px-4 text-slate-400 text-[11px]">${safeStr(i.date)}</td>
+            <td class="py-3 px-4">
+              <button onclick="window.toggleInqStatus('${i.id}', '${i.status === 'replied' ? 'pending' : 'replied'}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold ${i.status === 'replied' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                ${safeStr(i.status || 'pending').toUpperCase()}
+              </button>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap space-x-2">
+              ${cleanPhone ? `
+                <a href="${waLink}" target="_blank" class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50" title="Reply on WhatsApp">
+                  <i class="fa-brands fa-whatsapp text-sm"></i>
+                </a>
+              ` : ''}
+              <button onclick="window.deleteInquiryConfirm('${i.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50" title="Delete">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
 
-    if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-400 font-semibold">මෙම කාණ්ඩය යටතේ විමසීම් නොමැත.</td></tr>';
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-400 font-semibold">මෙම කාණ්ඩය යටතේ විමසීම් නොමැත.</td></tr>';
+      }
+    } catch (err) {
+      console.error('Error in renderInquiriesTable:', err);
     }
   }
 
@@ -934,115 +986,121 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentAppFilter = 'all';
 
   function renderApplicationsTable() {
-    const apps = window.bankStore.getMembershipApplications ? window.bankStore.getMembershipApplications() : [];
-    const tbody = document.getElementById('admin-apps-table-body');
-    if (!tbody) return;
+    try {
+      const apps = window.bankStore.getMembershipApplications ? window.bankStore.getMembershipApplications() : [];
+      const tbody = document.getElementById('admin-apps-table-body');
+      if (!tbody) return;
 
-    const searchInput = document.getElementById('admin-apps-search');
-    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const searchInput = document.getElementById('admin-apps-search');
+      const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-    let filtered = apps;
-    if (currentAppFilter !== 'all') {
-      filtered = filtered.filter(a => a.status === currentAppFilter);
-    }
-    if (query) {
-      filtered = filtered.filter(a => 
-        (a.fullName || '').toLowerCase().includes(query) ||
-        (a.nameEnglishCaps || '').toLowerCase().includes(query) ||
-        (a.nic || '').toLowerCase().includes(query) ||
-        (a.refId || '').toLowerCase().includes(query) ||
-        (a.phone || '').includes(query)
-      );
-    }
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-center py-8 text-slate-400">
-            <i class="fa-solid fa-address-card text-3xl mb-2 block"></i>
-            සාමාජික අයදුම්පත් කිසිවක් හමු නොවීය.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map(app => {
-      const cleanPhone = (app.phone || '').replace(/[^0-9]/g, '');
-      const waLink = cleanPhone ? `https://wa.me/94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?text=Hello ${encodeURIComponent(app.fullName)}, regarding your GSCS Bank Membership Application ${app.refId}:` : '#';
-
-      let statusBadge = '';
-      if (app.status === 'approved') {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">APPROVED</span>';
-      } else if (app.status === 'rejected') {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">REJECTED</span>';
-      } else {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
+      let filtered = apps;
+      if (currentAppFilter !== 'all') {
+        filtered = filtered.filter(a => a.status === currentAppFilter);
+      }
+      if (query) {
+        filtered = filtered.filter(a => 
+          safeStr(a.fullName).toLowerCase().includes(query) ||
+          safeStr(a.nameEnglishCaps).toLowerCase().includes(query) ||
+          safeStr(a.nic).toLowerCase().includes(query) ||
+          safeStr(a.refId).toLowerCase().includes(query) ||
+          safeStr(a.phone).includes(query)
+        );
       }
 
-      return `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="py-3 px-4">
-            <span class="font-black text-[#0B0D7C] font-mono">${app.refId}</span>
-            <div class="text-[11px] text-slate-400">${app.submittedAt}</div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${app.fullName}</div>
-            <div class="text-[11px] text-slate-500 font-mono">${app.nic} • ${app.gender}</div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="font-mono text-slate-800">${app.phone}</div>
-            <a href="${waLink}" target="_blank" class="text-[11px] text-emerald-600 hover:underline flex items-center gap-1 font-semibold">
-              <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
-            </a>
-          </td>
-          <td class="py-3 px-4 font-semibold text-slate-800">
-            <div class="text-emerald-700 font-bold">රු. ${Number(app.totalPaid || 6000).toLocaleString()}.00</div>
-            <div class="text-[10px] text-slate-400 font-mono">${app.paymentRef || 'No Ref'}</div>
-          </td>
-          <td class="py-3 px-4">
-            ${app.receiptImage ? `
-              <img src="${app.receiptImage}" onclick="window.viewApplicationDetails('${app.id}')" class="w-10 h-10 object-cover rounded-lg border border-slate-200 cursor-pointer hover:scale-110 transition-transform shadow-sm" title="රිසිට්පත බලන්න">
-            ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
-          </td>
-          <td class="py-3 px-4">
-            ${app.signatureImage ? `
-              <img src="${app.signatureImage}" onclick="window.viewApplicationDetails('${app.id}')" class="w-12 h-6 object-contain rounded border border-slate-200 bg-white cursor-pointer hover:scale-110 transition-transform" title="අත්සන බලන්න">
-            ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
-          </td>
-          <td class="py-3 px-4">
-            ${statusBadge}
-          </td>
-          <td class="py-3 px-4 text-right">
-            <div class="flex items-center justify-end gap-1.5">
-              <button onclick="window.viewApplicationDetails('${app.id}')" class="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-[#0B0D7C] text-xs font-bold" title="සම්පූර්ණ අයදුම්පත බලන්න">
-                <i class="fa-solid fa-eye"></i>
-              </button>
-              ${app.status === 'pending' ? `
-                <button onclick="window.setAppStatus('${app.id}', 'approved')" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold" title="අනුමත කරන්න">
-                  <i class="fa-solid fa-check"></i>
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-8 text-slate-400">
+              <i class="fa-solid fa-address-card text-3xl mb-2 block"></i>
+              සාමාජික අයදුම්පත් කිසිවක් හමු නොවීය.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(app => {
+        const cleanPhone = cleanPhoneNum(app.phone);
+        const waLink = makeWaUrl(cleanPhone, `Hello ${safeStr(app.fullName)}, regarding your GSCS Bank Membership Application ${safeStr(app.refId)}:`);
+
+        let statusBadge = '';
+        if (app.status === 'approved') {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">APPROVED</span>';
+        } else if (app.status === 'rejected') {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">REJECTED</span>';
+        } else {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4">
+              <span class="font-black text-[#0B0D7C] font-mono">${safeStr(app.refId)}</span>
+              <div class="text-[11px] text-slate-400">${safeStr(app.submittedAt)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${safeStr(app.fullName)}</div>
+              <div class="text-[11px] text-slate-500 font-mono">${safeStr(app.nic)} • ${safeStr(app.gender)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-mono text-slate-800">${safeStr(app.phone)}</div>
+              <a href="${waLink}" target="_blank" class="text-[11px] text-emerald-600 hover:underline flex items-center gap-1 font-semibold">
+                <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
+              </a>
+            </td>
+            <td class="py-3 px-4 font-semibold text-slate-800">
+              <div class="text-emerald-700 font-bold">රු. ${Number(app.totalPaid || 6000).toLocaleString()}.00</div>
+              <div class="text-[10px] text-slate-400 font-mono">${safeStr(app.paymentRef) || 'No Ref'}</div>
+            </td>
+            <td class="py-3 px-4">
+              ${app.receiptImage ? `
+                <img src="${app.receiptImage}" onclick="window.viewApplicationDetails('${app.id}')" class="w-10 h-10 object-cover rounded-lg border border-slate-200 cursor-pointer hover:scale-110 transition-transform shadow-sm" title="රිසිට්පත බලන්න">
+              ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
+            </td>
+            <td class="py-3 px-4">
+              ${app.signatureImage ? `
+                <img src="${app.signatureImage}" onclick="window.viewApplicationDetails('${app.id}')" class="w-12 h-6 object-contain rounded border border-slate-200 bg-white cursor-pointer hover:scale-110 transition-transform" title="අත්සන බලන්න">
+              ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
+            </td>
+            <td class="py-3 px-4">
+              ${statusBadge}
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="window.viewApplicationDetails('${app.id}')" class="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-[#0B0D7C] text-xs font-bold" title="සම්පූර්ණ අයදුම්පත බලන්න">
+                  <i class="fa-solid fa-eye"></i>
                 </button>
-                <button onclick="window.setAppStatus('${app.id}', 'rejected')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold" title="ප්‍රතික්ෂේප කරන්න">
-                  <i class="fa-solid fa-xmark"></i>
+                ${app.status === 'pending' ? `
+                  <button onclick="window.setAppStatus('${app.id}', 'approved')" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold" title="අනුමත කරන්න">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button onclick="window.setAppStatus('${app.id}', 'rejected')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold" title="ප්‍රතික්ෂේප කරන්න">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                ` : ''}
+                <button onclick="window.deleteAppConfirm('${app.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
-              ` : ''}
-              <button onclick="window.deleteAppConfirm('${app.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } catch (err) {
+      console.error('Error in renderApplicationsTable:', err);
+    }
   }
 
   window.setAppFilter = (filter) => {
     currentAppFilter = filter;
     document.querySelectorAll('.app-filter-btn').forEach(btn => {
-      btn.classList.toggle('bg-[#0B0D7C]', btn.getAttribute('onclick').includes(filter));
-      btn.classList.toggle('text-white', btn.getAttribute('onclick').includes(filter));
-      btn.classList.toggle('bg-white', !btn.getAttribute('onclick').includes(filter));
-      btn.classList.toggle('text-slate-700', !btn.getAttribute('onclick').includes(filter));
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const active = onclickAttr.includes(filter);
+      btn.classList.toggle('bg-[#0B0D7C]', active);
+      btn.classList.toggle('text-white', active);
+      btn.classList.toggle('bg-white', !active);
+      btn.classList.toggle('text-slate-700', !active);
     });
     renderApplicationsTable();
   };
@@ -1055,123 +1113,131 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentLpFilter = 'all';
 
   function renderLoanPaymentsTable() {
-    const payments = window.bankStore.getLoanPayments ? window.bankStore.getLoanPayments() : [];
-    const tbody = document.getElementById('admin-lp-table-body');
-    if (!tbody) return;
+    try {
+      const payments = window.bankStore.getLoanPayments ? window.bankStore.getLoanPayments() : [];
+      const tbody = document.getElementById('admin-lp-table-body');
+      if (!tbody) return;
 
-    const searchEl = document.getElementById('admin-lp-search');
-    const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+      const searchEl = document.getElementById('admin-lp-search');
+      const query = searchEl ? safeStr(searchEl.value).toLowerCase().trim() : '';
 
-    let filtered = payments;
-    if (currentLpFilter !== 'all') {
-      filtered = filtered.filter(p => p.status === currentLpFilter);
-    }
-    if (query) {
-      filtered = filtered.filter(p =>
-        (p.memberName || '').toLowerCase().includes(query) ||
-        (p.memberNo || '').toLowerCase().includes(query) ||
-        (p.loanType || '').toLowerCase().includes(query) ||
-        (p.refId || '').toLowerCase().includes(query)
-      );
-    }
-
-    // Update badge
-    const badge = document.getElementById('sidebar-lp-badge');
-    const pendingCount = payments.filter(p => p.status === 'pending').length;
-    if (badge) badge.textContent = pendingCount;
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-center py-8 text-slate-400">
-            <i class="fa-solid fa-money-bill-transfer text-3xl mb-2 block"></i>
-            ණය වාරික ගෙවීම් කිසිවක් හමු නොවීය.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map(p => {
-      const cleanPhone = (p.phone || '').replace(/[^0-9]/g, '');
-      const waMsg = encodeURIComponent(`ගරු ${p.memberName} මහතා/මිය,\n\nඔබගේ ${p.loanType} ණය ගිණුමේ රු. ${Number(p.amount).toLocaleString()}.00 වාරිකය (යොමු: ${p.refId}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`);
-      const smsMsg = encodeURIComponent(`ගලපිටියාගම සනස: ${p.memberName} - ${p.loanType} ණය වාරිකය රු.${Number(p.amount).toLocaleString()} තහවුරු විය. Ref: ${p.refId}`);
-      const waLink = cleanPhone ? `https://wa.me/94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?text=${waMsg}` : '#';
-      const smsLink = cleanPhone ? `sms:+94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?body=${smsMsg}` : '#';
-
-      let statusBadge = '';
-      if (p.status === 'confirmed') {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">CONFIRMED</span>';
-      } else if (p.status === 'rejected') {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">REJECTED</span>';
-      } else {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
+      let filtered = payments;
+      if (currentLpFilter !== 'all') {
+        filtered = filtered.filter(p => safeStr(p.status) === currentLpFilter);
+      }
+      if (query) {
+        filtered = filtered.filter(p =>
+          safeStr(p.memberName).toLowerCase().includes(query) ||
+          safeStr(p.memberNo).toLowerCase().includes(query) ||
+          safeStr(p.loanType).toLowerCase().includes(query) ||
+          safeStr(p.refId).toLowerCase().includes(query) ||
+          safeStr(p.phone).includes(query)
+        );
       }
 
-      return `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="py-3 px-4">
-            <span class="font-black text-[#DF0178] font-mono text-[11px]">${p.refId}</span>
-            <div class="text-[10px] text-slate-400">${p.submittedAt}</div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${p.memberName}</div>
-            <div class="text-[11px] text-slate-500 font-mono">${p.memberNo}${p.loanAccNo ? ' | ' + p.loanAccNo : ''}</div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="text-slate-800 font-semibold">${p.loanType}</div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="font-mono text-slate-800">${p.phone}</div>
-            <div class="flex gap-1.5 mt-1">
-              <a href="${waLink}" target="_blank" class="text-[10px] text-emerald-600 hover:underline flex items-center gap-0.5 font-semibold">
-                <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
-              </a>
-              <span class="text-slate-300">|</span>
-              <a href="${smsLink}" class="text-[10px] text-blue-600 hover:underline flex items-center gap-0.5 font-semibold">
-                <i class="fa-solid fa-sms text-xs"></i> SMS
-              </a>
-            </div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="text-emerald-700 font-black font-mono">රු. ${Number(p.amount).toLocaleString()}.00</div>
-          </td>
-          <td class="py-3 px-4">
-            ${p.receiptImage ? `
-              <img src="${p.receiptImage}" onclick="window.open('${p.receiptImage}','_blank')" class="w-10 h-10 object-cover rounded-lg border border-slate-200 cursor-pointer hover:scale-110 transition-transform shadow-sm" title="රිසිට්පත බලන්න">
-            ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
-          </td>
-          <td class="py-3 px-4">${statusBadge}</td>
-          <td class="py-3 px-4 text-right">
-            <div class="flex items-center justify-end gap-1.5">
-              ${p.status === 'pending' ? `
-                <button onclick="window.confirmLoanPayment('${p.id}')" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold" title="තහවුරු කරන්න">
-                  <i class="fa-solid fa-check"></i>
+      // Update badge
+      const badge = document.getElementById('sidebar-lp-badge');
+      const pendingCount = payments.filter(p => safeStr(p.status) === 'pending').length;
+      if (badge) badge.textContent = pendingCount;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-8 text-slate-400">
+              <i class="fa-solid fa-money-bill-transfer text-3xl mb-2 block"></i>
+              ණය වාරික ගෙවීම් කිසිවක් හමු නොවීය.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => {
+        const cleanPhone = cleanPhoneNum(p.phone);
+        const amountNum = safeNum(p.amount);
+        const waMsg = `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ණය ගිණුමේ රු. ${amountNum.toLocaleString()}.00 වාරිකය (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+        const smsMsg = encodeURIComponent(`ගලපිටියාගම සනස: ${safeStr(p.memberName)} - ${safeStr(p.loanType)} ණය වාරිකය රු.${amountNum.toLocaleString()} තහවුරු විය. Ref: ${safeStr(p.refId)}`);
+        const waLink = makeWaUrl(cleanPhone, waMsg);
+        const smsLink = cleanPhone ? `sms:+94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?body=${smsMsg}` : '#';
+
+        let statusBadge = '';
+        const st = safeStr(p.status).toLowerCase();
+        if (st === 'confirmed') {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">CONFIRMED</span>';
+        } else if (st === 'rejected') {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">REJECTED</span>';
+        } else {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4">
+              <span class="font-black text-[#DF0178] font-mono text-[11px]">${safeStr(p.refId)}</span>
+              <div class="text-[10px] text-slate-400">${safeStr(p.submittedAt)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${safeStr(p.memberName)}</div>
+              <div class="text-[11px] text-slate-500 font-mono">${safeStr(p.memberNo)}${p.loanAccNo ? ' | ' + safeStr(p.loanAccNo) : ''}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="text-slate-800 font-semibold">${safeStr(p.loanType)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-mono text-slate-800">${safeStr(p.phone)}</div>
+              <div class="flex gap-1.5 mt-1">
+                <a href="${waLink}" target="_blank" class="text-[10px] text-emerald-600 hover:underline flex items-center gap-0.5 font-semibold">
+                  <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
+                </a>
+                <span class="text-slate-300">|</span>
+                <a href="${smsLink}" class="text-[10px] text-blue-600 hover:underline flex items-center gap-0.5 font-semibold">
+                  <i class="fa-solid fa-sms text-xs"></i> SMS
+                </a>
+              </div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="text-emerald-700 font-black font-mono">රු. ${amountNum.toLocaleString()}.00</div>
+            </td>
+            <td class="py-3 px-4">
+              ${p.receiptImage ? `
+                <img src="${p.receiptImage}" onclick="window.open('${p.receiptImage}','_blank')" class="w-10 h-10 object-cover rounded-lg border border-slate-200 cursor-pointer hover:scale-110 transition-transform shadow-sm" title="රිසිට්පත බලන්න">
+              ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
+            </td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                ${st === 'pending' ? `
+                  <button onclick="window.confirmLoanPayment('${p.id}')" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold" title="තහවුරු කරන්න">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button onclick="window.rejectLoanPayment('${p.id}')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold" title="ප්‍රතික්ෂේප කරන්න">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                ` : ''}
+                <a href="${waLink}" target="_blank" class="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold" title="WhatsApp Message">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="${smsLink}" class="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold" title="SMS">
+                  <i class="fa-solid fa-message"></i>
+                </a>
+                <button onclick="window.deleteLoanPayment('${p.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
-                <button onclick="window.rejectLoanPayment('${p.id}')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold" title="ප්‍රතික්ෂේප කරන්න">
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
-              ` : ''}
-              <a href="${waLink}" target="_blank" class="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold" title="WhatsApp Message">
-                <i class="fa-brands fa-whatsapp"></i>
-              </a>
-              <a href="${smsLink}" class="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold" title="SMS">
-                <i class="fa-solid fa-message"></i>
-              </a>
-              <button onclick="window.deleteLoanPayment('${p.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } catch (err) {
+      console.error('Error in renderLoanPaymentsTable:', err);
+    }
   }
 
   window.setLpFilter = (filter) => {
     currentLpFilter = filter;
     document.querySelectorAll('.lp-filter-btn').forEach(btn => {
-      const active = btn.getAttribute('onclick').includes(`'${filter}'`);
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const active = onclickAttr.includes(`'${filter}'`) || onclickAttr.includes(`"${filter}"`);
       btn.classList.toggle('bg-[#0B0D7C]', active);
       btn.classList.toggle('text-white', active);
       btn.classList.toggle('bg-white', !active);
@@ -1187,12 +1253,13 @@ document.addEventListener('DOMContentLoaded', () => {
       window.bankStore.updateLoanPaymentStatus(id, 'confirmed');
       renderLoanPaymentsTable();
       // Open WhatsApp confirm message for this payment
-      const payments = window.bankStore.getLoanPayments();
+      const payments = window.bankStore.getLoanPayments ? window.bankStore.getLoanPayments() : [];
       const p = payments.find(x => x.id === id);
       if (p && p.phone) {
-        const cleanPhone = p.phone.replace(/[^0-9]/g, '');
-        const msg = encodeURIComponent(`ගරු ${p.memberName} මහතා/මිය,\n\nඔබගේ ${p.loanType} ණය ගිණුමේ රු. ${Number(p.amount).toLocaleString()}.00 වාරිකය (යොමු: ${p.refId}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`);
-        const waLink = `https://wa.me/94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?text=${msg}`;
+        const cleanPhone = cleanPhoneNum(p.phone);
+        const amountNum = safeNum(p.amount);
+        const msg = `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ණය ගිණුමේ රු. ${amountNum.toLocaleString()}.00 වාරිකය (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+        const waLink = makeWaUrl(cleanPhone, msg);
         if (confirm('WhatsApp හරහා ගෙවීම් තහවුරු කිරීමේ පණිවිඩය යැවීමට අවශ්‍යද?')) {
           window.open(waLink, '_blank');
         }
@@ -1218,113 +1285,119 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentScFilter = 'all';
 
   function renderSmartCoopTable() {
-    const apps = window.bankStore.getSmartCoopApplications ? window.bankStore.getSmartCoopApplications() : [];
-    const tbody = document.getElementById('admin-sc-table-body');
-    if (!tbody) return;
+    try {
+      const apps = window.bankStore.getSmartCoopApplications ? window.bankStore.getSmartCoopApplications() : [];
+      const tbody = document.getElementById('admin-sc-table-body');
+      if (!tbody) return;
 
-    const searchEl = document.getElementById('admin-sc-search');
-    const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+      const searchEl = document.getElementById('admin-sc-search');
+      const query = searchEl ? safeStr(searchEl.value).toLowerCase().trim() : '';
 
-    let filtered = apps;
-    if (currentScFilter !== 'all') {
-      filtered = filtered.filter(a => a.status === currentScFilter);
-    }
-    if (query) {
-      filtered = filtered.filter(a =>
-        (a.fullName || '').toLowerCase().includes(query) ||
-        (a.nameEnglishCaps || '').toLowerCase().includes(query) ||
-        (a.accNo || '').toLowerCase().includes(query) ||
-        (a.nic || '').toLowerCase().includes(query) ||
-        (a.phone || '').includes(query) ||
-        (a.username || '').toLowerCase().includes(query) ||
-        (a.refId || '').toLowerCase().includes(query)
-      );
-    }
-
-    // Badge
-    const badge = document.getElementById('sidebar-sc-badge');
-    const pendingCount = apps.filter(a => a.status === 'pending').length;
-    if (badge) badge.textContent = pendingCount;
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" class="text-center py-8 text-slate-400">
-            <i class="fa-solid fa-mobile-screen-button text-3xl mb-2 block"></i>
-            Smart COOP අයදුම්පත් කිසිවක් හමු නොවීය.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map(app => {
-      const cleanPhone = (app.phone || '').replace(/[^0-9]/g, '');
-      const waMsg = encodeURIComponent(`ගරු ${app.fullName} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${app.accNo}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${app.username}.\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`);
-      const waLink = cleanPhone ? `https://wa.me/94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?text=${waMsg}` : '#';
-
-      let statusBadge = '';
-      if (app.status === 'activated') {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">ACTIVATED</span>';
-      } else if (app.status === 'rejected') {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">REJECTED</span>';
-      } else {
-        statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
+      let filtered = apps;
+      if (currentScFilter !== 'all') {
+        filtered = filtered.filter(a => safeStr(a.status) === currentScFilter);
+      }
+      if (query) {
+        filtered = filtered.filter(a =>
+          safeStr(a.fullName).toLowerCase().includes(query) ||
+          safeStr(a.nameEnglishCaps).toLowerCase().includes(query) ||
+          safeStr(a.accNo).toLowerCase().includes(query) ||
+          safeStr(a.nic).toLowerCase().includes(query) ||
+          safeStr(a.phone).includes(query) ||
+          safeStr(a.username).toLowerCase().includes(query) ||
+          safeStr(a.refId).toLowerCase().includes(query)
+        );
       }
 
-      return `
-        <tr class="hover:bg-slate-50 transition-colors">
-          <td class="py-3 px-4">
-            <span class="font-black text-[#0B0D7C] font-mono">${app.refId}</span>
-            <div class="text-[10px] text-slate-400">${app.submittedAt}</div>
-          </td>
-          <td class="py-3 px-4">
-            <span class="font-black font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded">${app.accNo}</span>
-          </td>
-          <td class="py-3 px-4">
-            <div class="font-bold text-slate-900">${app.fullName}</div>
-            <div class="text-[11px] text-slate-500 font-mono">${app.nic} • ${app.gender}</div>
-          </td>
-          <td class="py-3 px-4">
-            <div class="font-mono text-slate-800">${app.phone}</div>
-            <div class="text-[11px] text-slate-500 font-mono">User: <strong>${app.username}</strong></div>
-          </td>
-          <td class="py-3 px-4">
-            ${app.signatureImage ? `
-              <img src="${app.signatureImage}" onclick="window.printSmartCoopApp('${app.id}')" class="w-12 h-6 object-contain rounded border border-slate-200 bg-white cursor-pointer hover:scale-110 transition-transform" title="අත්සන බලන්න">
-            ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
-          </td>
-          <td class="py-3 px-4">${statusBadge}</td>
-          <td class="py-3 px-4 text-right">
-            <div class="flex items-center justify-end gap-1.5">
-              <button onclick="window.printSmartCoopApp('${app.id}')" class="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-[#0B0D7C] text-xs font-bold" title="A4 ලෙස මුද්‍රණය කරන්න">
-                <i class="fa-solid fa-print"></i>
-              </button>
-              ${app.status === 'pending' ? `
-                <button onclick="window.setSmartCoopStatus('${app.id}', 'activated')" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold" title="සක්‍රීය කරන්න">
-                  <i class="fa-solid fa-check"></i>
+      // Badge
+      const badge = document.getElementById('sidebar-sc-badge');
+      const pendingCount = apps.filter(a => safeStr(a.status) === 'pending').length;
+      if (badge) badge.textContent = pendingCount;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-8 text-slate-400">
+              <i class="fa-solid fa-mobile-screen-button text-3xl mb-2 block"></i>
+              Smart COOP අයදුම්පත් කිසිවක් හමු නොවීය.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(app => {
+        const cleanPhone = cleanPhoneNum(app.phone);
+        const waMsg = `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${safeStr(app.accNo)}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${safeStr(app.username)}.\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+        const waLink = makeWaUrl(cleanPhone, waMsg);
+
+        let statusBadge = '';
+        const st = safeStr(app.status).toLowerCase();
+        if (st === 'activated') {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">ACTIVATED</span>';
+        } else if (st === 'rejected') {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800">REJECTED</span>';
+        } else {
+          statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-4">
+              <span class="font-black text-[#0B0D7C] font-mono">${safeStr(app.refId)}</span>
+              <div class="text-[10px] text-slate-400">${safeStr(app.submittedAt)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="font-black font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded">${safeStr(app.accNo)}</span>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${safeStr(app.fullName)}</div>
+              <div class="text-[11px] text-slate-500 font-mono">${safeStr(app.nic)} • ${safeStr(app.gender)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-mono text-slate-800">${safeStr(app.phone)}</div>
+              <div class="text-[11px] text-slate-500 font-mono">User: <strong>${safeStr(app.username)}</strong></div>
+            </td>
+            <td class="py-3 px-4">
+              ${app.signatureImage ? `
+                <img src="${app.signatureImage}" onclick="window.printSmartCoopApp('${app.id}')" class="w-12 h-6 object-contain rounded border border-slate-200 bg-white cursor-pointer hover:scale-110 transition-transform" title="අත්සන බලන්න">
+              ` : '<span class="text-slate-400 text-[10px]">නැත</span>'}
+            </td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="window.printSmartCoopApp('${app.id}')" class="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-[#0B0D7C] text-xs font-bold" title="A4 ලෙස මුද්‍රණය කරන්න">
+                  <i class="fa-solid fa-print"></i>
                 </button>
-                <button onclick="window.setSmartCoopStatus('${app.id}', 'rejected')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold" title="ප්‍රතික්ෂේප කරන්න">
-                  <i class="fa-solid fa-xmark"></i>
+                ${st === 'pending' ? `
+                  <button onclick="window.setSmartCoopStatus('${app.id}', 'activated')" class="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold" title="සක්‍රීය කරන්න">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                  <button onclick="window.setSmartCoopStatus('${app.id}', 'rejected')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold" title="ප්‍රතික්ෂේප කරන්න">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                ` : ''}
+                <a href="${waLink}" target="_blank" class="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold" title="WhatsApp Message">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <button onclick="window.deleteSmartCoopApp('${app.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
-              ` : ''}
-              <a href="${waLink}" target="_blank" class="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold" title="WhatsApp Message">
-                <i class="fa-brands fa-whatsapp"></i>
-              </a>
-              <button onclick="window.deleteSmartCoopApp('${app.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } catch (err) {
+      console.error('Error in renderSmartCoopTable:', err);
+    }
   }
 
   window.setScFilter = (filter) => {
     currentScFilter = filter;
     document.querySelectorAll('.sc-filter-btn').forEach(btn => {
-      const active = btn.getAttribute('onclick').includes(`'${filter}'`);
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const active = onclickAttr.includes(`'${filter}'`) || onclickAttr.includes(`"${filter}"`);
       btn.classList.toggle('bg-[#0B0D7C]', active);
       btn.classList.toggle('text-white', active);
       btn.classList.toggle('bg-white', !active);
@@ -1341,12 +1414,12 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSmartCoopTable();
 
       if (status === 'activated') {
-        const apps = window.bankStore.getSmartCoopApplications();
+        const apps = window.bankStore.getSmartCoopApplications ? window.bankStore.getSmartCoopApplications() : [];
         const app = apps.find(x => x.id === id);
         if (app && app.phone) {
-          const cleanPhone = app.phone.replace(/[^0-9]/g, '');
-          const waMsg = encodeURIComponent(`ගරු ${app.fullName} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${app.accNo}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${app.username}.\n\nස්තූතියි!\nගලපිටියාගම සනස සමූපකාර බැංකුව`);
-          const waLink = `https://wa.me/94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?text=${waMsg}`;
+          const cleanPhone = cleanPhoneNum(app.phone);
+          const waMsg = `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${safeStr(app.accNo)}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${safeStr(app.username)}.\n\nස්තූතියි!\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+          const waLink = makeWaUrl(cleanPhone, waMsg);
           if (confirm('WhatsApp හරහා සක්‍රීය කිරීමේ පණිවිඩය යැවීමට අවශ්‍යද?')) {
             window.open(waLink, '_blank');
           }
@@ -1414,8 +1487,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="sheet">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 9pt;">
             <div>
-              <strong>Application ID:</strong> ${app.refId}<br>
-              <span style="font-family: monospace;">GSCS-MAA-${app.refId.replace(/[^0-9]/g, '')}</span>
+              <strong>Application ID:</strong> ${safeStr(app.refId)}<br>
+              <span style="font-family: monospace;">GSCS-MAA-${safeStr(app.refId).replace(/[^0-9]/g, '')}</span>
             </div>
             <div style="border: 1px solid #000; padding: 4px 8px;">
               <strong>Bank use only:</strong><br>
@@ -1448,7 +1521,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </tr>
             <tr>
               <th>මුලකුරු සමඟ නම (ඉංග්‍රීසි කැපිටල්)</th>
-              <td style="font-family: monospace; font-weight: bold;">${(app.nameEnglishCaps || '').toUpperCase()}</td>
+              <td style="font-family: monospace; font-weight: bold;">${safeStr(app.nameEnglishCaps).toUpperCase()}</td>
             </tr>
             <tr>
               <th>ජාතික හැඳුනුම්පත් අංකය</th>
@@ -1522,7 +1595,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="flex: 1; border: 1px solid #000; padding: 10px; font-size: 9pt;">
               <strong>කාර්යාලීය භාවිතය සඳහා පමණි:</strong><br><br>
               තහවුරු කළ නිලධාරී අත්සන: .............................<br><br>
-              සක්‍රිය කළ දිනය: .................... &nbsp;|&nbsp; තත්ත්වය: <strong>${(app.status || 'PENDING').toUpperCase()}</strong>
+              සක්‍රිය කළ දිනය: .................... &nbsp;|&nbsp; තත්ත්වය: <strong>${safeStr(app.status || 'PENDING').toUpperCase()}</strong>
             </div>
           </div>
         </div>
@@ -1738,7 +1811,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.bankStore.updateMembershipApplicationStatus(id, newStatus);
     renderApplicationsTable();
     renderOverview();
-    showAdminToast(`අයදුම්පතේ තත්වය ${newStatus.toUpperCase()} ලෙස යාවත්කාලීන විය.`);
+    showAdminToast(`අයදුම්පතේ තත්වය ${safeStr(newStatus).toUpperCase()} ලෙස යාවත්කාලීන විය.`);
   };
 
   window.deleteAppConfirm = (id) => {
@@ -1932,7 +2005,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div style="font-size: 9.5px; margin-top: 3px;">
                 <strong>යොමු අංකය:</strong> <span style="font-family: monospace; font-weight: bold;">${app.refId}</span> &nbsp;|&nbsp;
                 <strong>අයදුම් කළ දිනය:</strong> <span>${app.submittedAt}</span> &nbsp;|&nbsp;
-                <strong>තත්ත්වය:</strong> <span style="font-weight: bold;">${(app.status || 'PENDING').toUpperCase()}</span>
+                <strong>තත්ත්වය:</strong> <span style="font-weight: bold;">${safeStr(app.status || 'PENDING').toUpperCase()}</span>
               </div>
             </div>
 
@@ -2174,78 +2247,87 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentFbFilter = 'all';
 
   function renderFeedbackTable() {
-    const allFeedbacks = window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [];
-    const tbody = document.getElementById('admin-fb-table-body');
-    if (!tbody) return;
+    try {
+      const allFeedbacks = window.bankStore.getFeedbacks ? window.bankStore.getFeedbacks() : [];
+      const tbody = document.getElementById('admin-fb-table-body');
+      if (!tbody) return;
 
-    const filtered = currentFbFilter === 'all'
-      ? allFeedbacks
-      : allFeedbacks.filter(f => f.status === currentFbFilter);
+      const filtered = currentFbFilter === 'all'
+        ? allFeedbacks
+        : allFeedbacks.filter(f => safeStr(f.status) === currentFbFilter);
 
-    // Update sidebar badge (pending count)
-    const pendingFbs = allFeedbacks.filter(f => f.status === 'pending');
-    const badgeEl = document.getElementById('sidebar-fb-badge');
-    if (badgeEl) badgeEl.textContent = pendingFbs.length;
+      // Update sidebar badge (pending count)
+      const pendingFbs = allFeedbacks.filter(f => safeStr(f.status) === 'pending');
+      const badgeEl = document.getElementById('sidebar-fb-badge');
+      if (badgeEl) badgeEl.textContent = pendingFbs.length;
 
-    if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-slate-400 text-xs">ප්‍රතිපෝෂණ කිසිවක් ලැබී නොමැත.</td></tr>';
-      return;
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-slate-400 text-xs">ප්‍රතිපෝෂණ කිසිවක් ලැබී නොමැත.</td></tr>';
+        return;
+      }
+
+      const starHtml = (rating) => {
+        const r = safeNum(rating, 5);
+        return [1,2,3,4,5].map(s =>
+          `<i class="${s <= r ? 'fa-solid' : 'fa-regular'} fa-star text-yellow-400"></i>`
+        ).join('');
+      };
+
+      const statusBadge = (status, published) => {
+        if (published) return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">Published</span>';
+        const st = safeStr(status).toLowerCase();
+        if (st === 'approved') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Approved</span>';
+        if (st === 'rejected') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800">Rejected</span>';
+        return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Pending</span>';
+      };
+
+      tbody.innerHTML = filtered.map(f => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="py-3 px-4">
+            <div class="font-bold text-slate-900">${safeStr(f.name)}</div>
+            <div class="text-[11px] text-slate-400">${safeStr(f.village)} &bull; ${safeStr(f.phone)}</div>
+          </td>
+          <td class="py-3 px-4 text-sm">${starHtml(f.rating)} <span class="text-[11px] text-slate-400 ml-1">(${safeNum(f.rating, 5)}/5)</span></td>
+          <td class="py-3 px-4 text-slate-600 text-[11px]">${safeStr(f.service) || '-'}</td>
+          <td class="py-3 px-4 max-w-xs">
+            <p class="text-slate-700 text-[11px] line-clamp-2 italic">"${safeStr(f.message)}"</p>
+          </td>
+          <td class="py-3 px-4 text-slate-400 text-[11px] whitespace-nowrap">${safeStr(f.submittedAt) || '-'}</td>
+          <td class="py-3 px-4 text-center">
+            ${f.publishedAsTestimonial
+              ? '<i class="fa-solid fa-check-circle text-indigo-500 text-base" title="ප්‍රකාශිත"></i>'
+              : '<i class="fa-regular fa-circle text-slate-300 text-base"></i>'
+            }
+          </td>
+          <td class="py-3 px-4">${statusBadge(f.status, f.publishedAsTestimonial)}</td>
+          <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
+            ${!f.publishedAsTestimonial ? `
+            <button onclick="window.approveFeedback('${f.id}')" class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50" title="Approve">
+              <i class="fa-solid fa-check"></i>
+            </button>
+            <button onclick="window.publishFeedbackAsTestimonial('${f.id}')" class="p-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50" title="Publish as Testimonial">
+              <i class="fa-solid fa-star"></i>
+            </button>
+            <button onclick="window.rejectFeedback('${f.id}')" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50" title="Reject">
+              <i class="fa-solid fa-ban"></i>
+            </button>
+            ` : ''}
+            <button onclick="window.deleteFeedbackConfirm('${f.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50" title="Delete">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    } catch (err) {
+      console.error('Error in renderFeedbackTable:', err);
     }
-
-    const starHtml = (rating) => [1,2,3,4,5].map(s =>
-      `<i class="${s <= (rating||5) ? 'fa-solid' : 'fa-regular'} fa-star text-yellow-400"></i>`
-    ).join('');
-
-    const statusBadge = (status, published) => {
-      if (published) return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800">Published</span>';
-      if (status === 'approved') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Approved</span>';
-      if (status === 'rejected') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800">Rejected</span>';
-      return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Pending</span>';
-    };
-
-    tbody.innerHTML = filtered.map(f => `
-      <tr class="hover:bg-slate-50 transition-colors">
-        <td class="py-3 px-4">
-          <div class="font-bold text-slate-900">${f.name}</div>
-          <div class="text-[11px] text-slate-400">${f.village || ''} &bull; ${f.phone || ''}</div>
-        </td>
-        <td class="py-3 px-4 text-sm">${starHtml(f.rating)} <span class="text-[11px] text-slate-400 ml-1">(${f.rating}/5)</span></td>
-        <td class="py-3 px-4 text-slate-600 text-[11px]">${f.service || '-'}</td>
-        <td class="py-3 px-4 max-w-xs">
-          <p class="text-slate-700 text-[11px] line-clamp-2 italic">"${f.message}"</p>
-        </td>
-        <td class="py-3 px-4 text-slate-400 text-[11px] whitespace-nowrap">${f.submittedAt || '-'}</td>
-        <td class="py-3 px-4 text-center">
-          ${f.publishedAsTestimonial
-            ? '<i class="fa-solid fa-check-circle text-indigo-500 text-base" title="ප්‍රකාශිත"></i>'
-            : '<i class="fa-regular fa-circle text-slate-300 text-base"></i>'
-          }
-        </td>
-        <td class="py-3 px-4">${statusBadge(f.status, f.publishedAsTestimonial)}</td>
-        <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
-          ${!f.publishedAsTestimonial ? `
-          <button onclick="window.approveFeedback('${f.id}')" class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50" title="Approve">
-            <i class="fa-solid fa-check"></i>
-          </button>
-          <button onclick="window.publishFeedbackAsTestimonial('${f.id}')" class="p-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50" title="Publish as Testimonial">
-            <i class="fa-solid fa-star"></i>
-          </button>
-          <button onclick="window.rejectFeedback('${f.id}')" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50" title="Reject">
-            <i class="fa-solid fa-ban"></i>
-          </button>
-          ` : ''}
-          <button onclick="window.deleteFeedbackConfirm('${f.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50" title="Delete">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-    `).join('');
   }
 
   window.setFbFilter = function(filter) {
     currentFbFilter = filter;
     document.querySelectorAll('.fb-filter-btn').forEach(btn => {
-      const isActive = btn.getAttribute('onclick').includes(`'${filter}'`);
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const isActive = onclickAttr.includes(`'${filter}'`) || onclickAttr.includes(`"${filter}"`);
       btn.className = isActive
         ? 'fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white'
         : 'fb-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200';

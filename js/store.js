@@ -31,7 +31,12 @@
               products: (parsed.products && parsed.products.length) ? parsed.products : window.DEFAULT_BANK_DATA.products,
               interestRates: (parsed.interestRates && parsed.interestRates.fixedDeposits) ? parsed.interestRates : window.DEFAULT_BANK_DATA.interestRates,
               heroSlides: (parsed.heroSlides && parsed.heroSlides.length) ? parsed.heroSlides : window.DEFAULT_BANK_DATA.heroSlides,
-              partners: (parsed.partners && parsed.partners.length) ? parsed.partners : window.DEFAULT_BANK_DATA.partners
+              partners: (parsed.partners && parsed.partners.length) ? parsed.partners : window.DEFAULT_BANK_DATA.partners,
+              inquiries: Array.isArray(parsed.inquiries) ? parsed.inquiries : [],
+              membershipApplications: Array.isArray(parsed.membershipApplications) ? parsed.membershipApplications : [],
+              loanPayments: Array.isArray(parsed.loanPayments) ? parsed.loanPayments : [],
+              smartCoopApplications: Array.isArray(parsed.smartCoopApplications) ? parsed.smartCoopApplications : [],
+              feedbacks: Array.isArray(parsed.feedbacks) ? parsed.feedbacks : []
             };
           }
         }
@@ -627,18 +632,35 @@
 
       const mergeList = (localList = [], remoteList = []) => {
         const map = new Map();
-        // Insert remote items first
-        remoteList.forEach(item => {
-          const key = item.id || item.refId;
-          if (key) map.set(key, item);
+        const refMap = new Map();
+
+        // 1. Index local items so pending offline entries and uploaded images are preserved
+        (localList || []).forEach(item => {
+          if (!item) return;
+          const kId = item.id ? String(item.id) : '';
+          const kRef = item.refId ? String(item.refId) : '';
+          if (kId) map.set(kId, item);
+          if (kRef) refMap.set(kRef, item);
         });
-        // Insert any local items that are not in remote yet (preserving pending offline entries)
-        localList.forEach(item => {
-          const key = item.id || item.refId;
-          if (key && !map.has(key)) {
-            map.set(key, item);
+
+        // 2. Merge remote items: if matched, merge remote properties; if new, add it
+        (remoteList || []).forEach(remoteItem => {
+          if (!remoteItem) return;
+          const kId = remoteItem.id ? String(remoteItem.id) : '';
+          const kRef = remoteItem.refId ? String(remoteItem.refId) : '';
+
+          let existing = (kId && map.get(kId)) || (kRef && refMap.get(kRef));
+          if (existing) {
+            Object.assign(existing, remoteItem, {
+              receiptImage: remoteItem.receiptImage || existing.receiptImage || '',
+              signatureImage: remoteItem.signatureImage || existing.signatureImage || ''
+            });
+          } else {
+            const key = kId || kRef || ('item-' + Math.random());
+            map.set(key, remoteItem);
           }
         });
+
         return Array.from(map.values());
       };
 
