@@ -29,8 +29,8 @@ A state-of-the-art, Commercial Bank standard web portal custom-built for **Galap
 
 2. **Complete Admin Dashboard (`admin.html`)**:
    - **Secure Access**: PIN / Password protected authentication.
-     - **Username**: `admin`
-     - **Password**: `sanasa123` (or `1987`)
+     - **Username**: `shanputha`
+     - **Password**: `shanputha!123`
    - **Overview Metrics**: Total news, services count, inquiries count, peak rates, breaking notice status.
    - **News & Announcements Manager**: Post new notices, upload image links, toggle Breaking Urgent banner, edit and delete articles.
    - **Services & Products Manager**: Add, edit, or remove bank products (Savings, Fixed Deposits, Loans, Welfare).
@@ -66,5 +66,5 @@ A state-of-the-art, Commercial Bank standard web portal custom-built for **Galap
 
 ## 🔐 Admin Login Credentials
 - **URL**: `admin.html`
-- **Username**: `admin`
-- **Password**: `sanasa123`
+- **Username**: `shanputha`
+- **Password**: `shanputha!123`

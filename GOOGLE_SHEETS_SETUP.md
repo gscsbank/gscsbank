@@ -69,7 +69,7 @@ window.GSCS_CONFIG = {
 දැන් මෙම ගොනු සියල්ල GitHub එකට commit / push කරන්න!
 
 ##### ක්‍රමය B: Admin Panel එකෙන් කෙලින්ම දැමීම
-1. වෙබ් අඩවියේ `admin.html` විවෘත කර Login වන්න (`admin` / `sanasa123`).
+1. වෙබ් අඩවියේ `admin.html` විවෘත කර Login වන්න (`shanputha` / `shanputha!123`).
 2. වම්පස මෙනුවේ **GitHub Pages & Sync** ටැබ් එකට යන්න.
 3. එහි ඇති **Google Sheets & Apps Script Cloud Sync** කොටුවේ ඇති input field එකට Web App URL එක paste කර **Save URL** හෝ **Test & Sync Now** ක්ලික් කරන්න!
 4. ඉහළ ඇති **Sync Cloud (Google Sheets)** බොත්තම මඟින්ද ඕනෑම වෙලාවක ක්ෂණිකව Google Sheet එක සමඟ සමමුහුර්ත (Live Sync) විය හැක.

@@ -130,11 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const u = document.getElementById('admin-user').value.trim();
         const p = document.getElementById('admin-pass').value.trim();
 
-        if ((u === 'admin' || u === 'gscs') && (p === 'sanasa123' || p === '1987')) {
+        if (u.toLowerCase() === 'shanputha' && p === 'shanputha!123') {
           sessionStorage.setItem(AUTH_KEY, 'true');
           checkAuth();
         } else {
-          alert('වලංගු නොවන පරිශීලක නාමයක් හෝ මුරපදයකි! (Invalid Username or Password)\nDefault: admin / sanasa123');
+          alert('වලංගු නොවන පරිශීලක නාමයක් හෝ මුරපදයකි! (Invalid Username or Password)');
         }
       });
     }
