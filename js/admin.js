@@ -102,9 +102,10 @@ document.addEventListener('click', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
   const AUTH_KEY = 'GSCS_ADMIN_LOGGED_IN';
   let inquiryFilter = 'all';
-
-  checkAuth();
-  setupAuthForm();
+  let currentAppFilter = 'all';
+  let currentLpFilter = 'all';
+  let currentScFilter = 'all';
+  let currentFbFilter = 'all';
 
   function checkAuth() {
     const isLoggedIn = sessionStorage.getItem(AUTH_KEY) === 'true';
@@ -170,13 +171,15 @@ document.addEventListener('DOMContentLoaded', () => {
       appScriptInput.value = window.bankStore.getAppsScriptUrl();
     }
     if (window.bankStore.getAppsScriptUrl && window.bankStore.getAppsScriptUrl()) {
-      window.syncFromCloud(false);
+      if (typeof window.syncFromCloud === 'function') {
+        window.syncFromCloud(false).catch(err => console.warn('Cloud sync on init:', err));
+      }
       if (!window._cloudSyncTimer) {
         window._cloudSyncTimer = setInterval(() => {
-          if (document.visibilityState === 'visible' && window.syncFromCloud) {
-            window.syncFromCloud(false);
+          if (document.visibilityState === 'visible' && typeof window.syncFromCloud === 'function') {
+            window.syncFromCloud(false).catch(err => console.warn('Interval sync error:', err));
           }
-        }, 60000); // increased to 60s to reduce re-render frequency
+        }, 60000); // 60s auto-sync
       }
     }
 
@@ -742,7 +745,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.filterInquiries = (status) => {
     inquiryFilter = status;
     document.querySelectorAll('.inq-filter-btn').forEach(btn => {
-      const match = btn.textContent.toLowerCase().includes(status) || (status === 'all' && btn.textContent.includes('සියල්ල'));
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const match = onclickAttr.includes(`'${status}'`) || onclickAttr.includes(`"${status}"`);
       btn.className = match ? 'inq-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0B0D7C] text-white' : 'inq-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200';
     });
     renderInquiriesTable();
@@ -986,7 +990,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   // --- MEMBERSHIP APPLICATIONS MANAGEMENT CONTROLLER ---
   // =========================================================================
-  let currentAppFilter = 'all';
 
   function renderApplicationsTable() {
     try {
@@ -1113,7 +1116,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- Loan Payments ---
-  let currentLpFilter = 'all';
 
   function renderLoanPaymentsTable() {
     try {
@@ -1285,7 +1287,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- Smart COOP Applications ---
-  let currentScFilter = 'all';
 
   function renderSmartCoopTable() {
     try {
@@ -2247,7 +2248,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   // --- FEEDBACK MANAGEMENT ---
   // ============================================================
-  let currentFbFilter = 'all';
 
   function renderFeedbackTable() {
     try {
@@ -2365,5 +2365,9 @@ document.addEventListener('DOMContentLoaded', () => {
       showAdminToast('ප්‍රතිපෝෂණය මකාදමන ලදී.');
     }
   };
+
+  // --- Initialize Auth & Dashboard AFTER all functions, tables & window methods are registered ---
+  setupAuthForm();
+  checkAuth();
 
 });
