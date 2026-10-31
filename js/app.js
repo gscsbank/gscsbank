@@ -2906,7 +2906,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <table class="header-tbl">
           <tr>
             <td style="width: 70%;">
-              <div class="bank-title">සීමා සහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමුපකාර සමිතිය</div>
+              <div class="bank-title">සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමුපකාර සමිතිය</div>
               <div class="form-title">ළමා ගිණුම් අයදුම් පත්‍රය (${app.childAccountType})</div>
               <div class="sub-title">ලියාපදිංචි අංකය: කුලි/395 &bull; ගලපිටියාගම, නිකවැරටිය</div>
               <div style="margin-top: 4px; font-weight: bold; font-size: 11px; color: #0B0D7C;">යොමු අංකය: ${app.refId}</div>
@@ -2924,7 +2924,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div style="font-size: 10.5px; margin-bottom: 8px;">
           <strong>ගරු ලේකම්/කළමනාකාර මහතා වෙතටයි,</strong><br>
-          සීමා සහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමුපකාර සමිතිය.
+          සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමුපකාර සමිතිය.
         </div>
 
         <div class="section-title">1. දරුවාගේ පුද්ගලික තොරතුරු (Child's Personal Information)</div>
