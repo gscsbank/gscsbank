@@ -1,4 +1,4 @@
-// app.js - Main Client Application for Galapitiyagama Sanasa Bank
+﻿// app.js - Main Client Application for Galapitiyagama Sanasa Bank
 document.addEventListener('DOMContentLoaded', () => {
   let currentLang = localStorage.getItem('GSCS_LANG') || 'si';
   let activeCategory = 'all';
@@ -303,6 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const iconClass = iconMap[prod.icon] || 'fa-solid fa-building-columns';
       const isMemberSavings = prod.id === 'prod-1' || (prod.title && prod.title.includes('සාමාජික ඉතුරුම්')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('member savings'));
       const isExternalSavings = prod.id === 'prod-2' || (prod.title && prod.title.includes('බාහිර තැන්පත්')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('external savings'));
+      const isMiniketa = prod.id === 'prod-4' || (prod.title && prod.title.includes('මිණිකැට')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('miniketa'));
+      const isKidsPlus = prod.id === 'prod-5' || (prod.title && prod.title.includes('කිඩ්ස්')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('kids plus'));
+      const isChildSavings = isMiniketa || isKidsPlus;
 
       return `
         <div class="product-card group ${prod.image ? 'p-0 overflow-hidden flex flex-col' : 'p-6 sm:p-7 flex flex-col'}">
@@ -368,6 +371,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
                 <button onclick="window.openExternalDepositModal()" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-600 text-white shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-1.5" title="${currentLang === 'en' ? 'Open Account' : 'අයදුම් කිරීම'}">
                   <i class="fa-solid fa-file-signature text-xs"></i>
+                  <span>${currentLang === 'en' ? 'Apply Now' : 'අයදුම් කිරීම'}</span>
+                </button>
+              </div>
+                        ` : isChildSavings ? `
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="window.openInquiryModal('${title}')" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 hover:bg-[#0B0D7C] text-slate-800 hover:text-white transition-all flex items-center justify-center gap-1.5 border border-slate-200 shadow-sm" title="${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}">
+                  <i class="fa-solid fa-circle-question text-xs"></i>
+                  <span>${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}</span>
+                </button>
+                <button onclick="window.openChildSavingsModal('${isKidsPlus ? 'kids-plus' : 'miniketa'}')" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-500 text-white shadow-md shadow-orange-900/20 transition-all flex items-center justify-center gap-1.5" title="${currentLang === 'en' ? 'Open Account' : 'අයදුම් කිරීම'}">
+                  <i class="fa-solid fa-child text-xs"></i>
                   <span>${currentLang === 'en' ? 'Apply Now' : 'අයදුම් කිරීම'}</span>
                 </button>
               </div>
@@ -2388,6 +2402,411 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.downloadExternalDepositApplicationPDF = () => {
     window.printExternalDepositApplicationCopy();
+  };
+
+
+
+
+  // ==========================================
+  // CHILD SAVINGS APPLICATION (ළමා ගිණුම් අයදුම්පත) CONTROLLER
+  // ==========================================
+  let chdSigPad = null;
+  let chdReceiptBase64 = '';
+  let lastSubmittedChdApp = null;
+
+  function initChdSigPadCanvas() {
+    const canvas = document.getElementById('chd-sig-pad');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = (rect.width || 320) * dpr;
+    canvas.height = (rect.height || 112) * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#0B0D7C';
+
+    let isDrawing = false;
+    let hasDrawn = false;
+    canvas.dataset.hasDrawn = 'false';
+
+    function getCoords(e) {
+      const r = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - r.left,
+        y: clientY - r.top
+      };
+    }
+
+    function startDraw(e) {
+      isDrawing = true;
+      const pos = getCoords(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      e.preventDefault();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const pos = getCoords(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      hasDrawn = true;
+      canvas.dataset.hasDrawn = 'true';
+      e.preventDefault();
+    }
+
+    function stopDraw(e) {
+      if (isDrawing) {
+        isDrawing = false;
+        ctx.closePath();
+      }
+    }
+
+    canvas.onmousedown = startDraw;
+    canvas.onmousemove = draw;
+    window.addEventListener('mouseup', stopDraw);
+
+    canvas.ontouchstart = startDraw;
+    canvas.ontouchmove = draw;
+    canvas.ontouchend = stopDraw;
+
+    chdSigPad = { canvas, ctx };
+  }
+
+  window.initChdSignaturePad = () => {
+    setTimeout(initChdSigPadCanvas, 150);
+  };
+
+  window.clearChdSignatureCanvas = () => {
+    const canvas = document.getElementById('chd-sig-pad');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.dataset.hasDrawn = 'false';
+  };
+
+  window.openChildSavingsModal = (type = 'miniketa') => {
+    const modal = document.getElementById('child-savings-modal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+
+    // Preselect account type
+    const radios = document.getElementsByName('chd_account_type');
+    for (let r of radios) {
+      if (r.value === type) r.checked = true;
+    }
+
+    // Set today date
+    const dateInput = document.getElementById('chd-app-date');
+    if (dateInput) {
+      const today = new Date();
+      dateInput.value = today.toISOString().split('T')[0];
+    }
+
+    // Reset views
+    const formCont = document.getElementById('chd-form-container');
+    const succView = document.getElementById('chd-success-view');
+    if (formCont) formCont.classList.remove('hidden');
+    if (succView) succView.classList.add('hidden');
+
+    window.initChdSignaturePad();
+  };
+
+  window.closeChildSavingsModal = () => {
+    const modal = document.getElementById('child-savings-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  };
+
+  window.handleChdReceiptSelected = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      showToast('රිසිට්පත 8MB ට වඩා අඩු විය යුතුය.', 'error');
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      chdReceiptBase64 = evt.target.result;
+      const previewWrap = document.getElementById('chd-receipt-preview-wrap');
+      const previewImg = document.getElementById('chd-receipt-preview-img');
+      const filenameEl = document.getElementById('chd-receipt-filename');
+      if (previewWrap) previewWrap.classList.remove('hidden');
+      if (previewImg) previewImg.src = chdReceiptBase64;
+      if (filenameEl) filenameEl.textContent = file.name;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.clearChdReceiptUpload = () => {
+    chdReceiptBase64 = '';
+    const input = document.getElementById('chd-receipt-input');
+    const previewWrap = document.getElementById('chd-receipt-preview-wrap');
+    if (input) input.value = '';
+    if (previewWrap) previewWrap.classList.add('hidden');
+  };
+
+  window.handleChildSavingsSubmit = (e) => {
+    e.preventDefault();
+
+    const selectedTypeEl = document.querySelector('input[name="chd_account_type"]:checked');
+    const selectedType = selectedTypeEl ? selectedTypeEl.value : 'miniketa';
+    const typeLabel = selectedType === 'kids-plus' ? 'කිඩ්ස් ප්ලස් ළමා ඉතුරුම් ගිණුම' : 'මිණිකැට ළමා ගිණුම';
+    const typeLabelEn = selectedType === 'kids-plus' ? "Kids Plus School Savings" : "Miniketa Children's Savings";
+
+    // Validate child info
+    const childFullName = (document.getElementById('chd-child-fullname')?.value || '').trim();
+    const childInitials = (document.getElementById('chd-child-initials')?.value || '').trim();
+    const childInitialsEn = (document.getElementById('chd-child-initials-en')?.value || '').trim();
+    const childGender = document.querySelector('input[name="chd_child_gender"]:checked')?.value || 'පුරුෂ';
+    const childDob = document.getElementById('chd-child-dob')?.value || '';
+    const childAddress = (document.getElementById('chd-child-address')?.value || '').trim();
+    const childCity = (document.getElementById('chd-child-city')?.value || '').trim();
+    const childGn = (document.getElementById('chd-child-gn')?.value || '').trim();
+    const childPhone = (document.getElementById('chd-child-phone')?.value || '').trim();
+    const childWhatsapp = (document.getElementById('chd-child-whatsapp')?.value || '').trim();
+    const childEmail = (document.getElementById('chd-child-email')?.value || '').trim();
+    const childReligion = document.getElementById('chd-child-religion')?.value || 'බෞද්ධ';
+
+    // Validate guardian info
+    const guardianFullName = (document.getElementById('chd-guardian-fullname')?.value || '').trim();
+    const guardianAddress = (document.getElementById('chd-guardian-address')?.value || '').trim();
+    const guardianNic = (document.getElementById('chd-guardian-nic')?.value || '').trim();
+    const guardianRelation = document.getElementById('chd-guardian-relation')?.value || 'මව';
+    const guardianGender = document.querySelector('input[name="chd_guardian_gender"]:checked')?.value || 'ස්ත්‍රී';
+
+    // Validate deposit amount
+    const depositAmt = Number(document.getElementById('chd-deposit-amount')?.value || 0);
+    if (depositAmt < 2000) {
+      showToast('අවම ආරම්භක තැන්පතුව රුපියල් 2,000/- ක් විය යුතුය.', 'error');
+      document.getElementById('chd-deposit-amount')?.focus();
+      return;
+    }
+
+    // Validate receipt
+    if (!chdReceiptBase64) {
+      showToast('කරුණාකර තැන්පතු රිසිට්පත Upload කරන්න.', 'error');
+      return;
+    }
+
+    // Validate signature
+    const canvas = document.getElementById('chd-sig-pad');
+    if (!canvas || canvas.dataset.hasDrawn !== 'true') {
+      showToast('කරුණාකර භාරකරුගේ අත්සන ඇතුළත් කරන්න.', 'error');
+      return;
+    }
+    const signatureImage = canvas.toDataURL('image/png');
+
+    // Create child savings application record
+    const refId = 'GSCS-CHD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const now = new Date();
+    const submittedAt = now.toLocaleDateString('si-LK') + ' ' + now.toLocaleTimeString('si-LK');
+
+    const newChildApp = {
+      id: 'app-' + Date.now(),
+      refId: refId,
+      appType: 'CHILD_SAVINGS',
+      isChildSavings: true,
+      childAccountType: typeLabel,
+      childAccountTypeEn: typeLabelEn,
+      fullName: childFullName,
+      childFullName: childFullName,
+      nameWithInitials: childInitials,
+      nameEnglishCaps: childInitialsEn,
+      childGender: childGender,
+      gender: childGender,
+      dob: childDob,
+      address: childAddress,
+      city: childCity,
+      gnDivision: childGn,
+      phone: childPhone,
+      whatsapp: childWhatsapp || childPhone,
+      email: childEmail,
+      religion: childReligion,
+      guardianFullName: guardianFullName,
+      guardianAddress: guardianAddress,
+      guardianNic: guardianNic,
+      nic: guardianNic, // for admin table compatibility
+      guardianRelation: guardianRelation,
+      guardianGender: guardianGender,
+      totalPaid: depositAmt,
+      shareCapital: 0,
+      admissionFee: 0,
+      minDeposit: depositAmt,
+      receiptImage: chdReceiptBase64,
+      signatureImage: signatureImage,
+      submittedAt: submittedAt,
+      status: 'pending'
+    };
+
+    // Save via store
+    const savedApp = window.bankStore.addMembershipApplication(newChildApp);
+    if (savedApp && savedApp.refId && savedApp.refId.startsWith('GSCS-MA-')) {
+      savedApp.refId = savedApp.refId.replace('GSCS-MA-', 'GSCS-CHD-');
+    }
+    window.bankStore.save();
+    window.dispatchEvent(new CustomEvent('bankDataUpdated'));
+
+    lastSubmittedChdApp = savedApp || newChildApp;
+
+    // Switch to success view
+    const formCont = document.getElementById('chd-form-container');
+    const succView = document.getElementById('chd-success-view');
+    if (formCont) formCont.classList.add('hidden');
+    if (succView) succView.classList.remove('hidden');
+
+    const refEl = document.getElementById('succ-chd-ref');
+    const typeEl = document.getElementById('succ-chd-type');
+    const nameEl = document.getElementById('succ-chd-name');
+    const guardianEl = document.getElementById('succ-chd-guardian');
+    const amtEl = document.getElementById('succ-chd-amount');
+
+    if (refEl) refEl.textContent = lastSubmittedChdApp.refId;
+    if (typeEl) typeEl.textContent = lastSubmittedChdApp.childAccountType;
+    if (nameEl) nameEl.textContent = `${lastSubmittedChdApp.childFullName} (${lastSubmittedChdApp.nameWithInitials})`;
+    if (guardianEl) guardianEl.textContent = `${lastSubmittedChdApp.guardianFullName} (${lastSubmittedChdApp.guardianNic}) - ${lastSubmittedChdApp.guardianRelation}`;
+    if (amtEl) amtEl.textContent = `රු. ${Number(lastSubmittedChdApp.totalPaid).toLocaleString()}.00`;
+
+    showToast('ළමා ගිණුම් අයදුම්පත සාර්ථකව යොමු විය!', 'success');
+  };
+
+  window.printChildSavingsApplicationCopy = () => {
+    const app = lastSubmittedChdApp;
+    if (!app) return;
+
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      alert('Pop-up blocker සක්‍රීය වී ඇත. කරුණාකර allow කරන්න.');
+      return;
+    }
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html lang="si">
+      <head>
+        <meta charset="UTF-8">
+        <title>ළමා ගිණුම් අයදුම් පත්‍රය - ${app.refId}</title>
+        <style>
+          @page { size: A4; margin: 12mm 15mm; }
+          body { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 11px; line-height: 1.45; color: #1e293b; padding: 15px; }
+          .header-tbl { width: 100%; border-bottom: 2px solid #0B0D7C; padding-bottom: 8px; margin-bottom: 12px; }
+          .header-tbl td { border: none; padding: 2px; }
+          .bank-title { font-size: 15px; font-weight: bold; color: #0B0D7C; }
+          .form-title { font-size: 17px; font-weight: 900; color: #b45309; text-transform: uppercase; margin: 4px 0; }
+          .sub-title { font-size: 10.5px; color: #475569; }
+          .bank-box { border: 1.5px solid #64748b; padding: 6px 10px; font-size: 9.5px; line-height: 1.35; background: #f8fafc; }
+          .section-title { background: #0B0D7C; color: #ffffff; padding: 5px 8px; font-weight: bold; font-size: 11px; margin-top: 12px; margin-bottom: 6px; border-radius: 3px; }
+          table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+          table.data-table td { border: 1px solid #cbd5e1; padding: 5px 7px; font-size: 10.5px; vertical-align: top; }
+          table.data-table td.lbl { width: 32%; background: #f8fafc; font-weight: bold; color: #334155; }
+          table.data-table td.val { width: 68%; }
+          .declaration { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px; font-style: italic; font-size: 10px; margin: 10px 0; border-radius: 4px; }
+          .sig-box { text-align: center; border: 1px dashed #94a3b8; padding: 6px; min-height: 70px; }
+          .sig-img { max-height: 55px; max-width: 180px; }
+          .receipt-img { max-height: 120px; max-width: 200px; border: 1px solid #cbd5e1; border-radius: 4px; }
+          @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body onload="window.print()">
+        <table class="header-tbl">
+          <tr>
+            <td style="width: 70%;">
+              <div class="bank-title">සීමා සහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමුපකාර සමිතිය</div>
+              <div class="form-title">ළමා ගිණුම් අයදුම් පත්‍රය (${app.childAccountType})</div>
+              <div class="sub-title">ලියාපදිංචි අංකය: කුලි/395 &bull; ගලපිටියාගම, නිකවැරටිය</div>
+              <div style="margin-top: 4px; font-weight: bold; font-size: 11px; color: #0B0D7C;">යොමු අංකය: ${app.refId}</div>
+            </td>
+            <td style="width: 30%; text-align: right;">
+              <div class="bank-box" style="text-align: left;">
+                <strong>Bank use only</strong><br>
+                A/C No: .................................<br>
+                Data Entered by: ...................<br>
+                Manager: .............................
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <div style="font-size: 10.5px; margin-bottom: 8px;">
+          <strong>ගරු ලේකම්/කළමනාකාර මහතා වෙතටයි,</strong><br>
+          සීමා සහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමුපකාර සමිතිය.
+        </div>
+
+        <div class="section-title">1. දරුවාගේ පුද්ගලික තොරතුරු (Child's Personal Information)</div>
+        <table class="data-table">
+          <tr><td class="lbl">ගිණුම් වර්ගය:</td><td class="val"><strong>${app.childAccountType}</strong> (${app.childAccountTypeEn})</td></tr>
+          <tr><td class="lbl">සම්පූර්ණ නම:</td><td class="val"><strong>${app.childFullName}</strong></td></tr>
+          <tr><td class="lbl">මුලකුරු සමඟ නම:</td><td class="val">${app.nameWithInitials}</td></tr>
+          <tr><td class="lbl">මුලකුරු සමඟ නම (English Caps):</td><td class="val" style="font-family: monospace;">${app.nameEnglishCaps}</td></tr>
+          <tr><td class="lbl">ස්ත්‍රී / පුරුෂ භාවය & උපන් දිනය:</td><td class="val">${app.childGender} | උපන් දිනය: ${app.dob}</td></tr>
+          <tr><td class="lbl">ලිපිනය & නගරය:</td><td class="val">${app.address}, ${app.city}</td></tr>
+          <tr><td class="lbl">ග්‍රාම නිලධාරී වසම:</td><td class="val">${app.gnDivision || '-'}</td></tr>
+          <tr><td class="lbl">දුරකථන & WhatsApp:</td><td class="val">${app.phone} ${app.whatsapp ? '| WA: ' + app.whatsapp : ''}</td></tr>
+          <tr><td class="lbl">ඊ-මේල් & ආගම:</td><td class="val">${app.email || '-'} | ${app.religion}</td></tr>
+        </table>
+
+        <div class="section-title">2. මව/පියා/භාරකරුගේ පුද්ගලික තොරතුරු (Parent/Guardian Information)</div>
+        <table class="data-table">
+          <tr><td class="lbl">භාරකරුගේ සම්පූර්ණ නම:</td><td class="val"><strong>${app.guardianFullName}</strong></td></tr>
+          <tr><td class="lbl">ජාතික හැඳුනුම්පත් අංකය (NIC):</td><td class="val" style="font-family: monospace; font-weight: bold;">${app.guardianNic}</td></tr>
+          <tr><td class="lbl">නෑදෑකම & ස්ත්‍රී/පුරුෂ:</td><td class="val">${app.guardianRelation} (${app.guardianGender})</td></tr>
+          <tr><td class="lbl">භාරකරුගේ ලිපිනය:</td><td class="val">${app.guardianAddress}</td></tr>
+        </table>
+
+        <div class="section-title">3. ආරම්භක තැන්පතුව (Initial Deposit)</div>
+        <table class="data-table">
+          <tr><td class="lbl">ආරම්භක තැන්පතු මුදල:</td><td class="val"><strong style="font-size: 12px; color: #047857;">රු. ${Number(app.totalPaid).toLocaleString()}.00</strong> (අවම තැන්පතුව රු. 2,000/- සම්පූර්ණ කර ඇත)</td></tr>
+          <tr><td class="lbl">ගෙවූ බැංකුව:</td><td class="val">People's Bank - 124200110064754 (Nikaweratiya)</td></tr>
+          ${app.receiptImage ? `<tr><td class="lbl">බැංකු Slip පත:</td><td class="val"><img src="${app.receiptImage}" class="receipt-img"></td></tr>` : ''}
+        </table>
+
+        <div class="declaration">
+          "ඉහත විස්තර සඳහන් ළමයාගේ නමින් ඔබ සමිතියේ ළමා ඉතිරිකිරීමේ ගිණුමක් විවෘත කරන මෙන් ඉතා කරුණාවෙන් ඉල්ලා සිටින අතර සමිතියේ නීති රීති වලට එකඟව කටයුතු කිරීමට මෙයින් පොරොන්දු වෙමි."
+        </div>
+
+        <table style="width: 100%; border: none; margin-top: 10px;">
+          <tr style="border: none;">
+            <td style="border: none; width: 50%;">
+              <strong>දිනය:</strong> ${app.submittedAt.split(' ')[0]}<br>
+              <strong>යොමු අංකය:</strong> ${app.refId}
+            </td>
+            <td style="border: none; width: 50%; text-align: center;">
+              <div class="sig-box">
+                ${app.signatureImage ? `<img src="${app.signatureImage}" class="sig-img"><br>` : ''}
+                <strong>අයදුම්කරුගේ (මව/පියා/භාරකරුගේ) අත්සන</strong>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <div style="margin-top: 18px; border-top: 1px dashed #64748b; padding-top: 8px; font-size: 9.5px; color: #64748b;">
+          <strong>සමිතියේ පරිපාලන භාවිතය සඳහා පමණි (Bank Use Only):</strong><br>
+          අයදුම්පත අනුමත කළ කළමනාකරු / ලේකම්ගේ අත්සන: ....................................... | දිනය: ....................
+        </div>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+  };
+
+  window.downloadChildSavingsApplicationPDF = () => {
+    window.printChildSavingsApplicationCopy();
   };
 
 
