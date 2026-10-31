@@ -111,96 +111,104 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-[#DF0178] selection:text-white">
 
-  <!-- ================= TOP UTILITY BAR (Commercial Bank Style) ================= -->
-  <div class="top-bar-bg border-b border-indigo-950 text-xs py-2 px-4 sm:px-8">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      <!-- Left Contact & Reg Info -->
-      <div class="flex items-center gap-4 sm:gap-6 text-slate-300">
-        <span class="flex items-center gap-1.5 font-bold text-pink-400">
-          <i class="fa-solid fa-building-shield"></i> Reg No: Kuli/395 (Est. 1987)
-        </span>
-        <a href="tel:+94372260658" class="hover:text-white flex items-center gap-1.5 transition-colors font-medium">
-          <i class="fa-solid fa-phone text-pink-400"></i> +94 37 22 60 658
-        </a>
-        <a href="https://wa.me/94771234567" target="_blank" class="hover:text-emerald-400 hidden md:flex items-center gap-1.5 transition-colors">
-          <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp Support
-        </a>
-        <button onclick="window.chatGeeSeeOpen()" class="hidden md:flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#FEE500] hover:bg-[#ffe600] text-slate-900 transition-all font-black text-[11px] shadow-sm cursor-pointer">
-          <i class="fa-solid fa-comments text-[#0B0D7C]"></i>
-          <span>Chat GeeSee</span>
-        </button>
-        <span class="hidden xl:inline text-slate-400 text-[11px]">
-          <i class="fa-solid fa-certificate text-amber-400 mr-1"></i> CBSL Approved for Deposits
-        </span>
-      </div>
+  <!-- ================= STICKY TOP HEADER WRAPPER ================= -->
+  <div id="sticky-header-container" class="sticky top-0 z-50 w-full bg-white shadow-md">
 
-      <!-- Right Utility Actions -->
-      <div class="flex items-center gap-3 sm:gap-4 ml-auto">
-        <!-- Accessibility Font Resizer (Clean Sri Lanka Gov.lk Style) -->
-        <div class="hidden sm:flex items-center gap-1 bg-slate-900/90 rounded-lg px-2 py-0.5 border border-slate-700 text-[11px] text-slate-300" title="පෙළ ප්‍රමාණය (Text Size)">
-          <span class="text-[10px] text-slate-400 mr-1"><i class="fa-solid fa-universal-access"></i></span>
-          <button onclick="window.adjustFontSize(-1)" class="px-1.5 py-0.5 hover:text-white font-bold" title="කුඩා අකුරු">A-</button>
-          <button onclick="window.adjustFontSize(0)" class="px-1.5 py-0.5 hover:text-white font-bold text-pink-400" title="සාමාන්‍ය අකුරු">A</button>
-          <button onclick="window.adjustFontSize(1)" class="px-1.5 py-0.5 hover:text-white font-bold" title="විශාල අකුරු">A+</button>
-        </div>
-
-        <!-- Language Switcher -->
-        <div class="flex items-center bg-slate-900/90 rounded-lg p-0.5 border border-slate-700">
-          <button data-lang="si" class="lang-btn active px-2.5 py-1 rounded text-[11px] font-bold text-pink-400 transition-all">සිංහල</button>
-          <button data-lang="en" class="lang-btn px-2.5 py-1 rounded text-[11px] font-medium text-slate-300 hover:text-white transition-all">English</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= BREAKING URGENT BANNER ================= -->
-  <div id="urgent-notice-container" class="bg-pink-50 border-b border-pink-200 py-2 px-4 transition-all">
-    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-sm">
-      <div id="urgent-notice-ticker" class="overflow-hidden whitespace-nowrap text-pink-950 flex-grow pr-4">
-        <!-- Injected dynamically -->
-      </div>
-      <button onclick="document.getElementById('urgent-notice-container').classList.add('hidden')" class="text-pink-800 hover:text-pink-950 text-sm font-bold pl-2" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- ================= STICKY MAIN HEADER & NAVIGATION ================= -->
-  <header id="main-header" class="header-sticky">
-    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between lg:justify-start lg:gap-8 h-20">
-        
-        <!-- Bank Logo & Identity -->
-        <a href="index.html" class="flex items-center flex-shrink-0 group">
-          <div class="bg-white border border-slate-300 rounded-lg p-1 shadow-sm hover:border-[#0B0D7C] transition-all flex items-center justify-center">
-            <img src="assets/images/gscs-logo.png" alt="GSCS Bank Official Logo" class="h-12 sm:h-14 w-auto object-contain">
-          </div>
-        </a>
-
-        <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center gap-2.5 xl:gap-4 text-[12px] xl:text-[13px] font-semibold whitespace-nowrap">
-          <a href="#home" class="nav-link active whitespace-nowrap" id="nav-home">මුල් පිටුව</a>
-          <a href="#about" class="nav-link whitespace-nowrap" id="nav-about">අප ගැන</a>
-          <a href="#savings" class="nav-link whitespace-nowrap" id="nav-savings">ඉතුරුම් හා තැන්පතු</a>
-          <a href="javascript:void(0)" onclick="window.openSavingsDepositModal()" class="nav-link text-emerald-600 font-bold hover:text-emerald-700 whitespace-nowrap" id="nav-savings-pay">ඉතුරුම් තැන්පත් කිරීම</a>
-          <a href="#loans" class="nav-link whitespace-nowrap" id="nav-loans">ණය පහසුකම්</a>
-          <a href="javascript:void(0)" onclick="window.openLoanPaymentModal()" class="nav-link text-[#DF0178] font-bold hover:text-[#BA0063] whitespace-nowrap" id="nav-loan-pay">ණය වාරික ගෙවීම</a>
-          <a href="#calculators" class="nav-link whitespace-nowrap" id="nav-calc">තැන්පතු ගණකය</a>
-          <a href="#digital-banking" class="nav-link whitespace-nowrap" id="nav-digital">Smart COOP</a>
-          <a href="#news" class="nav-link whitespace-nowrap" id="nav-news">පුවත්</a>
-          <a href="#contact" class="nav-link whitespace-nowrap" id="nav-contact">සම්බන්ධතා</a>
-        </nav>
-
-        <!-- Mobile Drawer Menu Toggle -->
-        <div class="lg:hidden flex items-center gap-2">
-          <button id="mobile-menu-btn" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors" aria-label="Toggle Menu">
-            <i class="fa-solid fa-bars text-lg"></i>
+    <!-- ================= TOP UTILITY BAR (Commercial Bank Style) ================= -->
+    <div class="top-bar-bg border-b border-indigo-950 text-xs py-2 px-4 sm:px-8">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        <!-- Left Contact & Reg Info -->
+        <div class="flex items-center gap-4 sm:gap-6 text-slate-300">
+          <span class="flex items-center gap-1.5 font-bold text-pink-400">
+            <i class="fa-solid fa-building-shield"></i> Reg No: Kuli/395 (Est. 1987)
+          </span>
+          <a href="tel:+94372260658" class="hover:text-white flex items-center gap-1.5 transition-colors font-medium">
+            <i class="fa-solid fa-phone text-pink-400"></i> +94 37 22 60 658
+          </a>
+          <a href="https://whatsapp.com/channel/0029VbAU49WFHWqAbj6MEG3o" target="_blank" rel="noopener noreferrer" class="hover:text-emerald-400 hidden md:flex items-center gap-1.5 transition-colors font-medium">
+            <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp Channel
+          </a>
+          <a href="https://web.facebook.com/galapitiyagama.sanasa/" target="_blank" rel="noopener noreferrer" class="hover:text-[#1877F2] hidden lg:flex items-center gap-1.5 transition-colors font-medium" title="GSCS Sanasa Facebook Page">
+            <i class="fa-brands fa-facebook text-[#1877F2] text-sm"></i> Facebook
+          </a>
+          <button onclick="window.chatGeeSeeOpen()" class="hidden md:flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#FEE500] hover:bg-[#ffe600] text-slate-900 transition-all font-black text-[11px] shadow-sm cursor-pointer">
+            <i class="fa-solid fa-comments text-[#0B0D7C]"></i>
+            <span>Chat GeeSee</span>
           </button>
+          <span class="hidden xl:inline text-slate-400 text-[11px]">
+            <i class="fa-solid fa-certificate text-amber-400 mr-1"></i> CBSL Approved for Deposits
+          </span>
         </div>
 
+        <!-- Right Utility Actions -->
+        <div class="flex items-center gap-3 sm:gap-4 ml-auto">
+          <!-- Accessibility Font Resizer (Clean Sri Lanka Gov.lk Style) -->
+          <div class="hidden sm:flex items-center gap-1 bg-slate-900/90 rounded-lg px-2 py-0.5 border border-slate-700 text-[11px] text-slate-300" title="පෙළ ප්‍රමාණය (Text Size)">
+            <span class="text-[10px] text-slate-400 mr-1"><i class="fa-solid fa-universal-access"></i></span>
+            <button onclick="window.adjustFontSize(-1)" class="px-1.5 py-0.5 hover:text-white font-bold" title="කුඩා අකුරු">A-</button>
+            <button onclick="window.adjustFontSize(0)" class="px-1.5 py-0.5 hover:text-white font-bold text-pink-400" title="සාමාන්‍ය අකුරු">A</button>
+            <button onclick="window.adjustFontSize(1)" class="px-1.5 py-0.5 hover:text-white font-bold" title="විශාල අකුරු">A+</button>
+          </div>
+
+          <!-- Language Switcher -->
+          <div class="flex items-center bg-slate-900/90 rounded-lg p-0.5 border border-slate-700">
+            <button data-lang="si" class="lang-btn active px-2.5 py-1 rounded text-[11px] font-bold text-pink-400 transition-all">සිංහල</button>
+            <button data-lang="en" class="lang-btn px-2.5 py-1 rounded text-[11px] font-medium text-slate-300 hover:text-white transition-all">English</button>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
+
+    <!-- ================= BREAKING URGENT BANNER ================= -->
+    <div id="urgent-notice-container" class="bg-pink-50 border-b border-pink-200 py-2 px-4 transition-all">
+      <div class="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-sm">
+        <div id="urgent-notice-ticker" class="overflow-hidden whitespace-nowrap text-pink-950 flex-grow pr-4">
+          <!-- Injected dynamically -->
+        </div>
+        <button onclick="document.getElementById('urgent-notice-container').classList.add('hidden')" class="text-pink-800 hover:text-pink-950 text-sm font-bold pl-2" title="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= MAIN HEADER & NAVIGATION ================= -->
+    <header id="main-header" class="bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between lg:justify-start lg:gap-8 h-20">
+          
+          <!-- Bank Logo & Identity -->
+          <a href="index.html" class="flex items-center flex-shrink-0 group">
+            <div class="bg-white border border-slate-300 rounded-lg p-1 shadow-sm hover:border-[#0B0D7C] transition-all flex items-center justify-center">
+              <img src="assets/images/gscs-logo.png" alt="GSCS Bank Official Logo" class="h-12 sm:h-14 w-auto object-contain">
+            </div>
+          </a>
+
+          <!-- Desktop Navigation Links -->
+          <nav class="hidden lg:flex items-center gap-2.5 xl:gap-4 text-[12px] xl:text-[13px] font-semibold whitespace-nowrap">
+            <a href="#home" class="nav-link active whitespace-nowrap" id="nav-home">මුල් පිටුව</a>
+            <a href="#about" class="nav-link whitespace-nowrap" id="nav-about">අප ගැන</a>
+            <a href="#savings" class="nav-link whitespace-nowrap" id="nav-savings">ඉතුරුම් හා තැන්පතු</a>
+            <a href="javascript:void(0)" onclick="window.openSavingsDepositModal()" class="nav-link text-emerald-600 font-bold hover:text-emerald-700 whitespace-nowrap" id="nav-savings-pay">ඉතුරුම් තැන්පත් කිරීම</a>
+            <a href="#loans" class="nav-link whitespace-nowrap" id="nav-loans">ණය පහසුකම්</a>
+            <a href="javascript:void(0)" onclick="window.openLoanPaymentModal()" class="nav-link text-[#DF0178] font-bold hover:text-[#BA0063] whitespace-nowrap" id="nav-loan-pay">ණය වාරික ගෙවීම</a>
+            <a href="#calculators" class="nav-link whitespace-nowrap" id="nav-calc">තැන්පතු ගණකය</a>
+            <a href="#digital-banking" class="nav-link whitespace-nowrap" id="nav-digital">Smart COOP</a>
+            <a href="#news" class="nav-link whitespace-nowrap" id="nav-news">පුවත්</a>
+            <a href="#contact" class="nav-link whitespace-nowrap" id="nav-contact">සම්බන්ධතා</a>
+          </nav>
+
+          <!-- Mobile Drawer Menu Toggle -->
+          <div class="lg:hidden flex items-center gap-2">
+            <button id="mobile-menu-btn" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors" aria-label="Toggle Menu">
+              <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+  </div>
 
   <!-- ================= MOBILE NAVIGATION DRAWER ================= -->
   <div id="mobile-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex flex-col justify-end lg:hidden">
@@ -1053,6 +1061,126 @@
     </div>
   </section>
 
+  <!-- ================= SOCIAL MEDIA & COMMUNITY CHANNELS ================= -->
+  <section id="social-channels" class="py-14 sm:py-20 bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 text-white relative overflow-hidden border-t border-b border-indigo-900/50">
+    <!-- Ambient glow decorations -->
+    <div class="absolute -top-24 right-10 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(24, 119, 242, 0.25) 0%, transparent 70%); filter: blur(70px);"></div>
+    <div class="absolute -bottom-24 left-10 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(37, 211, 102, 0.22) 0%, transparent 70%); filter: blur(70px);"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/10 text-pink-300 border border-white/20 mb-3 backdrop-blur-md">
+          <i class="fa-solid fa-users text-pink-400"></i>
+          සමාජ මාධ්‍ය ජාලයන් | Social Media & Community Channels
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-black text-white leading-tight">
+          ගලපිටියාගම සණස නිල සමාජ මාධ්‍ය ඔස්සේ අප හා එක්වන්න
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-3 leading-relaxed">
+          නවතම පොලී අනුපාත, විශේෂ ණය සහන, සාමාජික සුභසාධන සහ ප්‍රජා සත්කාරක තොරතුරු ක්ෂණිකව ඔබගේ දුරකථනයටම ලබාගැනීමට අපගේ නිල Facebook පිටු සහ WhatsApp Channel එකට සම්බන්ධ වන්න.
+        </p>
+      </div>
+
+      <!-- Social Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Card 1: Official Facebook Page -->
+        <div class="bg-white/10 hover:bg-white/15 backdrop-blur-xl border border-white/15 hover:border-blue-500/60 rounded-3xl p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-14 h-14 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center text-2xl shadow-lg shadow-blue-600/40 group-hover:scale-110 transition-transform">
+                <i class="fa-brands fa-facebook-f"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[11px] font-black bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                Official Page
+              </span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-blue-300 transition-colors mb-2">
+              Galapitiyagama Sanasa Bank
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-6">
+              සමිතියේ නිල Facebook පිටුව මඟින් සියලුම බැංකු සේවා, නිල නිවේදන හා ප්‍රවෘත්ති සම්පූර්ණයෙන් දැනුවත් වන්න.
+            </p>
+          </div>
+          <a
+            href="https://web.facebook.com/galapitiyagama.sanasa/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full py-3 px-4 rounded-xl bg-[#1877F2] hover:bg-blue-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-900/30 transition-all"
+          >
+            <i class="fa-brands fa-facebook"></i>
+            <span>Facebook පිටුවට පිවිසෙන්න</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Card 2: Community Facebook Profile -->
+        <div class="bg-white/10 hover:bg-white/15 backdrop-blur-xl border border-white/15 hover:border-indigo-500/60 rounded-3xl p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0B0D7C] to-[#1877F2] text-white flex items-center justify-center text-2xl shadow-lg shadow-indigo-600/40 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[11px] font-black bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                Community Profile
+              </span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-indigo-300 transition-colors mb-2">
+              ගලපිටියාගම සණස ප්‍රජා පිටුව
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-6">
+              ප්‍රදේශයේ සාමාජික සාමාජිකාවන්ගේ විශේෂ අවස්ථා, ග්‍රාමීය සංවර්ධන හා සුභසාධන වැඩසටහන් සමඟ සමීපව එක්වන්න.
+            </p>
+          </div>
+          <a
+            href="https://web.facebook.com/profile.php?id=61579937233623"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#0B0D7C] to-[#1877F2] hover:from-[#1877F2] hover:to-[#0B0D7C] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-indigo-900/30 transition-all"
+          >
+            <i class="fa-brands fa-facebook"></i>
+            <span>ප්‍රජා ගිණුමට සම්බන්ධ වන්න</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+          </a>
+        </div>
+
+        <!-- Card 3: WhatsApp Channel -->
+        <div class="bg-white/10 hover:bg-white/15 backdrop-blur-xl border border-white/15 hover:border-emerald-500/60 rounded-3xl p-6 sm:p-7 transition-all duration-300 flex flex-col justify-between group shadow-xl">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-14 h-14 rounded-2xl bg-[#25D366] text-white flex items-center justify-center text-2xl shadow-lg shadow-emerald-600/40 group-hover:scale-110 transition-transform">
+                <i class="fa-brands fa-whatsapp text-3xl"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 animate-pulse">
+                WhatsApp Channel
+              </span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white group-hover:text-emerald-300 transition-colors mb-2">
+              GSCS Bank Official Updates
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-6">
+              විශේෂ නිවේදන, නිවාඩු දින, නව පොලී අනුපාත හා දීමනා සියල්ල ඔබගේ WhatsApp එකටම නොමිලේ ලබාගන්න.
+            </p>
+          </div>
+          <a
+            href="https://whatsapp.com/channel/0029VbAU49WFHWqAbj6MEG3o"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full py-3 px-4 rounded-xl bg-[#25D366] hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-900/30 transition-all"
+          >
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>WhatsApp Channel එකට එක්වන්න</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs ml-1"></i>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
   <!-- ================= BRANCH LOCATOR & CONTACT US ================= -->
   <section id="contact" class="py-16 sm:py-24 bg-white relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1192,11 +1320,12 @@
           <p id="footer-legal-desc" class="text-xs text-slate-400 leading-relaxed max-w-sm">
             සමුපකාර දෙපාර්තමේන්තුවේ 1972 අංක 5 දරන සමූපකාර සමිති පනත යටතේ නීත්‍යානුකූලව ලියාපදිංචි (ලියාපදිංචි අංකය: Kuli/395) සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය, ශ්‍රී ලංකා මහ බැංකුවේ විශේෂ අනුමැතිය සහිතව වසර 39කට අධික කාලයක් පුරා ප්‍රජා මූල්‍ය හා සුභසාධනය ප්‍රදේශයේ ප්‍රජාව වෙත සලසයි.
           </p>
-          <div class="flex items-center gap-3 text-slate-400 text-base">
+          <div class="flex items-center gap-2.5 text-slate-400 text-base">
+            <a href="https://web.facebook.com/galapitiyagama.sanasa/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors" title="Official Facebook Page"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+            <a href="https://web.facebook.com/profile.php?id=61579937233623" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors" title="Community Facebook Profile"><i class="fa-brands fa-facebook text-xs"></i></a>
+            <a href="https://whatsapp.com/channel/0029VbAU49WFHWqAbj6MEG3o" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors" title="Official WhatsApp Channel"><i class="fa-brands fa-whatsapp text-xs"></i></a>
             <a href="https://www.youtube.com/@galapitiyagamasanasa" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors" title="Official YouTube Channel"><i class="fa-brands fa-youtube text-xs"></i></a>
-            <a href="#" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#DF0178] hover:text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-facebook-f text-xs"></i></a>
-            <a href="https://wa.me/94771234567" target="_blank" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-colors"><i class="fa-brands fa-whatsapp text-xs"></i></a>
-            <a href="mailto:galapitiyagama.sanasa@gmail.com" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-sky-500 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-envelope text-xs"></i></a>
+            <a href="mailto:galapitiyagama.sanasa@gmail.com" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-sky-500 hover:text-white flex items-center justify-center transition-colors" title="Email Us"><i class="fa-solid fa-envelope text-xs"></i></a>
           </div>
         </div>
 
@@ -1244,8 +1373,12 @@
       </div>
 
       <!-- Bottom Disclaimer -->
-      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
         <p id="footer-copyright">© 2026 Galapitiyagama Sanasa Co-operative Society (GSCS Bank). All Rights Reserved.</p>
+        <p class="text-xs font-mono text-slate-400 flex items-center gap-1.5 bg-slate-900/90 px-3.5 py-1.5 rounded-full border border-indigo-900/60 shadow-inner">
+          <span class="text-pink-400 font-bold">&lt;&gt;</span>
+          <span>Developed by <strong class="text-white">GSCS IT Department</strong> ft <strong class="text-pink-400">Iraasoft Solution</strong></span>
+        </p>
         <div class="flex items-center gap-4">
           <a id="footer-privacy" href="#" class="hover:underline">පෞද්ගලිකත්ව ප්‍රතිපත්තිය</a>
           <a id="footer-terms" href="#" class="hover:underline">නියම සහ කොන්දේසි</a>
