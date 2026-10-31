@@ -103,6 +103,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const AUTH_KEY = 'GSCS_ADMIN_LOGGED_IN';
   let inquiryFilter = 'all';
   let currentAppFilter = 'all';
+  let currentAppTypeFilter = 'all';
+
+  function getAppType(app) {
+    if (!app) return 'MEMBERSHIP';
+    const ref = safeStr(app.refId);
+    if (
+      app.appType === 'CHILD_SAVINGS' ||
+      app.isChildSavings ||
+      ref.startsWith('GSCS-CHD') ||
+      Boolean(app.childAccountType) ||
+      Boolean(app.childFullName) ||
+      Boolean(app.guardianFullName) ||
+      Boolean(app.birthCertFrontImage) ||
+      Boolean(app.birthCertBackImage)
+    ) {
+      return 'CHILD_SAVINGS';
+    }
+    if (
+      app.appType === 'EXTERNAL_DEPOSIT' ||
+      app.isExternalDeposit ||
+      ref.startsWith('GSCS-EDA') ||
+      Boolean(app.applicant2) ||
+      (app.accountType && (app.accountType.includes('ගිණුම') || app.accountType.includes('Account'))) ||
+      (Number(app.totalPaid) === 2000 && !app.shareCapital)
+    ) {
+      return 'EXTERNAL_DEPOSIT';
+    }
+    return 'MEMBERSHIP';
+  }
+
+  function getAppDisplayRef(app) {
+    if (!app) return 'GSCS-MEM-000000';
+    let ref = safeStr(app.refId);
+    const type = getAppType(app);
+    if (type === 'CHILD_SAVINGS' && ref.startsWith('GSCS-MEM-')) {
+      ref = ref.replace('GSCS-MEM-', 'GSCS-CHD-');
+    } else if (type === 'EXTERNAL_DEPOSIT' && ref.startsWith('GSCS-MEM-')) {
+      ref = ref.replace('GSCS-MEM-', 'GSCS-EDA-');
+    }
+    return ref;
+  }
   let currentLpFilter = 'all';
   let currentScFilter = 'all';
   let currentFbFilter = 'all';
@@ -1004,12 +1045,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentAppFilter !== 'all') {
         filtered = filtered.filter(a => a.status === currentAppFilter);
       }
+      if (currentAppTypeFilter !== 'all') {
+        filtered = filtered.filter(a => getAppType(a) === currentAppTypeFilter);
+      }
       if (query) {
         filtered = filtered.filter(a => 
           safeStr(a.fullName).toLowerCase().includes(query) ||
+          safeStr(a.childFullName).toLowerCase().includes(query) ||
+          safeStr(a.guardianFullName).toLowerCase().includes(query) ||
           safeStr(a.nameEnglishCaps).toLowerCase().includes(query) ||
           safeStr(a.nic).toLowerCase().includes(query) ||
+          safeStr(a.guardianNic).toLowerCase().includes(query) ||
           safeStr(a.refId).toLowerCase().includes(query) ||
+          safeStr(getAppDisplayRef(a)).toLowerCase().includes(query) ||
           safeStr(a.phone).includes(query)
         );
       }
@@ -1019,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <tr>
             <td colspan="8" class="text-center py-8 text-slate-400">
               <i class="fa-solid fa-address-card text-3xl mb-2 block"></i>
-              සාමාජික අයදුම්පත් කිසිවක් හමු නොවීය.
+              අයදුම්පත් කිසිවක් හමු නොවීය.
             </td>
           </tr>
         `;
@@ -1028,13 +1076,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tbody.innerHTML = filtered.map(app => {
         const cleanPhone = cleanPhoneNum(app.phone);
-        const isChild = safeStr(app.refId).startsWith('GSCS-CHD') || app.isChildSavings || app.appType === 'CHILD_SAVINGS';
-        const isEda = safeStr(app.refId).startsWith('GSCS-EDA') || app.isExternalDeposit || app.appType === 'EXTERNAL_DEPOSIT';
+        const appType = getAppType(app);
+        const isChild = (appType === 'CHILD_SAVINGS');
+        const isEda = (appType === 'EXTERNAL_DEPOSIT');
+        const displayRef = getAppDisplayRef(app);
+
         const waMsg = isChild
-          ? `ආයුබෝවන් ${safeStr(app.guardianFullName || app.fullName)} මයා/මිය,\n\nඔබ විසින් ඉදිරිපත් කළ ${safeStr(app.childAccountType || 'ළමා ගිණුම්')} අයදුම්පත (යොමු අංකය: ${safeStr(app.refId)}) අප වෙත ලැබී ඇත.\nදරුවාගේ නම: ${safeStr(app.childFullName || app.fullName)}\n\nස්තූතියි!\nගලපිටියාගම සණස බැංකුව`
+          ? `ආයුබෝවන් ${safeStr(app.guardianFullName || app.fullName)} මයා/මිය,\n\nඔබ විසින් ඉදිරිපත් කළ ${safeStr(app.childAccountType || 'ළමා ගිණුම්')} අයදුම්පත (යොමු අංකය: ${safeStr(displayRef)}) අප වෙත ලැබී ඇත.\nදරුවාගේ නම: ${safeStr(app.childFullName || app.fullName)}\n\nස්තූතියි!\nගලපිටියාගම සණස බැංකුව`
           : isEda
-          ? `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබ විසින් යොමු කරන ලද බාහිර තැන්පත් ගිණුම් අයදුම්පත (යොමු අංකය: ${safeStr(app.refId)}) සම්බන්ධයෙනි.\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`
-          : `Hello ${safeStr(app.fullName)}, regarding your GSCS Bank Membership Application ${safeStr(app.refId)}:`;
+          ? `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබ විසින් යොමු කරන ලද බාහිර තැන්පත් ගිණුම් අයදුම්පත (යොමු අංකය: ${safeStr(displayRef)}) සම්බන්ධයෙනි.\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`
+          : `ආයුබෝවන් ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබ විසින් ඉදිරිපත් කළ සාමාජික අයදුම්පත (යොමු අංකය: ${safeStr(displayRef)}) සම්බන්ධයෙනි.\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`;
         const waLink = makeWaUrl(cleanPhone, waMsg);
 
         let statusBadge = '';
@@ -1046,25 +1097,49 @@ document.addEventListener('DOMContentLoaded', () => {
           statusBadge = '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">PENDING</span>';
         }
 
+        let typeBadge = '';
+        if (isChild) {
+          typeBadge = `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-300"><i class="fa-solid fa-child text-[10px] mr-1"></i>ළමා ඉතුරුම් (${safeStr(app.childAccountType || 'ළමා ගිණුම')})</span>`;
+        } else if (isEda) {
+          typeBadge = `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-building-columns text-[10px] mr-1"></i>බාහිර තැන්පත් (${safeStr(app.accountType || 'තනි/හවුල්')})</span>`;
+        } else {
+          typeBadge = `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-[#0B0D7C] border border-indigo-300"><i class="fa-solid fa-id-card text-[10px] mr-1"></i>සාමාජික අයදුම්පත</span>`;
+        }
+
         return `
           <tr class="hover:bg-slate-50 transition-colors">
             <td class="py-3 px-4">
-              <span class="font-black ${isChild ? 'text-amber-700' : isEda ? 'text-emerald-700' : 'text-[#0B0D7C]'} font-mono">${safeStr(app.refId)}</span>
-              <div>
-                ${isChild ? `<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-100 text-amber-800">CHILD (${safeStr(app.childAccountType || 'ළමා ගිණුම')})</span>` : isEda ? '<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800">EXTERNAL DEPOSIT</span>' : '<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-[#0B0D7C]">MEMBERSHIP</span>'}
+              <span class="font-black ${isChild ? 'text-amber-700' : isEda ? 'text-emerald-700' : 'text-[#0B0D7C]'} font-mono">${displayRef}</span>
+              <div class="mt-0.5">
+                ${typeBadge}
               </div>
-              <div class="text-[10px] text-slate-400">${safeStr(app.submittedAt)}</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">${safeStr(app.submittedAt)}</div>
             </td>
             <td class="py-3 px-4">
               ${isChild ? `
-                <div class="font-bold text-slate-900 flex items-center gap-1">
-                  <i class="fa-solid fa-child text-amber-600"></i> ${safeStr(app.childFullName || app.fullName)}
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-child text-amber-600 text-sm"></i>
+                  <span>${safeStr(app.childFullName || app.fullName)}</span>
                 </div>
-                <div class="text-[11px] text-slate-600 font-semibold">භාරකරු: ${safeStr(app.guardianFullName || '-')} (${safeStr(app.guardianRelation || 'භාරකරු')})</div>
+                <div class="text-[11px] text-slate-600 font-semibold mt-0.5">භාරකරු: ${safeStr(app.guardianFullName || '-')} (${safeStr(app.guardianRelation || 'භාරකරු')})</div>
                 <div class="text-[10px] text-slate-400 font-mono">NIC: ${safeStr(app.guardianNic || app.nic || '-')} • ${safeStr(app.childGender || '-')}</div>
+              ` : isEda ? `
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-building-columns text-emerald-600 text-xs"></i>
+                  <span>${safeStr(app.fullName)}</span>
+                </div>
+                <div class="text-[11px] text-slate-600 font-mono">NIC: ${safeStr(app.nic)} • ${safeStr(app.gender || '-')}</div>
+                ${app.applicant2 ? `
+                  <div class="text-[10px] text-indigo-700 font-semibold mt-0.5 bg-indigo-50 px-1.5 py-0.5 rounded inline-block">
+                    හවුල්කරු: ${safeStr(app.applicant2.fullName)} (NIC: ${safeStr(app.applicant2.nic)})
+                  </div>
+                ` : ''}
               ` : `
-                <div class="font-bold text-slate-900">${safeStr(app.fullName)}</div>
-                <div class="text-[11px] text-slate-500 font-mono">${safeStr(app.nic)} • ${safeStr(app.gender)}</div>
+                <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-id-card text-indigo-600 text-xs"></i>
+                  <span>${safeStr(app.fullName)}</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-mono">${safeStr(app.nic)} • ${safeStr(app.gender || '-')}</div>
               `}
             </td>
             <td class="py-3 px-4">
@@ -1074,8 +1149,12 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
             </td>
             <td class="py-3 px-4 font-semibold text-slate-800">
-              <div class="text-emerald-700 font-bold">රු. ${Number(app.totalPaid || 6000).toLocaleString()}.00</div>
-              <div class="text-[10px] text-slate-400 font-mono">${safeStr(app.paymentRef) || 'No Ref'}</div>
+              <div class="${isChild ? 'text-amber-800' : isEda ? 'text-emerald-700' : 'text-[#0B0D7C]'} font-bold">
+                රු. ${Number(app.totalPaid || (isChild || isEda ? 2000 : 6000)).toLocaleString()}.00
+              </div>
+              <div class="text-[10px] text-slate-400">
+                ${isChild ? 'ළමා තැන්පතුව' : isEda ? 'බාහිර තැන්පතුව' : 'කොටස් 5,000 + ඉතුරුම් 1,000'}
+              </div>
             </td>
             <td class="py-3 px-4">
               ${app.receiptImage ? `
@@ -1121,6 +1200,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.app-filter-btn').forEach(btn => {
       const onclickAttr = btn.getAttribute('onclick') || '';
       const active = onclickAttr.includes(filter);
+      btn.classList.toggle('bg-[#0B0D7C]', active);
+      btn.classList.toggle('text-white', active);
+      btn.classList.toggle('bg-white', !active);
+      btn.classList.toggle('text-slate-700', !active);
+    });
+    renderApplicationsTable();
+  };
+
+  window.setAppTypeFilter = (type) => {
+    currentAppTypeFilter = type;
+    document.querySelectorAll('.app-type-btn').forEach(btn => {
+      const onclickAttr = btn.getAttribute('onclick') || '';
+      const active = onclickAttr.includes(`'${type}'`);
       btn.classList.toggle('bg-[#0B0D7C]', active);
       btn.classList.toggle('text-white', active);
       btn.classList.toggle('bg-white', !active);

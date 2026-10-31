@@ -297,22 +297,80 @@
       this.syncToAppsScript('delete', 'inquiry', { id });
     }
 
-    // --- Membership Applications ---
+    // --- Membership, External Deposit & Child Applications ---
+    normalizeApplication(app) {
+      if (!app || typeof app !== 'object') return app;
+      const ref = (app.refId || '').toString();
+
+      // Check if Child Savings
+      const isChild = Boolean(
+        app.appType === 'CHILD_SAVINGS' ||
+        app.isChildSavings ||
+        ref.includes('CHD') ||
+        app.childAccountType ||
+        app.childFullName ||
+        app.guardianFullName ||
+        app.birthCertFrontImage ||
+        app.birthCertBackImage
+      );
+      if (isChild) {
+        app.appType = 'CHILD_SAVINGS';
+        app.isChildSavings = true;
+        if (ref.startsWith('GSCS-MEM-')) {
+          app.refId = ref.replace('GSCS-MEM-', 'GSCS-CHD-');
+        }
+        return app;
+      }
+
+      // Check if External Deposit
+      const isEda = Boolean(
+        app.appType === 'EXTERNAL_DEPOSIT' ||
+        app.isExternalDeposit ||
+        ref.includes('EDA') ||
+        app.applicant2 ||
+        (app.accountType && (app.accountType.includes('ගිණුම') || app.accountType.includes('Account'))) ||
+        (Number(app.totalPaid) === 2000 && !app.shareCapital)
+      );
+      if (isEda) {
+        app.appType = 'EXTERNAL_DEPOSIT';
+        app.isExternalDeposit = true;
+        if (ref.startsWith('GSCS-MEM-')) {
+          app.refId = ref.replace('GSCS-MEM-', 'GSCS-EDA-');
+        }
+        return app;
+      }
+
+      // Default: Membership Application
+      app.appType = 'MEMBERSHIP';
+      app.isMembership = true;
+      return app;
+    }
+
     getMembershipApplications() {
-      return this.data.membershipApplications || [];
+      const list = this.data.membershipApplications || [];
+      return list.map(a => this.normalizeApplication(a));
     }
 
     addMembershipApplication(app) {
       if (!this.data.membershipApplications) this.data.membershipApplications = [];
       const now = new Date();
       const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const refId = 'GSCS-MEM-' + Math.floor(100000 + Math.random() * 900000);
+      
+      const normalized = this.normalizeApplication({ ...app });
+      let prefix = 'GSCS-MEM-';
+      if (normalized.appType === 'CHILD_SAVINGS') prefix = 'GSCS-CHD-';
+      else if (normalized.appType === 'EXTERNAL_DEPOSIT') prefix = 'GSCS-EDA-';
+
+      const refId = (normalized.refId && !normalized.refId.startsWith('GSCS-MEM-') && !normalized.refId.startsWith('GSCS-MA-'))
+        ? normalized.refId
+        : (prefix + Math.floor(100000 + Math.random() * 900000));
+
       const newApp = {
-        ...app,
-        id: 'mem-' + Date.now(),
+        ...normalized,
+        id: normalized.id || ('app-' + Date.now()),
         refId: refId,
-        submittedAt: dateStr,
-        status: 'pending' // 'pending', 'approved', 'rejected'
+        submittedAt: normalized.submittedAt || dateStr,
+        status: normalized.status || 'pending'
       };
       this.data.membershipApplications.unshift(newApp);
       this.save();

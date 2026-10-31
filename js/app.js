@@ -1315,7 +1315,9 @@ document.addEventListener('DOMContentLoaded', () => {
       receiptImage: uploadedReceiptBase64,
       idFrontImage: uploadedMemIdFront,
       idBackImage: uploadedMemIdBack,
-      signatureImage: signatureDataUrl
+      signatureImage: signatureDataUrl,
+      appType: 'MEMBERSHIP',
+      isMembership: true
     };
 
     // Save in Store
@@ -2355,17 +2357,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Initial Deposit
       totalPaid: amountVal,
       receiptImage: uploadedEdaReceiptBase64,
-      bankAccount: "People's Bank - 124200110064754 (Nikaweratiya)"
+      bankAccount: "People's Bank - 124200110064754 (Nikaweratiya)",
+      appType: 'EXTERNAL_DEPOSIT',
+      isExternalDeposit: true
     };
 
     // Save via store
     const savedApp = window.bankStore.addMembershipApplication(newEdaApp);
-    if (savedApp && savedApp.refId && savedApp.refId.startsWith('GSCS-MA-')) {
-      savedApp.refId = savedApp.refId.replace('GSCS-MA-', 'GSCS-EDA-');
-      window.bankStore.save();
-      window.dispatchEvent(new CustomEvent('bankDataUpdated'));
-    }
     lastSubmittedEdaApp = savedApp;
+    window.dispatchEvent(new CustomEvent('bankDataUpdated'));
 
     // Switch to success view
     const formCont = document.getElementById('eda-form-container');
@@ -2828,15 +2828,13 @@ document.addEventListener('DOMContentLoaded', () => {
       receiptImage: chdReceiptBase64,
       signatureImage: signatureImage,
       submittedAt: submittedAt,
-      status: 'pending'
+      status: 'pending',
+      appType: 'CHILD_SAVINGS',
+      isChildSavings: true
     };
 
     // Save via store
     const savedApp = window.bankStore.addMembershipApplication(newChildApp);
-    if (savedApp && savedApp.refId && savedApp.refId.startsWith('GSCS-MA-')) {
-      savedApp.refId = savedApp.refId.replace('GSCS-MA-', 'GSCS-CHD-');
-    }
-    window.bankStore.save();
     window.dispatchEvent(new CustomEvent('bankDataUpdated'));
 
     lastSubmittedChdApp = savedApp || newChildApp;
