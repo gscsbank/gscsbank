@@ -548,6 +548,7 @@ input[type=range]::-webkit-slider-thumb:hover {
 @media (max-width: 768px) {
   .modal-backdrop,
   #membership-modal,
+  #external-deposit-modal,
   #loan-payment-modal,
   #savings-deposit-modal,
   #smartcoop-reg-modal,
@@ -559,6 +560,7 @@ input[type=range]::-webkit-slider-thumb:hover {
   }
   .modal-backdrop > div,
   #membership-modal > div,
+  #external-deposit-modal > div,
   #loan-payment-modal > div,
   #savings-deposit-modal > div,
   #smartcoop-reg-modal > div,

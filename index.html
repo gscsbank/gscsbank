@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="si" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
@@ -1764,6 +1764,539 @@
 
     </div>
   </div>
+
+  <!-- ================= MODAL: DIGITAL EXTERNAL DEPOSIT APPLICATION (බාහිර තැන්පත් අයදුම් පත්‍රය) ================= -->
+  <div id="external-deposit-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-5 sm:p-8 md:p-10 shadow-2xl relative my-8 max-h-[92vh] overflow-y-auto overflow-x-hidden border border-slate-200">
+      
+      <!-- Close Button -->
+      <button onclick="window.closeExternalDepositModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors z-20">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Form Container -->
+      <div id="eda-form-container">
+        
+        <!-- Official Form Header -->
+        <div class="border-b border-slate-200 pb-6 mb-6">
+          <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+            <img src="assets/images/gscs-logo.png" alt="GSCS Logo" class="h-16 w-auto object-contain">
+            <div>
+              <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 mb-1">
+                <i class="fa-solid fa-file-invoice-dollar"></i> බාහිර තැන්පත් අයදුම් පත්‍රය | External Deposit Application
+              </span>
+              <h2 class="text-xl sm:text-2xl font-black text-[#0B0D7C]">බාහිර තැන්පත් ගිණුම් අයදුම්පත්‍රය</h2>
+              <p class="text-xs sm:text-sm font-semibold text-slate-600">
+                සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය
+              </p>
+              <p class="text-[11px] text-slate-500">
+                ලියාපදිංචි අංකය: කුලි/395 (Kuli/395) &bull; නිකවැරටිය
+              </p>
+            </div>
+          </div>
+
+          <!-- Official Form Declaration -->
+          <div class="mt-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed italic">
+            "සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතියේ මා / අප / සමිතිය වෙනුවෙන් තනි / හවුල් ඉතිරි කිරීමේ / ස්ථාවර / ධනයෝජන තැන්පත් ගිණුමක් විවෘත කරදෙන මෙන් ඉල්ලුම් කරමි / කරමු."
+          </div>
+
+          <!-- Minimum Deposit Callout -->
+          <div class="mt-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg flex-shrink-0">
+                <i class="fa-solid fa-piggy-bank"></i>
+              </div>
+              <div>
+                <strong class="text-slate-900 block font-bold">ගිණුම ආරම්භ කිරීමේ අවම තැන්පතුව:</strong>
+                <span class="text-slate-600">බාහිර ඉතුරුම් ගිණුමක් සඳහා ආරම්භක අවම තැන්පතුව රු. 2,000/- කි (එම මුදල ඔබගේ ගිණුමටම බැර වේ).</span>
+              </div>
+            </div>
+            <div class="px-3.5 py-1.5 rounded-xl bg-white border border-emerald-300 shadow-sm font-black text-emerald-700 text-sm whitespace-nowrap">
+              අවම තැන්පතුව: රු. 2,000.00
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Form -->
+        <form id="external-deposit-app-form" class="space-y-8" onsubmit="window.handleExternalDepositSubmit(event)">
+          
+          <!-- ACCOUNT TYPE SELECTION -->
+          <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
+            <label class="block font-bold text-[#0B0D7C] text-xs sm:text-sm mb-2.5">
+              <i class="fa-solid fa-users-gear mr-1 text-[#DF0178]"></i> ගිණුම් හිමිකාරිත්ව වර්ගය (Account Ownership Type) *
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm font-semibold">
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-white border-2 border-indigo-200 cursor-pointer hover:border-[#0B0D7C] transition-all has-[:checked]:border-[#0B0D7C] has-[:checked]:bg-indigo-50/70">
+                <input type="radio" name="eda_account_type" value="individual" checked onchange="window.toggleEdaJoint(false)" class="w-4 h-4 text-[#0B0D7C] focus:ring-0">
+                <div>
+                  <span class="font-bold text-slate-800 block">තනි ගිණුමක් (Individual Account)</span>
+                  <span class="text-[11px] text-slate-500 font-normal">එක් අයදුම්කරුවෙකු සඳහා පමණි</span>
+                </div>
+              </label>
+              <label class="flex items-center gap-3 p-3 rounded-xl bg-white border-2 border-slate-200 cursor-pointer hover:border-[#DF0178] transition-all has-[:checked]:border-[#DF0178] has-[:checked]:bg-pink-50/70">
+                <input type="radio" name="eda_account_type" value="joint" onchange="window.toggleEdaJoint(true)" class="w-4 h-4 text-[#DF0178] focus:ring-0">
+                <div>
+                  <span class="font-bold text-slate-800 block">හවුල් ගිණුමක් (Joint Account)</span>
+                  <span class="text-[11px] text-slate-500 font-normal">අයදුම්කරුවන් දෙදෙනෙකුගේ සහභාගීත්වයෙන්</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- SECTION 1: පුද්ගලික තොරතුරු අයදුම්කරු 01 -->
+          <div>
+            <div class="flex items-center gap-2.5 pb-2 mb-4 border-b border-indigo-100">
+              <span class="w-7 h-7 rounded-lg bg-[#0B0D7C] text-white flex items-center justify-center text-xs font-bold">1</span>
+              <h3 class="font-bold text-base text-[#0B0D7C]">පුද්ගලික තොරතුරු - ප්‍රධාන අයදුම්කරු 01 (Personal Details - Applicant 01)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">සම්පූර්ණ නම (Full Name) *</label>
+                <input type="text" id="eda-fullname-1" required placeholder="සම්පූර්ණ නම සිංහලෙන්" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">මුලකුරු සමඟ නම (Name with Initials) *</label>
+                <input type="text" id="eda-initials-name-1" required placeholder="උදා: ඒ.බී. පෙරේරා" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">මුලකුරු සමඟ නම (ඉංග්‍රීසි කැපිටල් අකුරින්) *</label>
+                <input type="text" id="eda-name-en-1" required style="text-transform: uppercase;" placeholder="EXAMPLE: A.B. PERERA" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ජාතික හැඳුනුම්පත් අංකය (NIC No) *</label>
+                <input type="text" id="eda-nic-1" required placeholder="2000XXXXXXXX / 85XXXXXXXV" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ස්ත්‍රී / පුරුෂ භාවය (Gender) *</label>
+                <select id="eda-gender-1" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+                  <option value="පුරුෂ (Male)">පුරුෂ (Male)</option>
+                  <option value="ස්ත්‍රී (Female)">ස්ත්‍රී (Female)</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">ස්ථිර ලිපිනය (Residential Address) *</label>
+                <input type="text" id="eda-address-1" required placeholder="නිවසේ ලිපිනය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">නගරය (City) *</label>
+                <input type="text" id="eda-city-1" required placeholder="නගරය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">උපන් දිනය (Date of Birth) *</label>
+                <input type="date" id="eda-dob-1" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">විවාහක / අවිවාහක භාවය (Civil Status) *</label>
+                <select id="eda-marital-1" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+                  <option value="විවාහක (Married)">විවාහක (Married)</option>
+                  <option value="අවිවාහක (Single)">අවිවාහක (Single)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">දුරකථන අංකය (Phone Number) *</label>
+                <input type="tel" id="eda-phone-1" required placeholder="07XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">WhatsApp දුරකථන අංකය</label>
+                <input type="tel" id="eda-whatsapp-1" placeholder="07XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ඊ-මේල් ලිපිනය (Email)</label>
+                <input type="email" id="eda-email-1" placeholder="example@gmail.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ආගම (Religion)</label>
+                <select id="eda-religion-1" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+                  <option value="බෞද්ධ">බෞද්ධ (Buddhist)</option>
+                  <option value="කතෝලික / ක්‍රිස්තියානි">කතෝලික / ක්‍රිස්තියානි</option>
+                  <option value="ඉස්ලාම්">ඉස්ලාම් (Islam)</option>
+                  <option value="හින්දු">හින්දු (Hindu)</option>
+                  <option value="වෙනත්">වෙනත් (Other)</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">ග්‍රාම නිලධාරී වසම (Grama Niladhari Division)</label>
+                <input type="text" id="eda-gn-1" placeholder="ග්‍රාම නිලධාරී වසම" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <!-- E-Signature Canvas 01 -->
+              <div class="md:col-span-2 mt-2">
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block font-bold text-slate-700">අයදුම්කරු 01 අත්සන (Applicant 01 E-Signature) *</label>
+                  <button type="button" onclick="window.clearEdaSignatureCanvas(1)" class="text-xs text-red-600 hover:text-red-800 font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-eraser"></i> අත්සන මකන්න (Clear)
+                  </button>
+                </div>
+                
+                <div class="bg-white rounded-2xl border-2 border-slate-300 relative overflow-hidden shadow-inner">
+                  <canvas id="eda-sig-pad-1" height="150" class="w-full max-w-full h-36 cursor-crosshair touch-none block" style="max-width: 100%;"></canvas>
+                  <div id="eda-sig-placeholder-1" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-slate-400">
+                    <span>මෙතන Touch කර හෝ Mouse මඟින් අත්සන් කරන්න (Sign Here)</span>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">
+                  (ස්මාර්ට්ෆෝන් මඟින් ඇඟිල්ලෙන් ස්පර්ශ කර පහසුවෙන් අත්සන් තැබිය හැක)
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: පුද්ගලික තොරතුරු අයදුම්කරු 02 (හවුල් ගිණුමක් නම් පමණක්) -->
+          <div id="eda-joint-applicant-section" class="hidden p-5 rounded-2xl bg-slate-50 border-2 border-dashed border-indigo-200">
+            <div class="flex items-center gap-2.5 pb-2 mb-4 border-b border-indigo-200">
+              <span class="w-7 h-7 rounded-lg bg-[#DF0178] text-white flex items-center justify-center text-xs font-bold">2</span>
+              <h3 class="font-bold text-base text-[#0B0D7C]">පුද්ගලික තොරතුරු - දෙවන අයදුම්කරු 02 (Applicant 02 - Joint Account Only)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">සම්පූර්ණ නම (Full Name) *</label>
+                <input type="text" id="eda-fullname-2" placeholder="දෙවන අයදුම්කරුගේ සම්පූර්ණ නම" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">මුලකුරු සමඟ නම (Name with Initials) *</label>
+                <input type="text" id="eda-initials-name-2" placeholder="උදා: සී.ඩී. පෙරේරා" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">මුලකුරු සමඟ නම (ඉංග්‍රීසි කැපිටල් අකුරින්) *</label>
+                <input type="text" id="eda-name-en-2" style="text-transform: uppercase;" placeholder="EXAMPLE: C.D. PERERA" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ජාතික හැඳුනුම්පත් අංකය (NIC No) *</label>
+                <input type="text" id="eda-nic-2" placeholder="2000XXXXXXXX / 85XXXXXXXV" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ස්ත්‍රී / පුරුෂ භාවය (Gender) *</label>
+                <select id="eda-gender-2" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+                  <option value="ස්ත්‍රී (Female)">ස්ත්‍රී (Female)</option>
+                  <option value="පුරුෂ (Male)">පුරුෂ (Male)</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">ස්ථිර ලිපිනය (Address) *</label>
+                <input type="text" id="eda-address-2" placeholder="දෙවන අයදුම්කරුගේ ලිපිනය" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">නගරය (City)</label>
+                <input type="text" id="eda-city-2" placeholder="නගරය" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">උපන් දිනය (Date of Birth)</label>
+                <input type="date" id="eda-dob-2" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">විවාහක / අවිවාහක භාවය</label>
+                <select id="eda-marital-2" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+                  <option value="විවාහක (Married)">විවාහක (Married)</option>
+                  <option value="අවිවාහක (Single)">අවිවාහක (Single)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">දුරකථන අංකය (Phone Number) *</label>
+                <input type="tel" id="eda-phone-2" placeholder="07XXXXXXXX" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">WhatsApp දුරකථන අංකය</label>
+                <input type="tel" id="eda-whatsapp-2" placeholder="07XXXXXXXX" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ඊ-මේල් ලිපිනය (Email)</label>
+                <input type="email" id="eda-email-2" placeholder="example@gmail.com" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ආගම (Religion)</label>
+                <select id="eda-religion-2" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+                  <option value="බෞද්ධ">බෞද්ධ (Buddhist)</option>
+                  <option value="කතෝලික / ක්‍රිස්තියානි">කතෝලික / ක්‍රිස්තියානි</option>
+                  <option value="ඉස්ලාම්">ඉස්ලාම් (Islam)</option>
+                  <option value="හින්දු">හින්දු (Hindu)</option>
+                  <option value="වෙනත්">වෙනත් (Other)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ග්‍රාම නිලධාරී වසම</label>
+                <input type="text" id="eda-gn-2" placeholder="ග්‍රාම නිලධාරී වසම" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <!-- E-Signature Canvas 02 -->
+              <div class="md:col-span-2 mt-2">
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block font-bold text-slate-700">අයදුම්කරු 02 අත්සන (Applicant 02 E-Signature) *</label>
+                  <button type="button" onclick="window.clearEdaSignatureCanvas(2)" class="text-xs text-red-600 hover:text-red-800 font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-eraser"></i> අත්සන මකන්න (Clear)
+                  </button>
+                </div>
+                
+                <div class="bg-white rounded-2xl border-2 border-slate-300 relative overflow-hidden shadow-inner">
+                  <canvas id="eda-sig-pad-2" height="150" class="w-full max-w-full h-36 cursor-crosshair touch-none block" style="max-width: 100%;"></canvas>
+                  <div id="eda-sig-placeholder-2" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-slate-400">
+                    <span>දෙවන අයදුම්කරු මෙතන අත්සන් කරන්න (Applicant 02 Sign Here)</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SECTION 3: ව්‍යාපාරය සම්බන්ධ තොරතුරු (OPTIONAL) -->
+          <div>
+            <div class="flex items-center gap-2.5 pb-2 mb-4 border-b border-indigo-100">
+              <span class="w-7 h-7 rounded-lg bg-[#0B0D7C] text-white flex items-center justify-center text-xs font-bold">3</span>
+              <h3 class="font-bold text-base text-[#0B0D7C]">ව්‍යාපාරය / රැකියාව සම්බන්ධ තොරතුරු (Business / Employment Details - අදාළ නම් පමණක්)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ව්‍යාපාරයේ නම (Business Name)</label>
+                <input type="text" id="eda-business-name" placeholder="ව්‍යාපාරයේ නම (ඇත්නම්)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">රැකියාව (Occupation)</label>
+                <input type="text" id="eda-occupation" placeholder="ඔබගේ රැකියාව හෝ වෘත්තිය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ව්‍යාපාරික ස්ථානයේ ලිපිනය</label>
+                <input type="text" id="eda-business-address" placeholder="ව්‍යාපාරික ස්ථානයේ ලිපිනය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ව්‍යාපාරික දුරකථන අංකය</label>
+                <input type="tel" id="eda-business-phone" placeholder="0XXXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 4: පසු උරුමය සම්බන්ධ තොරතුරු (PAGE 2 DETAILS) -->
+          <div>
+            <div class="flex items-center gap-2.5 pb-2 mb-4 border-b border-indigo-100">
+              <span class="w-7 h-7 rounded-lg bg-[#0B0D7C] text-white flex items-center justify-center text-xs font-bold">4</span>
+              <h3 class="font-bold text-base text-[#0B0D7C]">පසු උරුමය සම්බන්ධ තොරතුරු (Nominee / Beneficiary Details)</h3>
+            </div>
+
+            <p class="text-xs text-slate-500 mb-4 italic">
+              "ඉහත නම් සඳහන් අයට අපෙන් පසුව ගිණුමේ පසු උරුමය සඳහා බලය පවරන්නෙමු."
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">පසු උරුමකරුගේ සම්පූර්ණ නම (Nominee Full Name) *</label>
+                <input type="text" id="eda-nominee-name" required placeholder="පසු උරුමකරුගේ නම" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ජාතික හැඳුනුම්පත් අංකය (Nominee NIC) *</label>
+                <input type="text" id="eda-nominee-nic" required placeholder="පසු උරුමකරුගේ හැඳුනුම්පත් අංකය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono">
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">ස්ත්‍රී / පුරුෂ භාවය (Nominee Gender) *</label>
+                <select id="eda-nominee-gender" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+                  <option value="පුරුෂ (Male)">පුරුෂ (Male)</option>
+                  <option value="ස්ත්‍රී (Female)">ස්ත්‍රී (Female)</option>
+                </select>
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">අයදුම්කරුට ඇති නෑදෑකම (Relationship to Applicant) *</label>
+                <select id="eda-nominee-rel" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
+                  <option value="ස්වාමිපුරුෂයා / භාර්යාව (Spouse)">ස්වාමිපුරුෂයා / භාර්යාව (Spouse)</option>
+                  <option value="දරුවා (Child)">දරුවා (Child)</option>
+                  <option value="මව (Mother)">මව (Mother)</option>
+                  <option value="පියා (Father)">පියා (Father)</option>
+                  <option value="සහෝදරයා / සහෝදරිය (Sibling)">සහෝදරයා / සහෝදරිය (Sibling)</option>
+                  <option value="වෙනත් (Other)">වෙනත් (Other)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 5: ආරම්භක තැන්පතුව (INITIAL DEPOSIT - MIN LKR 2000) -->
+          <div>
+            <div class="flex items-center gap-2.5 pb-2 mb-4 border-b border-indigo-100">
+              <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">5</span>
+              <h3 class="font-bold text-base text-[#0B0D7C]">ආරම්භක තැන්පතුව සහ රිසිට්පත (Initial Deposit & Bank Slip)</h3>
+            </div>
+
+            <!-- People's Bank Details Card -->
+            <div class="mb-5 bg-white rounded-2xl border-2 border-emerald-500/30 p-4 sm:p-5 shadow-sm">
+              <div class="flex flex-col md:flex-row items-center gap-4">
+                <div class="w-full md:w-56 p-3 bg-amber-50 rounded-xl border border-amber-200 flex flex-col items-center justify-center text-center">
+                  <img src="assets/images/peoples-bank-logo.png" alt="People's Bank Logo" class="max-h-14 w-auto object-contain mb-1.5">
+                  <span class="text-xs font-black text-amber-900 tracking-wide">PEOPLE'S BANK (මහජන බැංකුව)</span>
+                  <span class="text-[11px] font-bold text-slate-600">නිකවැරටිය ශාඛාව</span>
+                </div>
+                <div class="space-y-1.5 text-xs sm:text-sm text-slate-700 flex-1 w-full">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">People's Bank (මහජන බැංකුව)</span>
+                    <span class="text-xs text-slate-500 font-semibold">නිකවැරටිය ශාඛාව</span>
+                  </div>
+                  <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                    <span class="text-slate-500">ගිණුම් අංකය (Account No):</span>
+                    <div class="flex items-center gap-2">
+                      <span class="font-black text-[#0B0D7C] font-mono text-base">124200110064754</span>
+                      <button type="button" onclick="navigator.clipboard.writeText('124200110064754'); window.showToast('ගිණුම් අංකය Copy විය!', 'success')" class="text-xs text-[#DF0178] hover:underline font-bold px-2 py-0.5 rounded bg-pink-50">Copy</button>
+                    </div>
+                  </div>
+                  <div class="flex justify-between py-1 border-b border-slate-100">
+                    <span class="text-slate-500">ගිණුමේ නම:</span>
+                    <span class="font-bold text-slate-800 break-words">GALAPITIYAGAMA SANASA SOCIETY</span>
+                  </div>
+                  <div class="flex justify-between py-1">
+                    <span class="text-slate-500">Bank Code: <strong>7135</strong></span>
+                    <span class="text-slate-500">Branch Code: <strong>124</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1">තැන්පත් කළ මුදල (Amount Deposited - LKR) *</label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-2.5 text-slate-400 font-bold">රු.</span>
+                  <input type="number" id="eda-deposit-amount" required min="2000" step="100" value="2000" placeholder="2000" class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all font-mono font-bold text-emerald-700 text-base">
+                </div>
+                <p class="text-[11px] text-slate-500 mt-1">ගිණුම විවෘත කිරීම සඳහා අවම තැන්පතුව <strong>රු. 2,000.00</strong> කි.</p>
+              </div>
+
+              <!-- Upload Bank Deposit Slip -->
+              <div class="md:col-span-2">
+                <label class="block font-bold text-slate-700 mb-1.5">බැංකු තැන්පතු රිසිට්පත හෝ Online Transfer ස්ලිප්පත (Bank Slip / Transfer Receipt) *</label>
+                
+                <div id="eda-receipt-dropzone" class="border-2 border-dashed border-emerald-300 rounded-2xl p-4 sm:p-6 text-center hover:bg-emerald-50/50 transition-colors bg-emerald-50/20 cursor-pointer relative">
+                  <input type="file" id="eda-receipt-file" accept="image/*,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="window.handleEdaReceiptSelected(this)">
+                  
+                  <div id="eda-receipt-upload-prompt" class="space-y-2">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl">
+                      <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-800">
+                      රිසිට්පතේ ඡායාරූපය හෝ Slip පත මෙතනට Drag කරන්න හෝ Browse කරන්න
+                    </div>
+                    <div class="text-[11px] text-slate-400">
+                      PNG, JPG, JPEG හෝ PDF (උපරිම 5MB)
+                    </div>
+                  </div>
+
+                  <div id="eda-receipt-preview-container" class="hidden space-y-3">
+                    <img id="eda-receipt-preview-img" src="" alt="Receipt Preview" class="max-h-48 mx-auto rounded-xl border border-slate-200 shadow-sm object-contain bg-white">
+                    <div class="flex items-center justify-center gap-2">
+                      <button type="button" onclick="window.clearEdaReceiptUpload()" class="px-3 py-1 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold transition-colors">
+                        <i class="fa-solid fa-trash mr-1"></i> ඉවත් කරන්න (Remove)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 6: ප්‍රකාශය සහ එකඟතාව (TERMS & SUBMIT) -->
+          <div class="border-t border-slate-200 pt-6">
+            <label class="flex items-start gap-3 cursor-pointer select-none mb-6">
+              <input type="checkbox" id="eda-consent" required class="mt-1 w-4 h-4 text-emerald-600 rounded focus:ring-0">
+              <span class="text-xs text-slate-700 leading-relaxed font-semibold">
+                මා / අප විසින් ඉහත සඳහන් කරන ලද සියලුම තොරතුරු සත්‍ය හා නිවැරදි බවටත්, ගලපිටියාගම සණස සමූපකාර බැංකුවේ තැන්පතු ප්‍රතිපත්ති, නීති රීති හා කොන්දේසි වලට එකඟ වන බවටත් මෙයින් සහතික වෙමි / වෙමු. *
+              </span>
+            </label>
+
+            <button type="submit" id="eda-submit-btn" class="w-full py-4 rounded-2xl font-black text-sm sm:text-base bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-600 text-white shadow-xl shadow-emerald-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>බාහිර තැන්පත් අයදුම්පත යොමු කරන්න (Submit External Deposit Application)</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- SUCCESS VIEW -->
+      <div id="eda-success-view" class="p-8 text-center hidden">
+        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mb-4 shadow-sm animate-bounce">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 mb-2">
+          අයදුම්පත සාර්ථකව ලැබිණි
+        </span>
+        <h3 class="text-2xl sm:text-3xl font-black text-[#0B0D7C] mb-2">බාහිර තැන්පත් අයදුම්පත යොමු විය!</h3>
+        <p class="text-sm text-slate-600 max-w-md mx-auto mb-4">
+          ඔබ විසින් යොමු කරන ලද බාහිර තැන්පත් අයදුම්පත්‍රය හා තැන්පතු රිසිට්පත් විස්තර අප බැංකුවේ ගිණුම් අංශය වෙත ලැබී ඇත.
+        </p>
+
+        <!-- Notification to keep phone active -->
+        <div class="max-w-md mx-auto p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold flex items-center justify-center gap-3 mb-5">
+          <i class="fa-solid fa-phone-volume text-xl animate-pulse flex-shrink-0 text-emerald-600"></i>
+          <div class="text-center leading-relaxed">
+            <div>ඔබගේ දුරකථන අංකය සක්‍රීයව තබාගන්න</div>
+            <div>අපගේ නිලධාරියෙකු විසින් ඔබ අමතා විස්තර තහවුරු කර</div>
+            <div>ගිණුම් අංකය ලබාදෙනු ඇත.</div>
+          </div>
+        </div>
+
+        <div class="max-w-md mx-auto p-5 rounded-2xl bg-slate-50 border border-slate-200 text-left text-xs sm:text-sm space-y-2 mb-6">
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">අයදුම්පත් යොමු අංකය:</span>
+            <span id="succ-eda-ref" class="font-mono font-black text-emerald-700 text-base">GSCS-EDA-XXXXXX</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">අයදුම්කරුගේ නම:</span>
+            <span id="succ-eda-name" class="font-bold text-slate-900">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය:</span>
+            <span id="succ-eda-nic" class="font-mono font-semibold text-slate-800">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">ආරම්භක තැන්පතුව:</span>
+            <span id="succ-eda-amount" class="font-extrabold text-emerald-700 font-mono text-base">රු. 2,000.00</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-500">තත්ත්වය:</span>
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-xs font-bold">සත්‍යාපනය වෙමින් පවතී (Under Review)</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button onclick="window.downloadExternalDepositApplicationPDF()" class="px-6 py-3 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-600 text-white transition-all shadow-lg shadow-emerald-900/20 flex items-center gap-2">
+            <i class="fa-solid fa-file-pdf text-base"></i>
+            <span>අයදුම්පත PDF ලෙස බාගත කරන්න (Download Application PDF)</span>
+          </button>
+          <button onclick="window.closeExternalDepositModal()" class="px-6 py-3 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+            වසන්න (Close)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- ================= MODAL: ණය වාරික ගෙවීම (LOAN INSTALLMENT PAYMENT PORTAL) ================= -->
   <div id="loan-payment-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">

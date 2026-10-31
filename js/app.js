@@ -1,4 +1,4 @@
-﻿// app.js - Main Client Application for Galapitiyagama Sanasa Bank
+// app.js - Main Client Application for Galapitiyagama Sanasa Bank
 document.addEventListener('DOMContentLoaded', () => {
   let currentLang = localStorage.getItem('GSCS_LANG') || 'si';
   let activeCategory = 'all';
@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const features = currentLang === 'en' ? (prod.featuresEn || prod.features) : prod.features;
       const iconClass = iconMap[prod.icon] || 'fa-solid fa-building-columns';
       const isMemberSavings = prod.id === 'prod-1' || (prod.title && prod.title.includes('සාමාජික ඉතුරුම්')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('member savings'));
+      const isExternalSavings = prod.id === 'prod-2' || (prod.title && prod.title.includes('බාහිර තැන්පත්')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('external savings'));
 
       return `
         <div class="product-card group ${prod.image ? 'p-0 overflow-hidden flex flex-col' : 'p-6 sm:p-7 flex flex-col'}">
@@ -355,6 +356,17 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span>${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}</span>
                 </button>
                 <button onclick="window.openMembershipModal()" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white shadow-md shadow-pink-900/20 transition-all flex items-center justify-center gap-1.5" title="${currentLang === 'en' ? 'Apply for Membership' : 'අයදුම් කිරීම'}">
+                  <i class="fa-solid fa-file-signature text-xs"></i>
+                  <span>${currentLang === 'en' ? 'Apply Now' : 'අයදුම් කිරීම'}</span>
+                </button>
+              </div>
+            ` : isExternalSavings ? `
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="window.openInquiryModal('${title}')" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 hover:bg-[#0B0D7C] text-slate-800 hover:text-white transition-all flex items-center justify-center gap-1.5 border border-slate-200 shadow-sm" title="${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}">
+                  <i class="fa-solid fa-circle-question text-xs"></i>
+                  <span>${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}</span>
+                </button>
+                <button onclick="window.openExternalDepositModal()" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-600 text-white shadow-md shadow-emerald-900/20 transition-all flex items-center justify-center gap-1.5" title="${currentLang === 'en' ? 'Open Account' : 'අයදුම් කිරීම'}">
                   <i class="fa-solid fa-file-signature text-xs"></i>
                   <span>${currentLang === 'en' ? 'Apply Now' : 'අයදුම් කිරීම'}</span>
                 </button>
@@ -1893,5 +1905,490 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Call setup
   try { setupFeedbackForm(); } catch(e) { console.error('Feedback form error:', e); }
+
+
+  // =========================================================================
+  // --- DIGITAL EXTERNAL DEPOSIT APPLICATION (බාහිර තැන්පත් අයදුම්පත) CONTROLLER ---
+  // =========================================================================
+  let uploadedEdaReceiptBase64 = null;
+  let hasDrawnEdaSig1 = false;
+  let hasDrawnEdaSig2 = false;
+  let isDrawingEdaSig1 = false;
+  let isDrawingEdaSig2 = false;
+  let edaSigCanvas1 = null, edaSigCtx1 = null;
+  let edaSigCanvas2 = null, edaSigCtx2 = null;
+  let lastSubmittedEdaApp = null;
+
+  function initEdaSignaturePads() {
+    // Pad 1
+    edaSigCanvas1 = document.getElementById('eda-sig-pad-1');
+    if (edaSigCanvas1) {
+      edaSigCtx1 = edaSigCanvas1.getContext('2d');
+      const rect1 = edaSigCanvas1.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      edaSigCanvas1.width = (rect1.width || 600) * dpr;
+      edaSigCanvas1.height = (rect1.height || 150) * dpr;
+      edaSigCtx1.scale(dpr, dpr);
+      edaSigCtx1.strokeStyle = '#0B0D7C';
+      edaSigCtx1.lineWidth = 2.4;
+      edaSigCtx1.lineCap = 'round';
+      edaSigCtx1.lineJoin = 'round';
+
+      function getPos1(e) {
+        const r = edaSigCanvas1.getBoundingClientRect();
+        if (e.touches && e.touches[0]) {
+          return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+        }
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      }
+
+      function startDraw1(e) {
+        e.preventDefault();
+        isDrawingEdaSig1 = true;
+        const pos = getPos1(e);
+        edaSigCtx1.beginPath();
+        edaSigCtx1.moveTo(pos.x, pos.y);
+        const pl = document.getElementById('eda-sig-placeholder-1');
+        if (pl) pl.classList.add('hidden');
+      }
+
+      function moveDraw1(e) {
+        if (!isDrawingEdaSig1) return;
+        e.preventDefault();
+        const pos = getPos1(e);
+        edaSigCtx1.lineTo(pos.x, pos.y);
+        edaSigCtx1.stroke();
+        hasDrawnEdaSig1 = true;
+      }
+
+      function endDraw1(e) {
+        if (isDrawingEdaSig1) {
+          edaSigCtx1.closePath();
+          isDrawingEdaSig1 = false;
+        }
+      }
+
+      edaSigCanvas1.onmousedown = startDraw1;
+      edaSigCanvas1.onmousemove = moveDraw1;
+      window.addEventListener('mouseup', endDraw1);
+      edaSigCanvas1.ontouchstart = startDraw1;
+      edaSigCanvas1.ontouchmove = moveDraw1;
+      window.addEventListener('touchend', endDraw1);
+    }
+
+    // Pad 2 (Joint)
+    edaSigCanvas2 = document.getElementById('eda-sig-pad-2');
+    if (edaSigCanvas2) {
+      edaSigCtx2 = edaSigCanvas2.getContext('2d');
+      const rect2 = edaSigCanvas2.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      edaSigCanvas2.width = (rect2.width || 600) * dpr;
+      edaSigCanvas2.height = (rect2.height || 150) * dpr;
+      edaSigCtx2.scale(dpr, dpr);
+      edaSigCtx2.strokeStyle = '#0B0D7C';
+      edaSigCtx2.lineWidth = 2.4;
+      edaSigCtx2.lineCap = 'round';
+      edaSigCtx2.lineJoin = 'round';
+
+      function getPos2(e) {
+        const r = edaSigCanvas2.getBoundingClientRect();
+        if (e.touches && e.touches[0]) {
+          return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+        }
+        return { x: e.clientX - r.left, y: e.clientY - r.top };
+      }
+
+      function startDraw2(e) {
+        e.preventDefault();
+        isDrawingEdaSig2 = true;
+        const pos = getPos2(e);
+        edaSigCtx2.beginPath();
+        edaSigCtx2.moveTo(pos.x, pos.y);
+        const pl = document.getElementById('eda-sig-placeholder-2');
+        if (pl) pl.classList.add('hidden');
+      }
+
+      function moveDraw2(e) {
+        if (!isDrawingEdaSig2) return;
+        e.preventDefault();
+        const pos = getPos2(e);
+        edaSigCtx2.lineTo(pos.x, pos.y);
+        edaSigCtx2.stroke();
+        hasDrawnEdaSig2 = true;
+      }
+
+      function endDraw2(e) {
+        if (isDrawingEdaSig2) {
+          edaSigCtx2.closePath();
+          isDrawingEdaSig2 = false;
+        }
+      }
+
+      edaSigCanvas2.onmousedown = startDraw2;
+      edaSigCanvas2.onmousemove = moveDraw2;
+      window.addEventListener('mouseup', endDraw2);
+      edaSigCanvas2.ontouchstart = startDraw2;
+      edaSigCanvas2.ontouchmove = moveDraw2;
+      window.addEventListener('touchend', endDraw2);
+    }
+  }
+
+  window.clearEdaSignatureCanvas = (num) => {
+    if (num === 1) {
+      if (!edaSigCanvas1 || !edaSigCtx1) return;
+      edaSigCtx1.clearRect(0, 0, edaSigCanvas1.width, edaSigCanvas1.height);
+      hasDrawnEdaSig1 = false;
+      const pl1 = document.getElementById('eda-sig-placeholder-1');
+      if (pl1) pl1.classList.remove('hidden');
+    } else if (num === 2) {
+      if (!edaSigCanvas2 || !edaSigCtx2) return;
+      edaSigCtx2.clearRect(0, 0, edaSigCanvas2.width, edaSigCanvas2.height);
+      hasDrawnEdaSig2 = false;
+      const pl2 = document.getElementById('eda-sig-placeholder-2');
+      if (pl2) pl2.classList.remove('hidden');
+    }
+  };
+
+  window.toggleEdaJoint = (isJoint) => {
+    const sec = document.getElementById('eda-joint-applicant-section');
+    if (!sec) return;
+    if (isJoint) {
+      sec.classList.remove('hidden');
+      setTimeout(() => initEdaSignaturePads(), 100);
+    } else {
+      sec.classList.add('hidden');
+    }
+  };
+
+  window.openExternalDepositModal = () => {
+    const modal = document.getElementById('external-deposit-modal');
+    const formCont = document.getElementById('eda-form-container');
+    const succView = document.getElementById('eda-success-view');
+    const form = document.getElementById('external-deposit-app-form');
+
+    if (form) form.reset();
+    window.clearEdaReceiptUpload();
+    window.clearEdaSignatureCanvas(1);
+    window.clearEdaSignatureCanvas(2);
+    window.toggleEdaJoint(false);
+
+    const indRadio = document.querySelector('input[name="eda_account_type"][value="individual"]');
+    if (indRadio) indRadio.checked = true;
+
+    if (formCont) formCont.classList.remove('hidden');
+    if (succView) succView.classList.add('hidden');
+    if (modal) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => initEdaSignaturePads(), 150);
+    }
+  };
+
+  window.closeExternalDepositModal = () => {
+    const modal = document.getElementById('external-deposit-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  };
+
+  window.handleEdaReceiptSelected = async (input) => {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      try {
+        uploadedEdaReceiptBase64 = await compressImageFile(file, 900, 900, 0.65);
+        const prompt = document.getElementById('eda-receipt-upload-prompt');
+        const container = document.getElementById('eda-receipt-preview-container');
+        const img = document.getElementById('eda-receipt-preview-img');
+        if (prompt) prompt.classList.add('hidden');
+        if (container) container.classList.remove('hidden');
+        if (img) img.src = uploadedEdaReceiptBase64;
+      } catch (err) {
+        console.error('EDA receipt upload error:', err);
+      }
+    }
+  };
+
+  window.clearEdaReceiptUpload = () => {
+    uploadedEdaReceiptBase64 = null;
+    const input = document.getElementById('eda-receipt-file');
+    if (input) input.value = '';
+    const prompt = document.getElementById('eda-receipt-upload-prompt');
+    const container = document.getElementById('eda-receipt-preview-container');
+    const img = document.getElementById('eda-receipt-preview-img');
+    if (prompt) prompt.classList.remove('hidden');
+    if (container) container.classList.add('hidden');
+    if (img) img.src = '';
+  };
+
+  window.handleExternalDepositSubmit = (e) => {
+    e.preventDefault();
+
+    if (!hasDrawnEdaSig1) {
+      alert('කරුණාකර අයදුම්කරු 01 සඳහා විද්‍යුත් අත්සන (E-Signature) තබන්න.');
+      const pad = document.getElementById('eda-sig-pad-1');
+      if (pad) pad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const accountType = document.querySelector('input[name="eda_account_type"]:checked') ? document.querySelector('input[name="eda_account_type"]:checked').value : 'individual';
+    const isJoint = accountType === 'joint';
+
+    if (isJoint && !hasDrawnEdaSig2) {
+      alert('හවුල් ගිණුමක් සඳහා දෙවන අයදුම්කරුගේ (Applicant 02) විද්‍යුත් අත්සනද අවශ්‍ය වේ.');
+      const pad2 = document.getElementById('eda-sig-pad-2');
+      if (pad2) pad2.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (!uploadedEdaReceiptBase64) {
+      alert('කරුණාකර රු. 2,000/- හෝ ඊට වැඩි ආරම්භක තැන්පතු රිසිට්පත Upload කරන්න.');
+      const zone = document.getElementById('eda-receipt-dropzone');
+      if (zone) zone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const amountVal = parseFloat(document.getElementById('eda-deposit-amount').value) || 2000;
+    if (amountVal < 2000) {
+      alert('බාහිර ඉතුරුම් ගිණුමක් විවෘත කිරීම සඳහා අවම තැන්පතුව රු. 2,000.00 කි.');
+      return;
+    }
+
+    let sig1DataUrl = '';
+    let sig2DataUrl = '';
+    try { if (edaSigCanvas1) sig1DataUrl = edaSigCanvas1.toDataURL('image/png'); } catch(err) {}
+    try { if (isJoint && edaSigCanvas2) sig2DataUrl = edaSigCanvas2.toDataURL('image/png'); } catch(err) {}
+
+    const newEdaApp = {
+      appType: 'EXTERNAL_DEPOSIT',
+      isExternalDeposit: true,
+      accountType: isJoint ? 'හවුල් ගිණුම (Joint Account)' : 'තනි ගිණුම (Individual Account)',
+      
+      // Applicant 01
+      fullName: document.getElementById('eda-fullname-1').value.trim(),
+      nameWithInitials: document.getElementById('eda-initials-name-1').value.trim(),
+      nameEnglishCaps: document.getElementById('eda-name-en-1').value.trim().toUpperCase(),
+      nic: document.getElementById('eda-nic-1').value.trim(),
+      gender: document.getElementById('eda-gender-1').value,
+      address: document.getElementById('eda-address-1').value.trim(),
+      city: document.getElementById('eda-city-1').value.trim(),
+      dob: document.getElementById('eda-dob-1').value,
+      maritalStatus: document.getElementById('eda-marital-1').value,
+      phone: document.getElementById('eda-phone-1').value.trim(),
+      whatsapp: document.getElementById('eda-whatsapp-1').value.trim(),
+      email: document.getElementById('eda-email-1').value.trim(),
+      religion: document.getElementById('eda-religion-1').value,
+      gnDivision: document.getElementById('eda-gn-1').value.trim(),
+      signatureImage: sig1DataUrl,
+
+      // Applicant 02 (if joint)
+      applicant2: isJoint ? {
+        fullName: document.getElementById('eda-fullname-2').value.trim(),
+        nameWithInitials: document.getElementById('eda-initials-name-2').value.trim(),
+        nameEnglishCaps: document.getElementById('eda-name-en-2').value.trim().toUpperCase(),
+        nic: document.getElementById('eda-nic-2').value.trim(),
+        gender: document.getElementById('eda-gender-2').value,
+        address: document.getElementById('eda-address-2').value.trim(),
+        city: document.getElementById('eda-city-2').value.trim(),
+        dob: document.getElementById('eda-dob-2').value,
+        maritalStatus: document.getElementById('eda-marital-2').value,
+        phone: document.getElementById('eda-phone-2').value.trim(),
+        whatsapp: document.getElementById('eda-whatsapp-2').value.trim(),
+        email: document.getElementById('eda-email-2').value.trim(),
+        religion: document.getElementById('eda-religion-2').value,
+        gnDivision: document.getElementById('eda-gn-2').value.trim(),
+        signatureImage: sig2DataUrl
+      } : null,
+
+      // Business / Employment
+      businessName: document.getElementById('eda-business-name').value.trim(),
+      occupation: document.getElementById('eda-occupation').value.trim(),
+      businessAddress: document.getElementById('eda-business-address').value.trim(),
+      businessPhone: document.getElementById('eda-business-phone').value.trim(),
+
+      // Nominee
+      nomineeName: document.getElementById('eda-nominee-name').value.trim(),
+      nomineeNic: document.getElementById('eda-nominee-nic').value.trim(),
+      nomineeGender: document.getElementById('eda-nominee-gender').value,
+      nomineeRelationship: document.getElementById('eda-nominee-rel').value,
+
+      // Initial Deposit
+      totalPaid: amountVal,
+      receiptImage: uploadedEdaReceiptBase64,
+      bankAccount: "People's Bank - 124200110064754 (Nikaweratiya)"
+    };
+
+    // Save via store
+    const savedApp = window.bankStore.addMembershipApplication(newEdaApp);
+    if (savedApp && savedApp.refId && savedApp.refId.startsWith('GSCS-MA-')) {
+      savedApp.refId = savedApp.refId.replace('GSCS-MA-', 'GSCS-EDA-');
+      window.bankStore.save();
+      window.dispatchEvent(new CustomEvent('bankDataUpdated'));
+    }
+    lastSubmittedEdaApp = savedApp;
+
+    // Switch to success view
+    const formCont = document.getElementById('eda-form-container');
+    const succView = document.getElementById('eda-success-view');
+    if (formCont) formCont.classList.add('hidden');
+    if (succView) succView.classList.remove('hidden');
+
+    const refEl = document.getElementById('succ-eda-ref');
+    const nameEl = document.getElementById('succ-eda-name');
+    const nicEl = document.getElementById('succ-eda-nic');
+    const amtEl = document.getElementById('succ-eda-amount');
+
+    if (refEl) refEl.textContent = savedApp.refId;
+    if (nameEl) nameEl.textContent = `${savedApp.fullName} (${savedApp.nameWithInitials})`;
+    if (nicEl) nicEl.textContent = savedApp.nic;
+    if (amtEl) amtEl.textContent = `රු. ${Number(savedApp.totalPaid).toLocaleString()}.00`;
+
+    showToast('බාහිර තැන්පත් අයදුම්පත සාර්ථකව යොමු කරන ලදී!', 'success');
+  };
+
+  // Print & PDF for External Deposit Application
+  window.printExternalDepositApplicationCopy = (targetId) => {
+    let app = null;
+    if (targetId) {
+      const apps = window.bankStore.getMembershipApplications();
+      app = apps.find(a => a.id === targetId || a.refId === targetId);
+    }
+    if (!app) app = lastSubmittedEdaApp;
+    if (!app) {
+      alert('අයදුම්පත් විස්තර හමු නොවීය.');
+      return;
+    }
+
+    const printWin = window.open('', '_blank', 'width=900,height=750');
+    if (!printWin) {
+      alert('කරුණාකර Popup අවහිර කිරීම ඉවත් කරන්න.');
+      return;
+    }
+
+    const isJoint = app.accountType && app.accountType.includes('හවුල්');
+    const app2 = app.applicant2;
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>බාහිර තැන්පත් අයදුම් පත්‍රය - ${app.refId}</title>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, 'Iskoola Pota', sans-serif; padding: 25px; color: #1e293b; max-width: 800px; margin: auto; }
+          .header { text-align: center; border-bottom: 2px solid #0B0D7C; padding-bottom: 12px; margin-bottom: 15px; }
+          .logo { height: 55px; margin-bottom: 5px; }
+          .title { font-size: 19px; font-weight: bold; color: #0B0D7C; margin: 3px 0; }
+          .sub { font-size: 12px; color: #475569; }
+          .badge { display: inline-block; padding: 4px 10px; background: #059669; color: #fff; border-radius: 12px; font-size: 11px; font-weight: bold; margin-top: 5px; }
+          .section-title { font-size: 13px; font-weight: bold; color: #0B0D7C; background: #f1f5f9; padding: 6px 10px; border-left: 4px solid #059669; margin-top: 14px; margin-bottom: 8px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 11.5px; }
+          th, td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: left; vertical-align: top; }
+          th { background: #f8fafc; font-weight: bold; width: 35%; color: #334155; }
+          .payment-box { background: #ecfdf5; border: 1px solid #a7f3d0; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 11.5px; }
+          .sig-box { border: 1px solid #cbd5e1; padding: 8px; text-align: center; background: #fafafa; border-radius: 8px; }
+          .sig-img { max-height: 60px; object-fit: contain; }
+          .receipt-img { max-height: 130px; border: 1px solid #ddd; margin-top: 5px; border-radius: 6px; }
+          @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="text-align: right; margin-bottom: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button onclick="window.print()" style="padding: 8px 16px; background: #059669; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+            PDF ලෙස සුරකින්න / මුද්‍රණය කරන්න (Print / Save PDF)
+          </button>
+        </div>
+
+        <div class="header">
+          <img src="assets/images/gscs-logo.png" class="logo"><br>
+          <div class="title">බාහිර තැන්පත් අයදුම් පත්‍රය (External Deposit Application)</div>
+          <div class="sub">සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය (කුලි/395)</div>
+          <span class="badge">${app.accountType || 'තනි ගිණුම'} | යොමු අංකය: ${app.refId}</span>
+        </div>
+
+        <div class="section-title">1. පුද්ගලික තොරතුරු - ප්‍රධාන අයදුම්කරු 01</div>
+        <table>
+          <tr><th>සම්පූර්ණ නම</th><td>${app.fullName}</td></tr>
+          <tr><th>මුලකුරු සමඟ නම</th><td>${app.nameWithInitials}</td></tr>
+          <tr><th>ඉංග්‍රීසි නම (Capital)</th><td>${app.nameEnglishCaps}</td></tr>
+          <tr><th>ජාතික හැඳුනුම්පත් අංකය</th><td><strong>${app.nic}</strong></td></tr>
+          <tr><th>ස්ත්‍රී / පුරුෂ භාවය | උපන් දිනය</th><td>${app.gender} | ${app.dob}</td></tr>
+          <tr><th>විවාහක / අවිවාහක | ආගම</th><td>${app.maritalStatus} | ${app.religion || '-'}</td></tr>
+          <tr><th>ස්ථිර ලිපිනය | නගරය</th><td>${app.address}, ${app.city}</td></tr>
+          <tr><th>ග්‍රාම නිලධාරී වසම</th><td>${app.gnDivision || '-'}</td></tr>
+          <tr><th>දුරකථන අංකය | WhatsApp</th><td>${app.phone} | ${app.whatsapp || '-'}</td></tr>
+          <tr><th>ඊ-මේල් ලිපිනය</th><td>${app.email || '-'}</td></tr>
+        </table>
+
+        ${isJoint && app2 ? `
+        <div class="section-title">2. පුද්ගලික තොරතුරු - දෙවන අයදුම්කරු 02 (හවුල් ගිණුම)</div>
+        <table>
+          <tr><th>සම්පූර්ණ නම</th><td>${app2.fullName}</td></tr>
+          <tr><th>මුලකුරු සමඟ නම</th><td>${app2.nameWithInitials}</td></tr>
+          <tr><th>ඉංග්‍රීසි නම (Capital)</th><td>${app2.nameEnglishCaps}</td></tr>
+          <tr><th>ජාතික හැඳුනුම්පත් අංකය</th><td><strong>${app2.nic}</strong></td></tr>
+          <tr><th>ස්ත්‍රී / පුරුෂ භාවය | උපන් දිනය</th><td>${app2.gender} | ${app2.dob}</td></tr>
+          <tr><th>ස්ථිර ලිපිනය | නගරය</th><td>${app2.address}, ${app2.city}</td></tr>
+          <tr><th>දුරකථන අංකය | WhatsApp</th><td>${app2.phone} | ${app2.whatsapp || '-'}</td></tr>
+        </table>
+        ` : ''}
+
+        <div class="section-title">3. ව්‍යාපාරික / රැකියා තොරතුරු</div>
+        <table>
+          <tr><th>ව්‍යාපාරයේ නම | රැකියාව</th><td>${app.businessName || '-'} | ${app.occupation || '-'}</td></tr>
+          <tr><th>ස්ථානයේ ලිපිනය | දුරකථනය</th><td>${app.businessAddress || '-'} | ${app.businessPhone || '-'}</td></tr>
+        </table>
+
+        <div class="section-title">4. පසු උරුමය සම්බන්ධ තොරතුරු</div>
+        <table>
+          <tr><th>පසු උරුමකරුගේ සම්පූර්ණ නම</th><td>${app.nomineeName}</td></tr>
+          <tr><th>ජාතික හැඳුනුම්පත් අංකය | ස්ත්‍රී/පුරුෂ</th><td>${app.nomineeNic} | ${app.nomineeGender}</td></tr>
+          <tr><th>අයදුම්කරුට ඇති නෑදෑකම</th><td>${app.nomineeRelationship}</td></tr>
+        </table>
+
+        <div class="section-title">5. ආරම්භක තැන්පතුව (Initial Deposit)</div>
+        <div class="payment-box">
+          <strong>ආරම්භක තැන්පතු මුදල: රු. ${Number(app.totalPaid).toLocaleString()}.00</strong> (අවම රු. 2,000/-)<br>
+          <span>බැංකු ගිණුම: People's Bank - 124200110064754 (Nikaweratiya)</span><br>
+          ${app.receiptImage ? `<img src="${app.receiptImage}" class="receipt-img">` : ''}
+        </div>
+
+        <div class="section-title">6. ප්‍රකාශය සහ අත්සන් (Signatures)</div>
+        <table style="border: none;">
+          <tr style="border: none;">
+            <td style="border: none; width: ${isJoint ? '50%' : '100%'};">
+              <div class="sig-box">
+                ${app.signatureImage ? `<img src="${app.signatureImage}" class="sig-img"><br>` : ''}
+                <strong>අයදුම්කරු 01 අත්සන</strong>
+              </div>
+            </td>
+            ${isJoint && app2 ? `
+            <td style="border: none; width: 50%;">
+              <div class="sig-box">
+                ${app2.signatureImage ? `<img src="${app2.signatureImage}" class="sig-img"><br>` : ''}
+                <strong>අයදුම්කරු 02 අත්සන</strong>
+              </div>
+            </td>
+            ` : ''}
+          </tr>
+        </table>
+
+        <div style="margin-top: 15px; border-top: 1px dashed #cbd5e1; padding-top: 10px; font-size: 11px; color: #64748b;">
+          <strong>කාර්යාලීය ප්‍රයෝජනය සඳහා පමණි (Bank Use Only):</strong><br>
+          නව ගිණුම් අංකය: ................................... | දත්ත ඇතුළත් කළේ: .................... | කළමනාකරු: ....................
+        </div>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+  };
+
+  window.downloadExternalDepositApplicationPDF = () => {
+    window.printExternalDepositApplicationCopy();
+  };
+
 
 });

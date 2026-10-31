@@ -1,4 +1,4 @@
-// admin.js - Management Controller for Galapitiyagama Sanasa Bank
+﻿// admin.js - Management Controller for Galapitiyagama Sanasa Bank
 
 // --- Tab Titles Definition (Global) ---
 const tabTitles = {
@@ -9,7 +9,7 @@ const tabTitles = {
   sliders: 'ප්‍රධාන බැනර් පාලනය (Hero Banners)',
   bankinfo: 'බැංකු තොරතුරු සහ විශේෂ නිවේදන (Bank Profile & Alert)',
   inquiries: 'පාරිභෝගික විමසීම් ලිපිගොනුව (Inquiries Inbox)',
-  applications: 'සාමාජික අයදුම්පත් කළමනාකරණය (Member Applications)',
+  applications: 'සාමාජික සහ බාහිර තැන්පත් අයදුම්පත් (Member & Deposit Applications)',
   loanpayments: 'ණය සහ ඉතුරුම් තැන්පතු ගෙවීම් (Loan & Savings Payments)',
   smartcoop: 'Smart COOP යෙදුම් අයදුම්පත් (Smart COOP Applications)',
   sync: 'GitHub Pages දත්ත සමමුහුර්තකරණය (Data Persistence)',
@@ -1028,7 +1028,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tbody.innerHTML = filtered.map(app => {
         const cleanPhone = cleanPhoneNum(app.phone);
-        const waLink = makeWaUrl(cleanPhone, `Hello ${safeStr(app.fullName)}, regarding your GSCS Bank Membership Application ${safeStr(app.refId)}:`);
+        const isEda = safeStr(app.refId).startsWith('GSCS-EDA') || app.isExternalDeposit || app.appType === 'EXTERNAL_DEPOSIT';
+        const waMsg = isEda
+          ? `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබ විසින් යොමු කරන ලද බාහිර තැන්පත් ගිණුම් අයදුම්පත (යොමු අංකය: ${safeStr(app.refId)}) සම්බන්ධයෙනි.\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`
+          : `Hello ${safeStr(app.fullName)}, regarding your GSCS Bank Membership Application ${safeStr(app.refId)}:`;
+        const waLink = makeWaUrl(cleanPhone, waMsg);
 
         let statusBadge = '';
         if (app.status === 'approved') {
@@ -1042,8 +1046,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
           <tr class="hover:bg-slate-50 transition-colors">
             <td class="py-3 px-4">
-              <span class="font-black text-[#0B0D7C] font-mono">${safeStr(app.refId)}</span>
-              <div class="text-[11px] text-slate-400">${safeStr(app.submittedAt)}</div>
+              <span class="font-black ${isEda ? 'text-emerald-700' : 'text-[#0B0D7C]'} font-mono">${safeStr(app.refId)}</span>
+              <div>
+                ${isEda ? '<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800">EXTERNAL DEPOSIT</span>' : '<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-100 text-[#0B0D7C]">MEMBERSHIP</span>'}
+              </div>
+              <div class="text-[10px] text-slate-400">${safeStr(app.submittedAt)}</div>
             </td>
             <td class="py-3 px-4">
               <div class="font-bold text-slate-900">${safeStr(app.fullName)}</div>
