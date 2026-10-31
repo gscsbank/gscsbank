@@ -1703,7 +1703,35 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Section 3: Initial Deposit -->
+        <!-- Section 3: Birth Certificate Photos -->
+        <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-200">
+          <h4 class="font-bold text-amber-900 text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-amber-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-file-shield text-[9px]"></i></span>
+            උප්පැන්න සහතිකයේ ඡායාරූප (Birth Certificate Photos - Front & Back)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">උප්පැන්න සහතිකයේ ඉදිරිපස:</span>
+              ${app.birthCertFrontImage ? `
+                <img src="${app.birthCertFrontImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                <a href="${app.birthCertFrontImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:underline">
+                  <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණයෙන් බලන්න
+                </a>
+              ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
+            </div>
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">උප්පැන්න සහතිකයේ පසුපස:</span>
+              ${app.birthCertBackImage ? `
+                <img src="${app.birthCertBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                <a href="${app.birthCertBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:underline">
+                  <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණයෙන් බලන්න
+                </a>
+              ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Initial Deposit -->
         <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-200">
           <h4 class="font-bold text-emerald-800 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
             <span class="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span>
@@ -1769,6 +1797,49 @@ document.addEventListener('DOMContentLoaded', () => {
             <div><span class="text-slate-500">WhatsApp:</span> <strong class="text-slate-900 font-mono">${app.whatsapp}</strong></div>
             <div class="sm:col-span-2"><span class="text-slate-500">විද්‍යුත් තැපෑල (Email):</span> <strong class="text-slate-900">${app.email || '-'}</strong></div>
           </div>
+        </div>
+
+        <!-- KYC Document Photos (NIC / Driving License / Passport) -->
+        <div class="bg-indigo-50/50 rounded-2xl p-4 border border-indigo-200">
+          <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-id-card text-[9px]"></i></span>
+            හැඳුනුම් ලේඛන ඡායාරූප (KYC Identity Document Photos - NIC / License / Passport)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">ඉදිරිපස (Front Side):</span>
+              ${app.idFrontImage ? `
+                <img src="${app.idFrontImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                <a href="${app.idFrontImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline">
+                  <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණයෙන් බලන්න
+                </a>
+              ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
+            </div>
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">පසුපස (Back Side):</span>
+              ${app.idBackImage ? `
+                <img src="${app.idBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                <a href="${app.idBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline">
+                  <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණයෙන් බලන්න
+                </a>
+              ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
+            </div>
+          </div>
+          ${app.applicant2 && (app.applicant2.idFrontImage || app.applicant2.idBackImage) ? `
+            <div class="mt-3 pt-3 border-t border-indigo-200">
+              <span class="font-bold text-slate-800 block mb-2">දෙවන අයදුම්කරුගේ (Applicant 02) හැඳුනුම් ලේඛන:</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span class="text-slate-500 block mb-1 font-bold">ඉදිරිපස:</span>
+                  ${app.applicant2.idFrontImage ? `<img src="${app.applicant2.idFrontImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white"><a href="${app.applicant2.idFrontImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline"><i class="fa-solid fa-up-right-from-square"></i> බලන්න</a>` : '<span class="text-slate-400">නැත</span>'}
+                </div>
+                <div>
+                  <span class="text-slate-500 block mb-1 font-bold">පසුපස:</span>
+                  ${app.applicant2.idBackImage ? `<img src="${app.applicant2.idBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white"><a href="${app.applicant2.idBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline"><i class="fa-solid fa-up-right-from-square"></i> බලන්න</a>` : '<span class="text-slate-400">නැත</span>'}
+                </div>
+              </div>
+            </div>
+          ` : ''}
         </div>
 
         <!-- Section 2 -->

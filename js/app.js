@@ -1,4 +1,4 @@
-﻿// app.js - Main Client Application for Galapitiyagama Sanasa Bank
+// app.js - Main Client Application for Galapitiyagama Sanasa Bank
 document.addEventListener('DOMContentLoaded', () => {
   let currentLang = localStorage.getItem('GSCS_LANG') || 'si';
   let activeCategory = 'all';
@@ -1207,6 +1207,49 @@ document.addEventListener('DOMContentLoaded', () => {
     if (container) container.classList.add('hidden');
   };
 
+  let uploadedMemIdFront = '';
+  let uploadedMemIdBack = '';
+
+  window.handleMemIdSelected = async (input, side) => {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      try {
+        const compressed = await compressImageFile(file, 900, 900, 0.7);
+        if (side === 'front') {
+          uploadedMemIdFront = compressed;
+          const wrap = document.getElementById('mem-id-front-preview-wrap');
+          const img = document.getElementById('mem-id-front-preview-img');
+          if (wrap) wrap.classList.remove('hidden');
+          if (img) img.src = compressed;
+        } else {
+          uploadedMemIdBack = compressed;
+          const wrap = document.getElementById('mem-id-back-preview-wrap');
+          const img = document.getElementById('mem-id-back-preview-img');
+          if (wrap) wrap.classList.remove('hidden');
+          if (img) img.src = compressed;
+        }
+      } catch (err) {
+        console.error('Mem ID compression error:', err);
+      }
+    }
+  };
+
+  window.clearMemIdUpload = (side) => {
+    if (side === 'front') {
+      uploadedMemIdFront = '';
+      const input = document.getElementById('mem-id-front');
+      const wrap = document.getElementById('mem-id-front-preview-wrap');
+      if (input) input.value = '';
+      if (wrap) wrap.classList.add('hidden');
+    } else {
+      uploadedMemIdBack = '';
+      const input = document.getElementById('mem-id-back');
+      const wrap = document.getElementById('mem-id-back-preview-wrap');
+      if (input) input.value = '';
+      if (wrap) wrap.classList.add('hidden');
+    }
+  };
+
   window.handleMembershipSubmit = (e) => {
     e.preventDefault();
 
@@ -1270,6 +1313,8 @@ document.addEventListener('DOMContentLoaded', () => {
       bankAccount: "People's Bank - 124200110064754 (Nikaweratiya)",
       paymentRef: document.getElementById('mem-payment-ref') ? document.getElementById('mem-payment-ref').value.trim() : '',
       receiptImage: uploadedReceiptBase64,
+      idFrontImage: uploadedMemIdFront,
+      idBackImage: uploadedMemIdBack,
       signatureImage: signatureDataUrl
     };
 
@@ -2135,6 +2180,83 @@ document.addEventListener('DOMContentLoaded', () => {
     if (img) img.src = '';
   };
 
+  let edaApp1IdFront = '';
+  let edaApp1IdBack = '';
+  let edaApp2IdFront = '';
+  let edaApp2IdBack = '';
+
+  window.handleEdaIdSelected = async (input, appNum, side) => {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      try {
+        const compressed = await compressImageFile(file, 900, 900, 0.7);
+        if (appNum === 1) {
+          if (side === 'front') {
+            edaApp1IdFront = compressed;
+            const wrap = document.getElementById('eda-app1-id-front-preview-wrap');
+            const img = document.getElementById('eda-app1-id-front-preview-img');
+            if (wrap) wrap.classList.remove('hidden');
+            if (img) img.src = compressed;
+          } else {
+            edaApp1IdBack = compressed;
+            const wrap = document.getElementById('eda-app1-id-back-preview-wrap');
+            const img = document.getElementById('eda-app1-id-back-preview-img');
+            if (wrap) wrap.classList.remove('hidden');
+            if (img) img.src = compressed;
+          }
+        } else {
+          if (side === 'front') {
+            edaApp2IdFront = compressed;
+            const wrap = document.getElementById('eda-app2-id-front-preview-wrap');
+            const img = document.getElementById('eda-app2-id-front-preview-img');
+            if (wrap) wrap.classList.remove('hidden');
+            if (img) img.src = compressed;
+          } else {
+            edaApp2IdBack = compressed;
+            const wrap = document.getElementById('eda-app2-id-back-preview-wrap');
+            const img = document.getElementById('eda-app2-id-back-preview-img');
+            if (wrap) wrap.classList.remove('hidden');
+            if (img) img.src = compressed;
+          }
+        }
+      } catch (err) {
+        console.error('EDA ID error:', err);
+      }
+    }
+  };
+
+  window.clearEdaIdUpload = (appNum, side) => {
+    if (appNum === 1) {
+      if (side === 'front') {
+        edaApp1IdFront = '';
+        const input = document.getElementById('eda-app1-id-front');
+        const wrap = document.getElementById('eda-app1-id-front-preview-wrap');
+        if (input) input.value = '';
+        if (wrap) wrap.classList.add('hidden');
+      } else {
+        edaApp1IdBack = '';
+        const input = document.getElementById('eda-app1-id-back');
+        const wrap = document.getElementById('eda-app1-id-back-preview-wrap');
+        if (input) input.value = '';
+        if (wrap) wrap.classList.add('hidden');
+      }
+    } else {
+      if (side === 'front') {
+        edaApp2IdFront = '';
+        const input = document.getElementById('eda-app2-id-front');
+        const wrap = document.getElementById('eda-app2-id-front-preview-wrap');
+        if (input) input.value = '';
+        if (wrap) wrap.classList.add('hidden');
+      } else {
+        edaApp2IdBack = '';
+        const input = document.getElementById('eda-app2-id-back');
+        const wrap = document.getElementById('eda-app2-id-back-preview-wrap');
+        if (input) input.value = '';
+        if (wrap) wrap.classList.add('hidden');
+      }
+    }
+  };
+
   window.handleExternalDepositSubmit = (e) => {
     e.preventDefault();
 
@@ -2193,6 +2315,8 @@ document.addEventListener('DOMContentLoaded', () => {
       email: document.getElementById('eda-email-1').value.trim(),
       religion: document.getElementById('eda-religion-1').value,
       gnDivision: document.getElementById('eda-gn-1').value.trim(),
+      idFrontImage: edaApp1IdFront,
+      idBackImage: edaApp1IdBack,
       signatureImage: sig1DataUrl,
 
       // Applicant 02 (if joint)
@@ -2211,6 +2335,8 @@ document.addEventListener('DOMContentLoaded', () => {
         email: document.getElementById('eda-email-2').value.trim(),
         religion: document.getElementById('eda-religion-2').value,
         gnDivision: document.getElementById('eda-gn-2').value.trim(),
+        idFrontImage: edaApp2IdFront,
+        idBackImage: edaApp2IdBack,
         signatureImage: sig2DataUrl
       } : null,
 
@@ -2551,6 +2677,49 @@ document.addEventListener('DOMContentLoaded', () => {
     reader.readAsDataURL(file);
   };
 
+  let chdBirthFront = '';
+  let chdBirthBack = '';
+
+  window.handleChdBirthSelected = async (input, side) => {
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      try {
+        const compressed = await compressImageFile(file, 900, 900, 0.7);
+        if (side === 'front') {
+          chdBirthFront = compressed;
+          const wrap = document.getElementById('chd-birth-front-preview-wrap');
+          const img = document.getElementById('chd-birth-front-preview-img');
+          if (wrap) wrap.classList.remove('hidden');
+          if (img) img.src = compressed;
+        } else {
+          chdBirthBack = compressed;
+          const wrap = document.getElementById('chd-birth-back-preview-wrap');
+          const img = document.getElementById('chd-birth-back-preview-img');
+          if (wrap) wrap.classList.remove('hidden');
+          if (img) img.src = compressed;
+        }
+      } catch (err) {
+        console.error('Birth cert compression error:', err);
+      }
+    }
+  };
+
+  window.clearChdBirthUpload = (side) => {
+    if (side === 'front') {
+      chdBirthFront = '';
+      const input = document.getElementById('chd-birth-front');
+      const wrap = document.getElementById('chd-birth-front-preview-wrap');
+      if (input) input.value = '';
+      if (wrap) wrap.classList.add('hidden');
+    } else {
+      chdBirthBack = '';
+      const input = document.getElementById('chd-birth-back');
+      const wrap = document.getElementById('chd-birth-back-preview-wrap');
+      if (input) input.value = '';
+      if (wrap) wrap.classList.add('hidden');
+    }
+  };
+
   window.clearChdReceiptUpload = () => {
     chdReceiptBase64 = '';
     const input = document.getElementById('chd-receipt-input');
@@ -2593,6 +2762,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (depositAmt < 2000) {
       showToast('අවම ආරම්භක තැන්පතුව රුපියල් 2,000/- ක් විය යුතුය.', 'error');
       document.getElementById('chd-deposit-amount')?.focus();
+      return;
+    }
+
+    // Validate birth certificate
+    if (!chdBirthFront) {
+      showToast('කරුණාකර දරුවාගේ උප්පැන්න සහතිකයේ ඉදිරිපස ඡායාරූපය Upload කරන්න.', 'error');
+      const bcInput = document.getElementById('chd-birth-front');
+      if (bcInput) bcInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
@@ -2646,6 +2823,8 @@ document.addEventListener('DOMContentLoaded', () => {
       shareCapital: 0,
       admissionFee: 0,
       minDeposit: depositAmt,
+      birthCertFrontImage: chdBirthFront,
+      birthCertBackImage: chdBirthBack,
       receiptImage: chdReceiptBase64,
       signatureImage: signatureImage,
       submittedAt: submittedAt,

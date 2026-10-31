@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="si" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
@@ -1503,6 +1503,55 @@
                 <label class="block font-bold text-slate-700 mb-1">ග්‍රාම නිලධාරී වසම (Grama Niladhari Division) *</label>
                 <input type="text" id="mem-gn" required placeholder="ග්‍රාම නිලධාරී වසමේ නම / අංකය" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
               </div>
+
+              <!-- KYC Identity Document Upload (NIC / Driving License / Passport) -->
+              <div class="md:col-span-2 mt-2 p-4 rounded-2xl bg-indigo-50/70 border-2 border-indigo-200">
+                <div class="flex items-center justify-between mb-2">
+                  <label class="block font-bold text-[#0B0D7C] text-xs sm:text-sm">
+                    <i class="fa-solid fa-id-card text-[#DF0178] mr-1"></i> හැඳුනුම් ලේඛන ඡායාරූප (NIC / Driving License / Passport Upload) *
+                  </label>
+                  <span class="text-[10px] bg-[#0B0D7C] text-white px-2 py-0.5 rounded font-bold">KYC ලේඛන</span>
+                </div>
+                <p class="text-[11px] text-slate-600 mb-3">
+                  ජාතික හැඳුනුම්පත (NIC), රියදුරු බලපත්‍රය (Driving License) හෝ විදේශ ගමන් බලපත්‍රයේ (Passport) පැහැදිලි ඡායාරූප Upload කරන්න.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Front Side -->
+                  <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm">
+                    <span class="block text-xs font-bold text-slate-700 mb-1">
+                      <i class="fa-solid fa-camera mr-1 text-indigo-600"></i> ඉදිරිපස ඡායාරූපය (Front Side) *
+                    </span>
+                    <input type="file" id="mem-id-front" accept="image/*,.pdf" onchange="window.handleMemIdSelected(this, 'front')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-[#0B0D7C] hover:file:bg-indigo-100 cursor-pointer">
+                    <div id="mem-id-front-preview-wrap" class="mt-2 hidden">
+                      <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <img id="mem-id-front-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                        <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">ඉදිරිපස තෝරාගන්නා ලදී</span>
+                        <button type="button" onclick="window.clearMemIdUpload('front')" class="text-red-500 hover:text-red-700 p-1">
+                          <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Back Side -->
+                  <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm">
+                    <span class="block text-xs font-bold text-slate-700 mb-1">
+                      <i class="fa-solid fa-camera mr-1 text-indigo-600"></i> පසුපස ඡායාරූපය (Back Side)
+                    </span>
+                    <input type="file" id="mem-id-back" accept="image/*,.pdf" onchange="window.handleMemIdSelected(this, 'back')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-[#0B0D7C] hover:file:bg-indigo-100 cursor-pointer">
+                    <div id="mem-id-back-preview-wrap" class="mt-2 hidden">
+                      <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <img id="mem-id-back-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                        <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">පසුපස තෝරාගන්නා ලදී</span>
+                        <button type="button" onclick="window.clearMemIdUpload('back')" class="text-red-500 hover:text-red-700 p-1">
+                          <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1933,6 +1982,55 @@
                 <input type="text" id="eda-gn-1" placeholder="ග්‍රාම නිලධාරී වසම" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] focus:bg-white transition-all">
               </div>
 
+              <!-- KYC Identity Document Upload 01 (NIC / Driving License / Passport) -->
+              <div class="md:col-span-2 mt-2 p-4 rounded-2xl bg-indigo-50/70 border-2 border-indigo-200">
+                <div class="flex items-center justify-between mb-2">
+                  <label class="block font-bold text-[#0B0D7C] text-xs sm:text-sm">
+                    <i class="fa-solid fa-id-card text-emerald-700 mr-1"></i> අයදුම්කරු 01 හැඳුනුම් ලේඛන ඡායාරූප (NIC / Driving License / Passport) *
+                  </label>
+                  <span class="text-[10px] bg-emerald-700 text-white px-2 py-0.5 rounded font-bold">KYC 01</span>
+                </div>
+                <p class="text-[11px] text-slate-600 mb-3">
+                  පළමු අයදුම්කරුගේ ජාතික හැඳුනුම්පත (NIC), රියදුරු බලපත්‍රය හෝ Passport ඡායාරූප Upload කරන්න.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Front Side -->
+                  <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm">
+                    <span class="block text-xs font-bold text-slate-700 mb-1">
+                      <i class="fa-solid fa-camera mr-1 text-emerald-600"></i> ඉදිරිපස ඡායාරූපය (Front Side) *
+                    </span>
+                    <input type="file" id="eda-app1-id-front" accept="image/*,.pdf" onchange="window.handleEdaIdSelected(this, 1, 'front')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-900 hover:file:bg-emerald-100 cursor-pointer">
+                    <div id="eda-app1-id-front-preview-wrap" class="mt-2 hidden">
+                      <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <img id="eda-app1-id-front-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                        <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">ඉදිරිපස තෝරාගන්නා ලදී</span>
+                        <button type="button" onclick="window.clearEdaIdUpload(1, 'front')" class="text-red-500 hover:text-red-700 p-1">
+                          <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Back Side -->
+                  <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm">
+                    <span class="block text-xs font-bold text-slate-700 mb-1">
+                      <i class="fa-solid fa-camera mr-1 text-emerald-600"></i> පසුපස ඡායාරූපය (Back Side)
+                    </span>
+                    <input type="file" id="eda-app1-id-back" accept="image/*,.pdf" onchange="window.handleEdaIdSelected(this, 1, 'back')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-900 hover:file:bg-emerald-100 cursor-pointer">
+                    <div id="eda-app1-id-back-preview-wrap" class="mt-2 hidden">
+                      <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <img id="eda-app1-id-back-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                        <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">පසුපස තෝරාගන්නා ලදී</span>
+                        <button type="button" onclick="window.clearEdaIdUpload(1, 'back')" class="text-red-500 hover:text-red-700 p-1">
+                          <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- E-Signature Canvas 01 -->
               <div class="md:col-span-2 mt-2">
                 <div class="flex items-center justify-between mb-1">
@@ -2043,6 +2141,55 @@
               <div>
                 <label class="block font-bold text-slate-700 mb-1">ග්‍රාම නිලධාරී වසම</label>
                 <input type="text" id="eda-gn-2" placeholder="ග්‍රාම නිලධාරී වසම" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-[#0B0D7C] transition-all">
+              </div>
+
+              <!-- KYC Identity Document Upload 02 (NIC / Driving License / Passport) -->
+              <div class="md:col-span-2 mt-2 p-4 rounded-2xl bg-indigo-50/70 border-2 border-indigo-200">
+                <div class="flex items-center justify-between mb-2">
+                  <label class="block font-bold text-[#0B0D7C] text-xs sm:text-sm">
+                    <i class="fa-solid fa-id-card text-emerald-700 mr-1"></i> අයදුම්කරු 02 හැඳුනුම් ලේඛන ඡායාරූප (NIC / Driving License / Passport)
+                  </label>
+                  <span class="text-[10px] bg-emerald-700 text-white px-2 py-0.5 rounded font-bold">KYC 02</span>
+                </div>
+                <p class="text-[11px] text-slate-600 mb-3">
+                  දෙවන අයදුම්කරුගේ ජාතික හැඳුනුම්පත (NIC), රියදුරු බලපත්‍රය හෝ Passport ඡායාරූප Upload කරන්න.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Front Side -->
+                  <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm">
+                    <span class="block text-xs font-bold text-slate-700 mb-1">
+                      <i class="fa-solid fa-camera mr-1 text-emerald-600"></i> ඉදිරිපස ඡායාරූපය (Front Side)
+                    </span>
+                    <input type="file" id="eda-app2-id-front" accept="image/*,.pdf" onchange="window.handleEdaIdSelected(this, 2, 'front')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-900 hover:file:bg-emerald-100 cursor-pointer">
+                    <div id="eda-app2-id-front-preview-wrap" class="mt-2 hidden">
+                      <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <img id="eda-app2-id-front-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                        <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">ඉදිරිපස තෝරාගන්නා ලදී</span>
+                        <button type="button" onclick="window.clearEdaIdUpload(2, 'front')" class="text-red-500 hover:text-red-700 p-1">
+                          <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Back Side -->
+                  <div class="bg-white p-3 rounded-xl border border-indigo-200 shadow-sm">
+                    <span class="block text-xs font-bold text-slate-700 mb-1">
+                      <i class="fa-solid fa-camera mr-1 text-emerald-600"></i> පසුපස ඡායාරූපය (Back Side)
+                    </span>
+                    <input type="file" id="eda-app2-id-back" accept="image/*,.pdf" onchange="window.handleEdaIdSelected(this, 2, 'back')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-900 hover:file:bg-emerald-100 cursor-pointer">
+                    <div id="eda-app2-id-back-preview-wrap" class="mt-2 hidden">
+                      <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <img id="eda-app2-id-back-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                        <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">පසුපස තෝරාගන්නා ලදී</span>
+                        <button type="button" onclick="window.clearEdaIdUpload(2, 'back')" class="text-red-500 hover:text-red-700 p-1">
+                          <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- E-Signature Canvas 02 -->
@@ -2479,6 +2626,55 @@
                     <option value="හින්දු">හින්දු (Hindu)</option>
                     <option value="වෙනත්">වෙනත් (Other)</option>
                   </select>
+                </div>
+
+                <!-- Birth Certificate Upload (උප්පැන්න සහතිකයේ දෙපැත්ත) -->
+                <div class="sm:col-span-2 mt-2 p-4 rounded-xl bg-amber-50/70 border-2 border-amber-200">
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="block font-bold text-amber-900 text-xs sm:text-sm">
+                      <i class="fa-solid fa-file-shield text-amber-700 mr-1"></i> දරුවාගේ උප්පැන්න සහතිකයේ ඡායාරූප (Birth Certificate Photos - Front & Back) *
+                    </label>
+                    <span class="text-[10px] bg-amber-600 text-white px-2 py-0.5 rounded font-bold">අනිවාර්යයි</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600 mb-3">
+                    දරුවාගේ උප්පැන්න සහතිකයේ ඉදිරිපස සහ පසුපස පැහැදිලි ඡායාරූප මෙහි Upload කරන්න.
+                  </p>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Front Side -->
+                    <div class="bg-white p-3 rounded-xl border border-amber-200 shadow-sm">
+                      <span class="block text-xs font-bold text-slate-700 mb-1">
+                        <i class="fa-solid fa-camera mr-1 text-amber-600"></i> උප්පැන්න සහතිකයේ ඉදිරිපස (Front Side) *
+                      </span>
+                      <input type="file" id="chd-birth-front" accept="image/*,.pdf" onchange="window.handleChdBirthSelected(this, 'front')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-900 hover:file:bg-amber-100 cursor-pointer">
+                      <div id="chd-birth-front-preview-wrap" class="mt-2 hidden">
+                        <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                          <img id="chd-birth-front-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                          <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">ඉදිරිපස තෝරාගන්නා ලදී</span>
+                          <button type="button" onclick="window.clearChdBirthUpload('front')" class="text-red-500 hover:text-red-700 p-1">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Back Side -->
+                    <div class="bg-white p-3 rounded-xl border border-amber-200 shadow-sm">
+                      <span class="block text-xs font-bold text-slate-700 mb-1">
+                        <i class="fa-solid fa-camera mr-1 text-amber-600"></i> උප්පැන්න සහතිකයේ පසුපස (Back Side) *
+                      </span>
+                      <input type="file" id="chd-birth-back" accept="image/*,.pdf" onchange="window.handleChdBirthSelected(this, 'back')" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-900 hover:file:bg-amber-100 cursor-pointer">
+                      <div id="chd-birth-back-preview-wrap" class="mt-2 hidden">
+                        <div class="flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                          <img id="chd-birth-back-preview-img" src="" class="h-10 w-14 object-cover rounded border border-slate-300">
+                          <span class="flex-1 text-[11px] text-emerald-700 font-bold truncate">පසුපස තෝරාගන්නා ලදී</span>
+                          <button type="button" onclick="window.clearChdBirthUpload('back')" class="text-red-500 hover:text-red-700 p-1">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
