@@ -167,21 +167,22 @@
 
   <!-- ================= STICKY MAIN HEADER & NAVIGATION ================= -->
   <header id="main-header" class="header-sticky">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between lg:justify-start lg:gap-8 h-20">
         
         <!-- Bank Logo & Identity -->
-        <a href="index.html" class="flex items-center group">
+        <a href="index.html" class="flex items-center flex-shrink-0 group">
           <div class="bg-white border border-slate-300 rounded-lg p-1 shadow-sm hover:border-[#0B0D7C] transition-all flex items-center justify-center">
             <img src="assets/images/gscs-logo.png" alt="GSCS Bank Official Logo" class="h-12 sm:h-14 w-auto object-contain">
           </div>
         </a>
 
         <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center gap-3 xl:gap-5 text-[12.5px] xl:text-[13px] whitespace-nowrap">
+        <nav class="hidden lg:flex items-center gap-2.5 xl:gap-4 text-[12px] xl:text-[13px] font-semibold whitespace-nowrap">
           <a href="#home" class="nav-link active whitespace-nowrap" id="nav-home">මුල් පිටුව</a>
           <a href="#about" class="nav-link whitespace-nowrap" id="nav-about">අප ගැන</a>
           <a href="#savings" class="nav-link whitespace-nowrap" id="nav-savings">ඉතුරුම් හා තැන්පතු</a>
+          <a href="javascript:void(0)" onclick="window.openSavingsDepositModal()" class="nav-link text-emerald-600 font-bold hover:text-emerald-700 whitespace-nowrap" id="nav-savings-pay">ඉතුරුම් තැන්පත් කිරීම</a>
           <a href="#loans" class="nav-link whitespace-nowrap" id="nav-loans">ණය පහසුකම්</a>
           <a href="javascript:void(0)" onclick="window.openLoanPaymentModal()" class="nav-link text-[#DF0178] font-bold hover:text-[#BA0063] whitespace-nowrap" id="nav-loan-pay">ණය වාරික ගෙවීම</a>
           <a href="#calculators" class="nav-link whitespace-nowrap" id="nav-calc">තැන්පතු ගණකය</a>
@@ -190,19 +191,8 @@
           <a href="#contact" class="nav-link whitespace-nowrap" id="nav-contact">සම්බන්ධතා</a>
         </nav>
 
-        <!-- Right Header Action (Smart COOP Online Banking Button) -->
-        <div class="hidden sm:flex items-center gap-3">
-          <button onclick="window.openOnlineBankingModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white shadow-md shadow-pink-900/20 transition-all transform hover:-translate-y-0.5">
-            <i class="fa-solid fa-shield-halved text-pink-200"></i>
-            <span id="btn-header-login-txt">Smart COOP පිවිසුම</span>
-          </button>
-        </div>
-
         <!-- Mobile Drawer Menu Toggle -->
         <div class="lg:hidden flex items-center gap-2">
-          <button onclick="window.openOnlineBankingModal()" class="p-2.5 rounded-lg bg-[#DF0178] text-white text-sm font-bold shadow-sm" title="Smart COOP">
-            <i class="fa-solid fa-lock"></i>
-          </button>
           <button id="mobile-menu-btn" class="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors" aria-label="Toggle Menu">
             <i class="fa-solid fa-bars text-lg"></i>
           </button>
@@ -230,6 +220,7 @@
         <a href="#home" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-house text-[#0B0D7C]"></i> මුල් පිටුව (Home)</a>
         <a href="#about" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-landmark text-pink-600"></i> අප ගැන (About GSCS)</a>
         <a href="#savings" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-piggy-bank text-[#DF0178]"></i> ඉතුරුම් හා තැන්පතු (Savings & Deposits)</a>
+        <a href="javascript:void(0)" onclick="document.getElementById('mobile-drawer').classList.add('hidden'); window.openSavingsDepositModal()" class="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-3 font-bold"><i class="fa-solid fa-money-bill-trend-up"></i> ඉතුරුම් තැන්පත් කිරීම (Deposit Slip)</a>
         <a href="#loans" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> ණය පහසුකම් (Loans)</a>
         <a href="javascript:void(0)" onclick="document.getElementById('mobile-drawer').classList.add('hidden'); window.openLoanPaymentModal()" class="p-2.5 rounded-xl bg-pink-50 text-[#DF0178] border border-pink-200 flex items-center gap-3 font-bold"><i class="fa-solid fa-money-bill-transfer"></i> ණය වාරික ගෙවීම (Loan Installment)</a>
         <a href="#calculators" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center gap-3"><i class="fa-solid fa-calculator text-purple-600"></i> තැන්පතු ගණකය (FD Returns)</a>
@@ -847,9 +838,6 @@
           <i class="fa-solid fa-heart text-3xl text-[#DF0178]"></i>
         </div>
         <h3 class="text-2xl font-bold text-[#0B0D7C] mb-2">ස්තූතියි!</h3>
-        <p class="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
-          ඔබේ ප්‍රතිපෝෂණය සාර්ථකව ලැබිණ. බැංකු කළමනාකාරිත්වය ඒ සමාලෝචනය කළ පසු අනුමත කළ ප්‍රතිපෝෂණ සාමාජිකයින්ගේ කතා කොටසේ ප්‍රකාශිත කෙරේ.
-        </p>
         <p id="feedback-ref-display" class="text-xs font-bold text-[#DF0178] mt-3"></p>
         <button onclick="document.getElementById('feedback-success-view').classList.add('hidden'); document.getElementById('feedback-form-container').classList.remove('hidden'); document.getElementById('feedback-form').reset(); window.resetFeedbackStars();"
           class="mt-6 px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
@@ -1232,6 +1220,7 @@
           <ul class="space-y-2 text-slate-400">
             <li><a id="fl-smartcoop-app" href="#digital-banking" class="hover:text-pink-400 transition-colors">Smart COOP Mobile App</a></li>
             <li><a id="fl-membership" href="javascript:void(0)" onclick="window.openMembershipModal()" class="hover:text-pink-400 transition-colors">මාර්ගගත සාමාජික අයදුම්පත</a></li>
+            <li><a id="fl-savings-pay" href="javascript:void(0)" onclick="window.openSavingsDepositModal()" class="hover:text-emerald-400 transition-colors">ඉතුරුම් තැන්පත් කිරීම් (Deposit Slip)</a></li>
             <li><a id="fl-loan-pay" href="javascript:void(0)" onclick="window.openLoanPaymentModal()" class="hover:text-pink-400 transition-colors">ණය වාරික ගෙවීම් (Bank Transfer)</a></li>
             <li><a id="fl-smartcoop" href="javascript:void(0)" onclick="window.openSmartCoopRegModal()" class="hover:text-pink-400 transition-colors">Smart COOP සක්‍රීය කරගැනීම</a></li>
             <li><a id="fl-welfare" href="#products" onclick="window.filterProducts && window.filterProducts('welfare')" class="hover:text-pink-400 transition-colors">සුභ සාධන සාමාජිකත්වය</a></li>
@@ -1279,15 +1268,15 @@
   </div>
 
   <!-- ================= MODAL: INQUIRY & LOAN APPLICATION ================= -->
-  <div id="inquiry-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+  <div id="inquiry-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-4 overflow-x-hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto overflow-x-hidden">
       <button onclick="window.closeInquiryModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
         <i class="fa-solid fa-xmark"></i>
       </button>
       
       <div class="mb-5">
         <span class="inline-block px-2.5 py-1 rounded text-[11px] font-bold bg-pink-100 text-[#DF0178] mb-2">අයදුම්පත / විමසීම්</span>
-        <h3 class="text-xl font-bold text-[#0B0D7C]">ගලපිටියගම සනස බැංකු සේවාව</h3>
+        <h3 class="text-xl font-bold text-[#0B0D7C]">ගලපිටියාගම සණස බැංකු සේවාව</h3>
         <p class="text-xs text-slate-500 mt-1">ඔබගේ විස්තර ඇතුළත් කරන්න. අපගේ නිලධාරියෙකු කඩිනමින් ඔබ හා සම්බන්ධ වනු ඇත.</p>
       </div>
 
@@ -1376,8 +1365,8 @@
   </div>
 
   <!-- ================= MODAL: DIGITAL MEMBERSHIP APPLICATION (සාමාජික අයදුම් පත්‍රය) ================= -->
-  <div id="membership-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-4xl w-full p-5 sm:p-8 md:p-10 shadow-2xl relative my-8 max-h-[92vh] overflow-y-auto border border-slate-200">
+  <div id="membership-modal" class="fixed inset-0 z-50 modal-backdrop hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-white rounded-3xl max-w-4xl w-full p-5 sm:p-8 md:p-10 shadow-2xl relative my-8 max-h-[92vh] overflow-y-auto overflow-x-hidden border border-slate-200">
       
       <!-- Close Button -->
       <button onclick="window.closeMembershipModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors z-20">
@@ -1692,7 +1681,7 @@
               </div>
               
               <div class="bg-white rounded-2xl border-2 border-slate-300 relative overflow-hidden shadow-inner">
-                <canvas id="signature-pad" width="700" height="160" class="w-full h-36 sm:h-40 cursor-crosshair touch-none"></canvas>
+                <canvas id="signature-pad" height="160" class="w-full max-w-full h-36 sm:h-40 cursor-crosshair touch-none block" style="max-width: 100%;"></canvas>
                 <div id="signature-placeholder" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-slate-400">
                   <span>මෙතැන Touch කර හෝ Mouse එකෙන් අත්සන් කරන්න (Sign Here)</span>
                 </div>
@@ -1777,8 +1766,8 @@
   </div>
 
   <!-- ================= MODAL: ණය වාරික ගෙවීම (LOAN INSTALLMENT PAYMENT PORTAL) ================= -->
-  <div id="loan-payment-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 my-auto relative">
+  <div id="loan-payment-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto overflow-x-hidden shadow-2xl border border-slate-100 my-auto relative">
       
       <!-- Modal Close Button -->
       <button onclick="window.closeLoanPaymentModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center z-20 transition-colors">
@@ -1974,9 +1963,205 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: ඉතුරුම් සහ තැන්පතු තැන්පත් කිරීම (SAVINGS & DEPOSIT PAYMENT PORTAL) ================= -->
+  <div id="savings-deposit-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto overflow-x-hidden shadow-2xl border border-slate-100 my-auto relative">
+      
+      <!-- Modal Close Button -->
+      <button onclick="window.closeSavingsDepositModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center z-20 transition-colors">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <!-- Form View -->
+      <div id="savings-deposit-form-container" class="p-6 sm:p-8">
+        <!-- Header -->
+        <div class="flex items-center gap-3 pb-4 mb-5 border-b border-slate-100">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 text-white flex items-center justify-center text-xl shadow-md flex-shrink-0">
+            <i class="fa-solid fa-piggy-bank"></i>
+          </div>
+          <div>
+            <span class="inline-block px-3 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 mb-1">
+              Online Savings & Deposit Gateway
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black text-[#0B0D7C]">ඉතුරුම් සහ තැන්පතු තැන්පත් කිරීම</h2>
+            <p class="text-xs text-slate-500 font-semibold">සීමා සහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය</p>
+          </div>
+        </div>
+
+        <!-- People's Bank Official Details Card -->
+        <div class="mb-5 bg-white rounded-2xl border-2 border-emerald-500/30 p-4 sm:p-5 shadow-sm">
+          <div class="flex flex-col md:flex-row items-center gap-4">
+            <div class="w-full md:w-56 p-3 bg-amber-50 rounded-xl border border-amber-200 flex flex-col items-center justify-center text-center">
+              <img src="assets/images/peoples-bank-logo.png" alt="People's Bank Logo" class="max-h-16 w-auto object-contain mb-1.5">
+              <span class="text-xs font-black text-amber-900 tracking-wide">PEOPLE'S BANK (මහජන බැංකුව)</span>
+              <span class="text-[11px] font-bold text-slate-600">නිකවැරටිය ශාඛාව</span>
+            </div>
+            <div class="space-y-1.5 text-xs sm:text-sm text-slate-700 flex-1 w-full">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs">People's Bank (මහජන බැංකුව)</span>
+                <span class="text-xs text-slate-500 font-semibold">නිකවැරටිය ශාඛාව</span>
+              </div>
+              <div class="flex justify-between items-center py-1 border-b border-slate-100">
+                <span class="text-slate-500">ගිණුම් අංකය (Account No):</span>
+                <div class="flex items-center gap-2">
+                  <span class="font-black text-[#0B0D7C] font-mono text-base">124200110064754</span>
+                  <button type="button" onclick="navigator.clipboard.writeText('124200110064754'); window.showToast('ගිණුම් අංකය Copy විය!', 'success')" class="text-xs text-emerald-700 hover:underline font-bold px-2 py-0.5 rounded bg-emerald-50">Copy</button>
+                </div>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-100">
+                <span class="text-slate-500">ගිණුමේ නම:</span>
+                <span class="font-bold text-slate-800">GALAPITIYAGAMA SANASA SOCIETY</span>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-slate-500">Bank Code: <strong>7135</strong></span>
+                <span class="text-slate-500">Branch Code: <strong>124</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Savings Deposit Form -->
+        <form id="savings-deposit-form" onsubmit="window.handleSavingsDepositSubmit(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">සාමාජික අංකය (Member No) *</label>
+              <input type="text" id="dep-member-no" required placeholder="01010..... / 010400....." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-600 focus:bg-white font-mono uppercase">
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">සාමාජිකයාගේ නම (Full Name) *</label>
+              <input type="text" id="dep-member-name" required placeholder="සම්පූර්ණ නම සිංහලෙන් හෝ ඉංග්‍රීසියෙන්" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-600 focus:bg-white">
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">තැන්පතු වර්ගය (Deposit Category) *</label>
+              <select id="dep-deposit-type" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-600 focus:bg-white font-medium">
+                <option value="">-- තැන්පතු වර්ගය තෝරන්න --</option>
+                <option value="සාමාජික ඉතුරුම් තැන්පතු">සාමාජික ඉතුරුම් තැන්පතු (Member Savings)</option>
+                <option value="බාහිර ඉතුරුම් තැන්පතු">බාහිර ඉතුරුම් තැන්පතු (Non-Member Savings)</option>
+                <option value="ආශ්‍රිත සාමාජික ඉතුරුම් තැන්පතු">ආශ්‍රිත සාමාජික ඉතුරුම් තැන්පතු (Associate Member Savings)</option>
+                <option value="මිණිකැට ළමා තැන්පතු">මිණිකැට ළමා තැන්පතු (Miniketa Children's Savings)</option>
+                <option value="Kidsplus ළමා තැන්පතු">Kidsplus ළමා තැන්පතු (Kidsplus Children's Savings)</option>
+                <option value="දිරිය වනිතා ඉතුරුම් තැන්පතු">දිරිය වනිතා ඉතුරුම් තැන්පතු (Diriya Vanitha Women's Savings)</option>
+                <option value="Future Saving තැන්පතු">Future Saving තැන්පතු (Future Saving Deposit)</option>
+                <option value="වෙනත් තැන්පතු">වෙනත් තැන්පතු (Other)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">දුරකථන අංකය (Phone Number) *</label>
+              <input type="tel" id="dep-phone" required placeholder="07XXXXXXXX" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-600 focus:bg-white font-mono">
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">තැන්පත් කළ මුදල (Amount Deposited - LKR) *</label>
+              <input type="number" id="dep-amount" required placeholder="රු. 5000" min="1" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-600 focus:bg-white font-mono font-bold">
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">ඉතුරුම් ගිණුම් අංකය / යොමුව (ඇත්නම් පමණක්)</label>
+              <input type="text" id="dep-savings-acc-no" placeholder="Savings Account No (Optional)" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-emerald-600 focus:bg-white font-mono">
+            </div>
+          </div>
+
+          <!-- Receipt Upload Box -->
+          <div class="pt-2">
+            <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-2">
+              බැංකු තැන්පතු රිසිට්පත හෝ Online Transfer ස්ලිප්පත Upload කරන්න (Bank Slip) *
+            </label>
+            
+            <div id="dep-receipt-dropzone" class="border-2 border-dashed border-slate-300 hover:border-emerald-600 rounded-2xl p-4 sm:p-5 text-center cursor-pointer bg-white transition-all group">
+              <input type="file" id="dep-receipt-file" accept="image/*,.pdf" class="hidden" onchange="window.handleSavingsReceiptSelected(this)">
+              
+              <div id="dep-receipt-upload-prompt" onclick="document.getElementById('dep-receipt-file').click()">
+                <div class="w-12 h-12 mx-auto rounded-full bg-emerald-50 group-hover:bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl mb-1.5 transition-transform group-hover:scale-110">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <p class="text-xs sm:text-sm font-bold text-slate-800">රිසිට්පතේ ඡායාරූපය තෝරන්න (Click to Upload Slip)</p>
+                <p class="text-[11px] text-slate-400 mt-1">PNG, JPG, JPEG හෝ PDF (උපරිම 5MB)</p>
+              </div>
+
+              <!-- Preview Area -->
+              <div id="dep-receipt-preview-container" class="hidden">
+                <div class="relative inline-block">
+                  <img id="dep-receipt-preview-img" src="" alt="Receipt Preview" class="max-h-44 rounded-xl border border-slate-200 shadow mx-auto object-contain">
+                  <button type="button" onclick="window.clearSavingsReceiptUpload()" class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-red-600 text-white flex items-center justify-center text-xs shadow-md hover:bg-red-700">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+                <p class="text-xs font-semibold text-emerald-700 mt-2 flex items-center justify-center gap-1">
+                  <i class="fa-solid fa-circle-check"></i> <span>රිසිට්පත සාර්ථකව තෝරාගන්නා ලදී</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="dep-submit-btn" class="w-full py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-teal-700 hover:to-emerald-600 text-white shadow-lg shadow-emerald-900/20 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>තැන්පතු විස්තර යොමු කරන්න (Submit Deposit)</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success View -->
+      <div id="savings-deposit-success-view" class="p-8 text-center hidden">
+        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mb-4 shadow-sm animate-bounce">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 mb-2">
+          තැන්පතු විස්තර සාර්ථකව භාරගන්නා ලදී
+        </span>
+        <h3 class="text-2xl sm:text-3xl font-black text-[#0B0D7C] mb-2">ඉතුරුම් තැන්පතුව යොමු විය!</h3>
+        <p class="text-sm text-slate-600 max-w-md mx-auto mb-4">
+          ඔබ විසින් යොමු කරන ලද බැංකු රිසිට්පත් විස්තර අප බැංකුවේ ගිණුම් අංශය වෙත ලැබී ඇත.
+        </p>
+
+        <!-- Notification to keep phone active -->
+        <div class="max-w-md mx-auto p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold flex items-center justify-center gap-3 mb-5">
+          <i class="fa-solid fa-phone-volume text-xl animate-pulse flex-shrink-0 text-emerald-600"></i>
+          <div class="text-center leading-relaxed">
+            <div>ඔබගේ දුරකථන අංකය සක්‍රීයව තබාගන්න</div>
+            <div>තැන්පතුව ගිණුමට බැර වූ පසු</div>
+            <div>ඔබ වෙත SMS / WhatsApp පණිවිඩයක් ලබාදෙනු ඇත.</div>
+          </div>
+        </div>
+
+        <div class="max-w-md mx-auto p-5 rounded-2xl bg-slate-50 border border-slate-200 text-left text-xs sm:text-sm space-y-2 mb-6">
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">තැන්පතු යොමු අංකය:</span>
+            <span id="succ-dep-ref" class="font-mono font-black text-emerald-700 text-base">GSCS-DEP-XXXXXX</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">සාමාජික අංකය / නම:</span>
+            <span id="succ-dep-member" class="font-bold text-slate-900">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">තැන්පතු වර්ගය:</span>
+            <span id="succ-dep-deposit-type" class="font-semibold text-slate-800">-</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-200">
+            <span class="text-slate-500">තැන්පත් කළ මුදල:</span>
+            <span id="succ-dep-amount" class="font-extrabold text-emerald-700 font-mono text-base">-</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-500">තත්ත්වය:</span>
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-xs font-bold">තහවුරු කිරීමේ ක්‍රියාවලියේ (Pending Review)</span>
+          </div>
+        </div>
+
+        <button onclick="window.closeSavingsDepositModal()" class="px-8 py-3 rounded-xl font-bold text-xs sm:text-sm bg-[#0B0D7C] hover:bg-[#070954] text-white transition-colors shadow">
+          වසන්න (Close)
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= MODAL: SMART COOP APP REGISTRATION APPLICATION (ඩිජිටල් අයදුම් පත්‍රය) ================= -->
-  <div id="smartcoop-reg-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 my-auto relative">
+  <div id="smartcoop-reg-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto overflow-x-hidden">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto overflow-x-hidden shadow-2xl border border-slate-100 my-auto relative">
       
       <!-- Modal Close Button -->
       <button onclick="window.closeSmartCoopRegModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center z-20 transition-colors">
@@ -2067,7 +2252,7 @@
             </div>
             
             <div class="bg-white rounded-2xl border-2 border-slate-300 relative overflow-hidden shadow-inner">
-              <canvas id="sc-sig-canvas" width="550" height="130" class="w-full h-32 touch-none cursor-crosshair bg-slate-50/50 block"></canvas>
+              <canvas id="sc-sig-canvas" height="130" class="w-full max-w-full h-32 touch-none cursor-crosshair bg-slate-50/50 block" style="max-width: 100%;"></canvas>
             </div>
             <p class="text-[11px] text-slate-400 mt-1">(හවුල් ගිණුමක් වේ නම් හවුල්කරුවන් සියල්ලන්ගේ අත්සන් කළ යුතුය)</p>
           </div>

@@ -1,4 +1,4 @@
-// app.js - Main Client Application for Galapitiyagama Sanasa Bank
+﻿// app.js - Main Client Application for Galapitiyagama Sanasa Bank
 document.addEventListener('DOMContentLoaded', () => {
   let currentLang = localStorage.getItem('GSCS_LANG') || 'si';
   let activeCategory = 'all';
@@ -113,9 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
       container.classList.remove('hidden');
       const text = currentLang === 'en' ? (bankInfo.urgentNoticeEn || bankInfo.urgentNotice) : bankInfo.urgentNotice;
       ticker.innerHTML = `
-        <span class="inline-flex items-center gap-2 font-medium text-pink-950">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#DF0178] animate-ping"></span>
-          <strong class="text-[#0B0D7C]">${currentLang === 'en' ? 'BANK NOTICE:' : 'විශේෂ නිවේදනය:'}</strong> ${text}
+        <span class="urgent-ticker-content inline-flex items-center gap-2 font-medium text-pink-950">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#DF0178] animate-ping flex-shrink-0"></span>
+          <strong class="text-[#0B0D7C] flex-shrink-0">${currentLang === 'en' ? 'BANK NOTICE:' : 'විශේෂ නිවේදනය:'}</strong>
+          <span class="urgent-notice-text flex-shrink-0">${text}</span>
         </span>
       `;
     } else {
@@ -1484,6 +1485,129 @@ document.addEventListener('DOMContentLoaded', () => {
     if (amtEl) amtEl.textContent = `රු. ${Number(savedPayment.amount).toLocaleString()}.00`;
 
     showToast('ණය වාරික ගෙවීම් විස්තර සාර්ථකව යොමු කරන ලදී!', 'success');
+  };
+
+  // ================= ඉතුරුම් තැන්පත් කිරීම් (SAVINGS & DEPOSIT PAYMENT) CONTROLLER =================
+  let uploadedSavingsReceiptBase64 = null;
+
+  window.openSavingsDepositModal = () => {
+    const modal = document.getElementById('savings-deposit-modal');
+    const formContainer = document.getElementById('savings-deposit-form-container');
+    const successView = document.getElementById('savings-deposit-success-view');
+    const form = document.getElementById('savings-deposit-form');
+
+    if (form) form.reset();
+    window.clearSavingsReceiptUpload();
+
+    if (formContainer) formContainer.classList.remove('hidden');
+    if (successView) successView.classList.add('hidden');
+    if (modal) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  window.closeSavingsDepositModal = () => {
+    const modal = document.getElementById('savings-deposit-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  };
+
+  window.handleSavingsReceiptSelected = async (input) => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    const prompt = document.getElementById('dep-receipt-upload-prompt');
+    const previewCont = document.getElementById('dep-receipt-preview-container');
+    const previewImg = document.getElementById('dep-receipt-preview-img');
+
+    try {
+      uploadedSavingsReceiptBase64 = await compressImageFile(file, 900, 900, 0.65);
+      if (prompt) prompt.classList.add('hidden');
+      if (previewCont) previewCont.classList.remove('hidden');
+      if (previewImg) {
+        if (file.type.startsWith('image/')) {
+          previewImg.src = uploadedSavingsReceiptBase64;
+          previewImg.classList.remove('hidden');
+        } else {
+          previewImg.src = 'assets/images/gscs-logo.png';
+        }
+      }
+    } catch (err) {
+      console.error('Savings receipt error:', err);
+    }
+  };
+
+  window.clearSavingsReceiptUpload = () => {
+    uploadedSavingsReceiptBase64 = null;
+    const input = document.getElementById('dep-receipt-file');
+    if (input) input.value = '';
+    const prompt = document.getElementById('dep-receipt-upload-prompt');
+    const previewCont = document.getElementById('dep-receipt-preview-container');
+    const previewImg = document.getElementById('dep-receipt-preview-img');
+
+    if (prompt) prompt.classList.remove('hidden');
+    if (previewCont) previewCont.classList.add('hidden');
+    if (previewImg) previewImg.src = '';
+  };
+
+  window.handleSavingsDepositSubmit = (e) => {
+    e.preventDefault();
+
+    if (!uploadedSavingsReceiptBase64) {
+      alert('කරුණාකර ඔබගේ බැංකු තැන්පතු රිසිට්පත හෝ Online Transfer ස්ලිප්පත Upload කරන්න!');
+      return;
+    }
+
+    const memberNo = document.getElementById('dep-member-no').value.trim();
+    const memberName = document.getElementById('dep-member-name').value.trim();
+    const depositType = document.getElementById('dep-deposit-type').value;
+    const phone = document.getElementById('dep-phone').value.trim();
+    const amount = document.getElementById('dep-amount').value.trim();
+    const savingsAccNo = document.getElementById('dep-savings-acc-no') ? document.getElementById('dep-savings-acc-no').value.trim() : '';
+
+    const newDeposit = {
+      memberNo,
+      memberName,
+      loanType: 'තැන්පතු: ' + depositType,
+      depositType: depositType,
+      isDeposit: true,
+      phone,
+      amount: parseFloat(amount) || 0,
+      loanAccNo: savingsAccNo,
+      bankAccount: "People's Bank - 124200110064754 (Nikaweratiya)",
+      receiptImage: uploadedSavingsReceiptBase64
+    };
+
+    // Save using bankStore (with GSCS-DEP prefix refId)
+    const savedDeposit = window.bankStore.addLoanPayment(newDeposit);
+    if (savedDeposit && savedDeposit.refId && savedDeposit.refId.startsWith('GSCS-LP')) {
+      savedDeposit.refId = savedDeposit.refId.replace('GSCS-LP-', 'GSCS-DEP-');
+      window.bankStore.save();
+    }
+
+    // Notify listeners
+    window.dispatchEvent(new CustomEvent('bankDataUpdated'));
+
+    // Switch to success view
+    const formContainer = document.getElementById('savings-deposit-form-container');
+    const successView = document.getElementById('savings-deposit-success-view');
+    if (formContainer) formContainer.classList.add('hidden');
+    if (successView) successView.classList.remove('hidden');
+
+    const refEl = document.getElementById('succ-dep-ref');
+    const memEl = document.getElementById('succ-dep-member');
+    const depEl = document.getElementById('succ-dep-deposit-type');
+    const amtEl = document.getElementById('succ-dep-amount');
+
+    if (refEl) refEl.textContent = savedDeposit.refId;
+    if (memEl) memEl.textContent = `${savedDeposit.memberNo} - ${savedDeposit.memberName}`;
+    if (depEl) depEl.textContent = depositType;
+    if (amtEl) amtEl.textContent = `රු. ${Number(savedDeposit.amount).toLocaleString()}.00`;
+
+    showToast('ඉතුරුම් තැන්පතු විස්තර සාර්ථකව යොමු කරන ලදී!', 'success');
   };
 
   // ================= SMART COOP APP REGISTRATION APPLICATION CONTROLLER =================

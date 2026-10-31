@@ -150,7 +150,7 @@
 
         <button data-tab="loanpayments" onclick="window.switchAdminTab('loanpayments')" class="admin-tab-btn w-full px-3.5 py-3 rounded-xl flex items-center gap-3 text-left transition-all cursor-pointer">
           <i class="fa-solid fa-money-bill-transfer w-5 text-center text-sm text-amber-400"></i>
-          <span class="flex-grow">ණය වාරික ගෙවීම් (Loan Payments)</span>
+          <span class="flex-grow">ණය / තැන්පතු ගෙවීම්</span>
           <span id="sidebar-lp-badge" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#DF0178] text-white">0</span>
         </button>
 
@@ -193,7 +193,7 @@
       <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <div>
           <h2 id="current-tab-title" class="text-xl font-black text-[#0B0D7C]">දළ විශ්ලේෂණය (Overview)</h2>
-          <p class="text-xs text-slate-500">ගලපිටියගම සනස සමූපකාර බැංකු කළමනාකරණ පද්ධතිය</p>
+          <p class="text-xs text-slate-500">ගලපිටියාගම සණස සමූපකාර බැංකු කළමනාකරණ පද්ධතිය</p>
         </div>
 
         <div class="flex items-center gap-3">
@@ -665,8 +665,8 @@
         <section id="panel-loanpayments" class="admin-panel space-y-6 hidden">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 class="text-lg font-bold text-[#0B0D7C]">ණය වාරික ගෙවීම් කළමනාකරණය (Loan Installment Payments)</h3>
-              <p class="text-xs text-slate-500">වෙබ් අඩවියෙන් යොමු කළ ණය ගෙවීම් රිසිට්පත් සහ WhatsApp / SMS</p>
+              <h3 class="text-lg font-bold text-[#0B0D7C]">ණය සහ ඉතුරුම් තැන්පතු ගෙවීම් කළමනාකරණය (Loan & Savings Payments)</h3>
+              <p class="text-xs text-slate-500">වෙබ් අඩවියෙන් යොමු කළ ණය වාරික සහ ඉතුරුම් තැන්පතු රිසිට්පත් සහ WhatsApp / SMS</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <input type="text" id="admin-lp-search" placeholder="නම / සාමාජික අංකය..." oninput="window.filterLoanPayments()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
@@ -683,7 +683,7 @@
                   <tr>
                     <th class="py-3 px-4">යොමු අංකය / දිනය</th>
                     <th class="py-3 px-4">සාමාජිකයාගේ නම / අංකය</th>
-                    <th class="py-3 px-4">ණය වර්ගය</th>
+                    <th class="py-3 px-4">ණය / තැන්පතු වර්ගය</th>
                     <th class="py-3 px-4">දුරකථනය</th>
                     <th class="py-3 px-4">ගෙවූ මුදල</th>
                     <th class="py-3 px-4">රිසිට්පත</th>

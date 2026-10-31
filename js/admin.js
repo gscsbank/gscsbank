@@ -10,7 +10,7 @@ const tabTitles = {
   bankinfo: 'බැංකු තොරතුරු සහ විශේෂ නිවේදන (Bank Profile & Alert)',
   inquiries: 'පාරිභෝගික විමසීම් ලිපිගොනුව (Inquiries Inbox)',
   applications: 'සාමාජික අයදුම්පත් කළමනාකරණය (Member Applications)',
-  loanpayments: 'ණය වාරික ගෙවීම් කළමනාකරණය (Loan Installment Payments)',
+  loanpayments: 'ණය සහ ඉතුරුම් තැන්පතු ගෙවීම් (Loan & Savings Payments)',
   smartcoop: 'Smart COOP යෙදුම් අයදුම්පත් (Smart COOP Applications)',
   sync: 'GitHub Pages දත්ත සමමුහුර්තකරණය (Data Persistence)',
   feedbacks: 'සාමාජික ප්‍රතිපෝෂණ කළමනාකරණය (Member Feedback)'
@@ -1160,8 +1160,12 @@ document.addEventListener('DOMContentLoaded', () => {
       tbody.innerHTML = filtered.map(p => {
         const cleanPhone = cleanPhoneNum(p.phone);
         const amountNum = safeNum(p.amount);
-        const waMsg = `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ණය ගිණුමේ රු. ${amountNum.toLocaleString()}.00 වාරිකය (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
-        const smsMsg = encodeURIComponent(`ගලපිටියාගම සනස: ${safeStr(p.memberName)} - ${safeStr(p.loanType)} ණය වාරිකය රු.${amountNum.toLocaleString()} තහවුරු විය. Ref: ${safeStr(p.refId)}`);
+        const isDep = safeStr(p.refId).startsWith('GSCS-DEP') || safeStr(p.loanType).includes('තැන්පතු') || p.isDeposit;
+        const itemTypeLabel = isDep ? 'තැන්පතුව' : 'ණය වාරිකය';
+        const waMsg = isDep
+          ? `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ගිණුමේ රු. ${amountNum.toLocaleString()}.00 තැන්පතුව (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`
+          : `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ණය ගිණුමේ රු. ${amountNum.toLocaleString()}.00 වාරිකය (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`;
+        const smsMsg = encodeURIComponent(`ගලපිටියාගම සණස: ${safeStr(p.memberName)} - ${safeStr(p.loanType)} ${itemTypeLabel} රු.${amountNum.toLocaleString()} තහවුරු විය. Ref: ${safeStr(p.refId)}`);
         const waLink = makeWaUrl(cleanPhone, waMsg);
         const smsLink = cleanPhone ? `sms:+94${cleanPhone.startsWith('0') ? cleanPhone.slice(1) : cleanPhone}?body=${smsMsg}` : '#';
 
@@ -1178,7 +1182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
           <tr class="hover:bg-slate-50 transition-colors">
             <td class="py-3 px-4">
-              <span class="font-black text-[#DF0178] font-mono text-[11px]">${safeStr(p.refId)}</span>
+              <span class="font-black ${isDep ? 'text-emerald-700' : 'text-[#DF0178]'} font-mono text-[11px]">${safeStr(p.refId)}</span>
               <div class="text-[10px] text-slate-400">${safeStr(p.submittedAt)}</div>
             </td>
             <td class="py-3 px-4">
@@ -1186,7 +1190,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="text-[11px] text-slate-500 font-mono">${safeStr(p.memberNo)}${p.loanAccNo ? ' | ' + safeStr(p.loanAccNo) : ''}</div>
             </td>
             <td class="py-3 px-4">
-              <div class="text-slate-800 font-semibold">${safeStr(p.loanType)}</div>
+              <div>
+                ${isDep ? '<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 mr-1">DEPOSIT</span>' : '<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-black bg-pink-100 text-[#DF0178] mr-1">LOAN</span>'}
+                <span class="text-slate-800 font-semibold">${safeStr(p.loanType)}</span>
+              </div>
             </td>
             <td class="py-3 px-4">
               <div class="font-mono text-slate-800">${safeStr(p.phone)}</div>
@@ -1263,7 +1270,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (p && p.phone) {
         const cleanPhone = cleanPhoneNum(p.phone);
         const amountNum = safeNum(p.amount);
-        const msg = `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ණය ගිණුමේ රු. ${amountNum.toLocaleString()}.00 වාරිකය (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+        const isDep = safeStr(p.refId).startsWith('GSCS-DEP') || safeStr(p.loanType).includes('තැන්පතු') || p.isDeposit;
+        const msg = isDep
+          ? `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ගිණුමේ රු. ${amountNum.toLocaleString()}.00 තැන්පතුව (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`
+          : `ගරු ${safeStr(p.memberName)} මහතා/මිය,\n\nඔබගේ ${safeStr(p.loanType)} ණය ගිණුමේ රු. ${amountNum.toLocaleString()}.00 වාරිකය (යොමු: ${safeStr(p.refId)}) ගිණුමට බැර කරන ලදී. ස්තූතියි!\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`;
         const waLink = makeWaUrl(cleanPhone, msg);
         if (confirm('WhatsApp හරහා ගෙවීම් තහවුරු කිරීමේ පණිවිඩය යැවීමට අවශ්‍යද?')) {
           window.open(waLink, '_blank');
@@ -1332,7 +1342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tbody.innerHTML = filtered.map(app => {
         const cleanPhone = cleanPhoneNum(app.phone);
-        const waMsg = `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${safeStr(app.accNo)}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${safeStr(app.username)}.\n\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+        const waMsg = `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${safeStr(app.accNo)}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${safeStr(app.username)}.\n\nගලපිටියාගම සණස සමූපකාර බැංකුව`;
         const waLink = makeWaUrl(cleanPhone, waMsg);
 
         let statusBadge = '';
@@ -1422,7 +1432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const app = apps.find(x => x.id === id);
         if (app && app.phone) {
           const cleanPhone = cleanPhoneNum(app.phone);
-          const waMsg = `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${safeStr(app.accNo)}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${safeStr(app.username)}.\n\nස්තූතියි!\nගලපිටියාගම සනස සමූපකාර බැංකුව`;
+          const waMsg = `ගරු ${safeStr(app.fullName)} මහතා/මිය,\n\nඔබගේ Smart COOP ජංගම බැංකු සේවාව (ගිණුම්: ${safeStr(app.accNo)}) සක්‍රීය කරන ලදී. ඔබගේ පරිශීලක නාමය (Username): ${safeStr(app.username)}.\n\nස්තූතියි!\nගලපිටියාගම සණස සමූපකාර බැංකුව`;
           const waLink = makeWaUrl(cleanPhone, waMsg);
           if (confirm('WhatsApp හරහා සක්‍රීය කිරීමේ පණිවිඩය යැවීමට අවශ්‍යද?')) {
             window.open(waLink, '_blank');

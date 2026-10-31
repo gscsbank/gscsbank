@@ -31,12 +31,20 @@
   scroll-behavior: smooth;
 }
 
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', 'Noto Sans Sinhala', system-ui, -apple-system, sans-serif;
   color: var(--text-main);
   background-color: #ffffff;
   line-height: 1.6;
   overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  position: relative;
 }
 
 /* Custom Scrollbar */
@@ -501,6 +509,83 @@ input[type=range]::-webkit-slider-thumb:hover {
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Urgent Notice Mobile Marquee Ticker */
+@keyframes urgentTickerScroll {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@media (max-width: 768px) {
+  #urgent-notice-container {
+    overflow: hidden !important;
+  }
+  #urgent-notice-ticker {
+    display: block !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    width: 100% !important;
+    position: relative !important;
+  }
+  #urgent-notice-ticker .urgent-ticker-content {
+    display: inline-flex !important;
+    white-space: nowrap !important;
+    animation: urgentTickerScroll 16s linear infinite !important;
+    will-change: transform;
+  }
+  #urgent-notice-ticker .urgent-ticker-content:hover,
+  #urgent-notice-ticker .urgent-ticker-content:active {
+    animation-play-state: paused !important;
+  }
+}
+
+/* Mobile overflow fix: modals & forms must not cause horizontal scroll */
+@media (max-width: 768px) {
+  .modal-backdrop,
+  #membership-modal,
+  #loan-payment-modal,
+  #savings-deposit-modal,
+  #smartcoop-reg-modal,
+  #inquiry-modal,
+  #news-modal,
+  #online-banking-modal {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+  .modal-backdrop > div,
+  #membership-modal > div,
+  #loan-payment-modal > div,
+  #savings-deposit-modal > div,
+  #smartcoop-reg-modal > div,
+  #inquiry-modal > div,
+  #news-modal > div,
+  #online-banking-modal > div {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  /* Fix wide canvas signature pads */
+  canvas {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* Fix wide layouts in forms */
+  form, .grid {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  /* Fix any fixed-width inner elements */
+  input, select, textarea {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* Toast Notifications */

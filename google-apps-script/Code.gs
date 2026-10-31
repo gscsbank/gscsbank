@@ -43,7 +43,8 @@ function doGet(e) {
         loanPayments: getSheetDataAsObjects(ss, 'LoanPayments', getLoanPaymentHeaders()),
         membershipApplications: getSheetDataAsObjects(ss, 'MemberApplications', getMembershipHeaders()),
         smartCoopApplications: getSheetDataAsObjects(ss, 'SmartCoopApplications', getSmartCoopHeaders()),
-        feedbacks: getSheetDataAsObjects(ss, 'Feedback', getFeedbackHeaders())
+        feedbacks: getSheetDataAsObjects(ss, 'Feedback', getFeedbackHeaders()),
+        newsAndAnnouncements: getSheetDataAsObjects(ss, 'News', getNewsHeaders())
       };
       
       return createJsonResponse({
@@ -100,6 +101,8 @@ function doPost(e) {
       saveSmartCoop(ss, data);
     } else if (type === 'feedback') {
       saveFeedback(ss, data);
+    } else if (type === 'news') {
+      saveNews(ss, data);
     } else {
       return createJsonResponse({ status: 'error', message: 'Invalid submission type: ' + type });
     }
@@ -261,6 +264,47 @@ function saveFeedback(ss, item) {
   sheet.appendRow(row);
 }
 
+// 6. News & Announcements (පුවත් සහ නිවේදන)
+function saveNews(ss, item) {
+  var sheet = getOrCreateSheet(ss, 'News', getNewsHeaders());
+
+  // Check if news item already exists (by id) — update it
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0] || [];
+  var idCol = headers.indexOf('id');
+  if (idCol >= 0) {
+    for (var r = 1; r < values.length; r++) {
+      if (String(values[r][idCol]) === String(item.id)) {
+        // Update existing row
+        sheet.getRange(r + 1, 1, 1, headers.length).setValues([[
+          item.id || '',
+          item.title || '',
+          item.content || '',
+          item.category || '',
+          item.date || '',
+          item.isPublished !== false ? 'YES' : 'NO',
+          item.imageUrl || '',
+          item.updatedAt || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm')
+        ]]);
+        return;
+      }
+    }
+  }
+
+  // New row
+  var row = [
+    item.id || ('news-' + Date.now()),
+    item.title || '',
+    item.content || '',
+    item.category || 'general',
+    item.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd'),
+    item.isPublished !== false ? 'YES' : 'NO',
+    item.imageUrl || '',
+    item.updatedAt || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm')
+  ];
+  sheet.appendRow(row);
+}
+
 // ------------------------------------------------------------------------------
 // STATUS UPDATE & DELETE HELPERS
 // ------------------------------------------------------------------------------
@@ -317,6 +361,7 @@ function getSheetNameForType(type) {
   if (type === 'membership') return 'MemberApplications';
   if (type === 'smart_coop') return 'SmartCoopApplications';
   if (type === 'feedback') return 'Feedback';
+  if (type === 'news') return 'News';
   return 'Inquiries';
 }
 
@@ -452,6 +497,10 @@ function getFeedbackHeaders() {
     'id', 'refId', 'submittedAt', 'name', 'village', 'phone', 'service', 'message',
     'rating', 'consent', 'status', 'publishedAsTestimonial', 'reviewNotes', 'reviewedAt'
   ];
+}
+
+function getNewsHeaders() {
+  return ['id', 'title', 'content', 'category', 'date', 'isPublished', 'imageUrl', 'updatedAt'];
 }
 
 // ------------------------------------------------------------------------------
