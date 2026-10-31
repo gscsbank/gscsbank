@@ -301,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const badge = currentLang === 'en' ? (prod.badgeEn || prod.badge) : prod.badge;
       const features = currentLang === 'en' ? (prod.featuresEn || prod.features) : prod.features;
       const iconClass = iconMap[prod.icon] || 'fa-solid fa-building-columns';
+      const isMemberSavings = prod.id === 'prod-1' || (prod.title && prod.title.includes('සාමාජික ඉතුරුම්')) || (prod.titleEn && prod.titleEn.toLowerCase().includes('member savings'));
 
       return `
         <div class="product-card group ${prod.image ? 'p-0 overflow-hidden flex flex-col' : 'p-6 sm:p-7 flex flex-col'}">
@@ -347,10 +348,23 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="pt-2">
-            <button onclick="window.openInquiryModal('${title}')" class="w-full py-3 rounded-xl font-bold text-sm bg-slate-100 group-hover:bg-[#0B0D7C] text-slate-800 group-hover:text-white transition-all flex items-center justify-center gap-2">
-              <span>${currentLang === 'en' ? 'Apply / Inquire' : 'අයදුම් කිරීම / විමසීම්'}</span>
-              <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
-            </button>
+            ${isMemberSavings ? `
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="window.openInquiryModal('${title}')" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-slate-100 hover:bg-[#0B0D7C] text-slate-800 hover:text-white transition-all flex items-center justify-center gap-1.5 border border-slate-200 shadow-sm" title="${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}">
+                  <i class="fa-solid fa-circle-question text-xs"></i>
+                  <span>${currentLang === 'en' ? 'Inquire' : 'විමසීම්'}</span>
+                </button>
+                <button onclick="window.openMembershipModal()" class="py-2.5 px-2 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-[#DF0178] to-[#BA0063] hover:from-[#BA0063] hover:to-[#DF0178] text-white shadow-md shadow-pink-900/20 transition-all flex items-center justify-center gap-1.5" title="${currentLang === 'en' ? 'Apply for Membership' : 'අයදුම් කිරීම'}">
+                  <i class="fa-solid fa-file-signature text-xs"></i>
+                  <span>${currentLang === 'en' ? 'Apply Now' : 'අයදුම් කිරීම'}</span>
+                </button>
+              </div>
+            ` : `
+              <button onclick="window.openInquiryModal('${title}')" class="w-full py-3 rounded-xl font-bold text-sm bg-slate-100 group-hover:bg-[#0B0D7C] text-slate-800 group-hover:text-white transition-all flex items-center justify-center gap-2">
+                <span>${currentLang === 'en' ? 'Apply / Inquire' : 'අයදුම් කිරීම / විමසීම්'}</span>
+                <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+              </button>
+            `}
           </div>
           ${prod.image ? `</div>` : ''}
         </div>
