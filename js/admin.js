@@ -1,4 +1,4 @@
-// admin.js - Management Controller for Galapitiyagama Sanasa Bank
+﻿// admin.js - Management Controller for Galapitiyagama Sanasa Bank
 
 // --- Tab Titles Definition (Global) ---
 const tabTitles = {
@@ -1182,6 +1182,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fa-solid fa-xmark"></i>
                   </button>
                 ` : ''}
+                <select onchange="window.setAppType('${app.id}', this.value)" class="text-[9px] border border-slate-200 rounded px-1 py-0.5 text-slate-600 bg-white cursor-pointer" title="වර්ගය වෙනස් කරන්න">
+                  <option value="MEMBERSHIP" ${appType === 'MEMBERSHIP' ? 'selected' : ''}>සාමාජික</option>
+                  <option value="CHILD_SAVINGS" ${appType === 'CHILD_SAVINGS' ? 'selected' : ''}>ළමා ඉතුරුම්</option>
+                  <option value="EXTERNAL_DEPOSIT" ${appType === 'EXTERNAL_DEPOSIT' ? 'selected' : ''}>බාහිර</option>
+                </select>
                 <button onclick="window.deleteAppConfirm('${app.id}')" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs" title="මකාදමන්න">
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
@@ -2088,6 +2093,31 @@ document.addEventListener('DOMContentLoaded', () => {
     renderApplicationsTable();
     renderOverview();
     showAdminToast(`අයදුම්පතේ තත්වය ${safeStr(newStatus).toUpperCase()} ලෙස යාවත්කාලීන විය.`);
+  };
+
+  window.setAppType = (id, newType) => {
+    if (!window.bankStore || !window.bankStore.data) return;
+    const allApps = window.bankStore.data.membershipApplications || [];
+    const idx = allApps.findIndex(a => a.id === id);
+    if (idx < 0) return;
+    const app = allApps[idx];
+    const prefixMap = { 'CHILD_SAVINGS': 'GSCS-CHD-', 'EXTERNAL_DEPOSIT': 'GSCS-EDA-', 'MEMBERSHIP': 'GSCS-MEM-' };
+    const newPrefix = prefixMap[newType] || 'GSCS-MEM-';
+    const oldRef = safeStr(app.refId);
+    const numPart = oldRef.replace(/^GSCS-[A-Z]+-/, '');
+    allApps[idx] = {
+      ...app,
+      appType: newType,
+      isChildSavings: (newType === 'CHILD_SAVINGS'),
+      isExternalDeposit: (newType === 'EXTERNAL_DEPOSIT'),
+      isMembership: (newType === 'MEMBERSHIP'),
+      refId: newPrefix + numPart
+    };
+    window.bankStore.data.membershipApplications = allApps;
+    window.bankStore.save();
+    renderApplicationsTable();
+    const typeLabels = { 'CHILD_SAVINGS': 'ළමා ඉතුරුම්', 'EXTERNAL_DEPOSIT': 'බාහිර තැන්පත්', 'MEMBERSHIP': 'සාමාජික' };
+    showAdminToast(`වර්ගය "${typeLabels[newType] || newType}" ලෙස යාවත්කාලීන කරන ලදී.`);
   };
 
   window.deleteAppConfirm = (id) => {
