@@ -329,7 +329,7 @@
         ref.includes('EDA') ||
         app.applicant2 ||
         (app.accountType && (app.accountType.includes('ගිණුම') || app.accountType.includes('Account'))) ||
-        (Number(app.totalPaid) === 2000 && !app.shareCapital)
+        (app.idFrontImage && !app.childFullName && !app.guardianFullName && !app.isChildSavings)
       );
       if (isEda) {
         app.appType = 'EXTERNAL_DEPOSIT';

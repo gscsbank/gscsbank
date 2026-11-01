@@ -1,4 +1,4 @@
-﻿// admin.js - Management Controller for Galapitiyagama Sanasa Bank
+// admin.js - Management Controller for Galapitiyagama Sanasa Bank
 
 // --- Tab Titles Definition (Global) ---
 const tabTitles = {
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ref.startsWith('GSCS-EDA') ||
       Boolean(app.applicant2) ||
       (app.accountType && (app.accountType.includes('ගිණුම') || app.accountType.includes('Account'))) ||
-      (Number(app.totalPaid) === 2000 && !app.shareCapital)
+      (app.idFrontImage && !app.isChildSavings && !app.childFullName && !app.guardianFullName)
     ) {
       return 'EXTERNAL_DEPOSIT';
     }
