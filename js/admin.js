@@ -1747,10 +1747,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const approveBtn = document.getElementById('adm-app-approve-btn');
     const rejectBtn = document.getElementById('adm-app-reject-btn');
     const printBtn = document.getElementById('adm-app-print-btn');
+    const typePill = document.getElementById('adm-app-type-pill');
 
-    if (refEl) refEl.textContent = app.refId;
-    if (subEl) subEl.textContent = `යොමු කළ දිනය: ${app.submittedAt}`;
-    
+    const appType = getAppType(app);
+    const isChildApp = (appType === 'CHILD_SAVINGS');
+    const isEdaApp   = (appType === 'EXTERNAL_DEPOSIT');
+    const displayRef2 = getAppDisplayRef(app);
+
+    if (refEl) refEl.textContent = displayRef2;
+    if (subEl) subEl.textContent = `යොමු කළ දිනය: ${safeStr(app.submittedAt)}`;
+
+    if (typePill) {
+      if (isChildApp) {
+        typePill.className = 'inline-block px-2.5 py-1 rounded text-[11px] font-extrabold bg-amber-100 text-amber-800 mb-1';
+        typePill.textContent = 'ළමා ඉතුරුම් අයදුම්පත් විස්තරය (Child Savings)';
+      } else if (isEdaApp) {
+        typePill.className = 'inline-block px-2.5 py-1 rounded text-[11px] font-extrabold bg-emerald-100 text-emerald-800 mb-1';
+        typePill.textContent = 'බාහිර තැන්පත් අයදුම්පත් විස්තරය (External Deposit)';
+      } else {
+        typePill.className = 'inline-block px-2.5 py-1 rounded text-[11px] font-extrabold bg-pink-100 text-[#DF0178] mb-1';
+        typePill.textContent = 'සාමාජික අයදුම්පත් විස්තරය (Membership)';
+      }
+    }
+
     let badgeHtml = '';
     if (app.status === 'approved') {
       badgeHtml = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">APPROVED</span>';
@@ -1761,28 +1780,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (badgeEl) badgeEl.innerHTML = badgeHtml;
 
-    const isChildApp = safeStr(app.refId).startsWith('GSCS-CHD') || app.isChildSavings || app.appType === 'CHILD_SAVINGS';
+    // ── 1. CHILD SAVINGS MODAL ─────────────────────────────────────
     if (isChildApp && content) {
       content.innerHTML = `
         <!-- Section 1: Child Info -->
         <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-200">
           <h4 class="font-bold text-amber-900 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
             <span class="w-5 h-5 rounded bg-amber-600 text-white flex items-center justify-center text-[10px]">1</span>
-            දරුවාගේ පුද්ගලික තොරතුරු (Child's Information) - <span class="text-[#0B0D7C] font-black">${app.childAccountType || 'ළමා ගිණුම'}</span>
+            දරුවාගේ පුද්ගලික තොරතුරු (Child's Information) - <span class="text-[#0B0D7C] font-black">${safeStr(app.childAccountType || 'ළමා ගිණුම')}</span>
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block font-bold">${app.childFullName || app.fullName}</strong></div>
-            <div><span class="text-slate-500">මුලකුරු සමඟ නම:</span> <strong class="text-slate-900 block font-bold">${app.nameWithInitials}</strong></div>
-            <div><span class="text-slate-500">නම (English Caps):</span> <strong class="text-slate-900 block font-mono">${app.nameEnglishCaps}</strong></div>
-            <div><span class="text-slate-500">ස්ත්‍රී / පුරුෂ භාවය:</span> <strong class="text-slate-800">${app.childGender || app.gender}</strong></div>
-            <div><span class="text-slate-500">උපන් දිනය (DOB):</span> <strong class="text-slate-800 block">${app.dob}</strong></div>
-            <div><span class="text-slate-500">ආගම:</span> <strong class="text-slate-800">${app.religion}</strong></div>
-            <div class="sm:col-span-2"><span class="text-slate-500">ස්ථිර ලිපිනය:</span> <strong class="text-slate-900 block">${app.address}</strong></div>
-            <div><span class="text-slate-500">නගරය:</span> <strong class="text-slate-900 block font-bold text-[#0B0D7C]">${app.city}</strong></div>
-            <div><span class="text-slate-500">ග්‍රාම නිලධාරී වසම:</span> <strong class="text-slate-900 block">${app.gnDivision || '-'}</strong></div>
-            <div><span class="text-slate-500">දුරකථන:</span> <strong class="text-slate-900 font-mono">${app.phone}</strong></div>
-            <div><span class="text-slate-500">WhatsApp:</span> <strong class="text-slate-900 font-mono">${app.whatsapp || '-'}</strong></div>
-            <div class="sm:col-span-2"><span class="text-slate-500">ඊ-මේල්:</span> <strong class="text-slate-900">${app.email || '-'}</strong></div>
+            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.childFullName || app.fullName)}</strong></div>
+            <div><span class="text-slate-500">මුලකුරු සමඟ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.nameWithInitials || '-')}</strong></div>
+            <div><span class="text-slate-500">නම (English Caps):</span> <strong class="text-slate-900 block font-mono">${safeStr(app.nameEnglishCaps || '-')}</strong></div>
+            <div><span class="text-slate-500">ස්ත්‍රී / පුරුෂ භාවය:</span> <strong class="text-slate-800">${safeStr(app.childGender || app.gender || '-')}</strong></div>
+            <div><span class="text-slate-500">උපන් දිනය (DOB):</span> <strong class="text-slate-800 block">${safeStr(app.dob || '-')}</strong></div>
+            <div><span class="text-slate-500">ආගම:</span> <strong class="text-slate-800">${safeStr(app.religion || '-')}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">ස්ථිර ලිපිනය:</span> <strong class="text-slate-900 block">${safeStr(app.address || '-')}</strong></div>
+            <div><span class="text-slate-500">නගරය:</span> <strong class="text-slate-900 block font-bold text-[#0B0D7C]">${safeStr(app.city || '-')}</strong></div>
+            <div><span class="text-slate-500">ග්‍රාම නිලධාරී වසම:</span> <strong class="text-slate-900 block">${safeStr(app.gnDivision || '-')}</strong></div>
+            <div><span class="text-slate-500">දුරකථන:</span> <strong class="text-slate-900 font-mono">${safeStr(app.phone || '-')}</strong></div>
+            <div><span class="text-slate-500">WhatsApp:</span> <strong class="text-slate-900 font-mono">${safeStr(app.whatsapp || '-')}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">විද්‍යුත් තැපෑල:</span> <strong class="text-slate-900">${safeStr(app.email || '-')}</strong></div>
           </div>
         </div>
 
@@ -1793,10 +1812,10 @@ document.addEventListener('DOMContentLoaded', () => {
             මව/පියා/භාරකරුගේ තොරතුරු (Parent / Guardian Information)
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div><span class="text-slate-500">භාරකරුගේ නම:</span> <strong class="text-slate-900 block font-bold">${app.guardianFullName || '-'}</strong></div>
-            <div><span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය (NIC):</span> <strong class="text-slate-900 font-mono block font-bold">${app.guardianNic || app.nic || '-'}</strong></div>
-            <div><span class="text-slate-500">නෑදෑකම & ස්ත්‍රී/පුරුෂ:</span> <strong class="text-slate-800">${app.guardianRelation || '-'} (${app.guardianGender || '-'})</strong></div>
-            <div class="sm:col-span-2"><span class="text-slate-500">භාරකරුගේ ලිපිනය:</span> <strong class="text-slate-900 block">${app.guardianAddress || '-'}</strong></div>
+            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.guardianFullName || '-')}</strong></div>
+            <div><span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය (NIC):</span> <strong class="text-slate-900 font-mono block font-bold">${safeStr(app.guardianNic || app.nic || '-')}</strong></div>
+            <div><span class="text-slate-500">නෑදෑකම & ස්ත්‍රී/පුරුෂ:</span> <strong class="text-slate-800">${safeStr(app.guardianRelation || '-')} (${safeStr(app.guardianGender || '-')})</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">භාරකරුගේ ලිපිනය:</span> <strong class="text-slate-900 block">${safeStr(app.guardianAddress || '-')}</strong></div>
           </div>
         </div>
 
@@ -1808,7 +1827,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <span class="text-slate-500 block mb-1 font-bold">උප්පැන්න සහතිකයේ ඉදිරිපස:</span>
+              <span class="text-slate-500 block mb-1 font-bold">ඉදිරිපස (Front Side):</span>
               ${app.birthCertFrontImage ? `
                 <img src="${app.birthCertFrontImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
                 <a href="${app.birthCertFrontImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:underline">
@@ -1817,7 +1836,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
             </div>
             <div>
-              <span class="text-slate-500 block mb-1 font-bold">උප්පැන්න සහතිකයේ පසුපස:</span>
+              <span class="text-slate-500 block mb-1 font-bold">පිටුපස (Back Side):</span>
               ${app.birthCertBackImage ? `
                 <img src="${app.birthCertBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
                 <a href="${app.birthCertBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:underline">
@@ -1828,17 +1847,18 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Section 4: Initial Deposit -->
+        <!-- Section 4: Initial Deposit (NO SHARE CAPITAL) -->
         <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-200">
           <h4 class="font-bold text-emerald-800 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
-            <span class="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span>
+            <span class="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center text-[10px]">4</span>
             ආරම්භක තැන්පතුව (Initial Deposit - People's Bank)
           </h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div class="space-y-1.5">
-              <div><span class="text-slate-500">තැන්පත් මුදල:</span> <strong class="text-emerald-700 text-base font-extrabold block">රු. ${Number(app.totalPaid || 2000).toLocaleString()}.00</strong></div>
-              <div><span class="text-slate-500">ගිණුම් වර්ගය:</span> <strong class="text-slate-800">${app.childAccountType || 'ළමා ගිණුම'}</strong></div>
-              <div><span class="text-slate-500">ගෙවූ බැංකුව:</span> <strong class="text-slate-800 font-mono">People's Bank - 124200110064754 (Nikaweratiya)</strong></div>
+              <div><span class="text-slate-500">ආරම්භක තැන්පතු මුදල:</span> <strong class="text-emerald-700 text-base font-extrabold block">රු. ${Number(app.totalPaid || 2000).toLocaleString()}.00</strong></div>
+              <div><span class="text-slate-500">ගිණුම් වර්ගය:</span> <strong class="text-slate-800">${safeStr(app.childAccountType || 'ළමා ගිණුම')}</strong></div>
+              <div><span class="text-slate-500">තැන්පත් කළ බැංකුව:</span> <strong class="text-slate-800 font-mono">People's Bank - 124200110064754 (Nikaweratiya)</strong></div>
+              <div><span class="text-slate-500">රිසිට්පත් / Ref අංකය:</span> <strong class="text-slate-900 font-mono block">${safeStr(app.paymentRef || '-')}</strong></div>
             </div>
             <div>
               <span class="text-slate-500 block mb-1 font-bold">තැන්පතු Slip පත:</span>
@@ -1854,14 +1874,14 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Section 4: Signature -->
+        <!-- Section 5: Signature -->
         <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider mb-1 flex items-center gap-2">
-              <span class="w-5 h-5 rounded bg-slate-700 text-white flex items-center justify-center text-[10px]">4</span>
+              <span class="w-5 h-5 rounded bg-slate-700 text-white flex items-center justify-center text-[10px]">5</span>
               භාරකරුගේ ඩිජිටල් අත්සන (Guardian Digital Signature)
             </h4>
-            <p class="text-[11px] text-slate-500">අයදුම්පත යොමු කිරීමේදී ඩිජිටල් ලෙස ලබාගත් අත්සන</p>
+            <p class="text-[11px] text-slate-500">ළමා ගිණුම් අයදුම්පත යොමු කිරීමේදී ලබාගත් අත්සන</p>
           </div>
           <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
             ${app.signatureImage ? `
@@ -1870,37 +1890,40 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-    } else if (content) {
+    }
+
+    // ── 2. EXTERNAL DEPOSIT (EDA) MODAL ────────────────────────────
+    else if (isEdaApp && content) {
       content.innerHTML = `
-        <!-- Section 1 -->
-        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
-          <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
-            <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]">1</span>
-            පුද්ගලික තොරතුරු (Personal Information)
+        <!-- Section 1: Primary Applicant -->
+        <div class="bg-emerald-50/40 rounded-2xl p-4 border border-emerald-200">
+          <h4 class="font-bold text-emerald-900 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-emerald-700 text-white flex items-center justify-center text-[10px]">1</span>
+            1 වන අයදුම්කරුගේ තොරතුරු (Primary Applicant Information) - <span class="text-[#0B0D7C] font-black">${safeStr(app.accountType || 'බාහිර තැන්පත්')}</span>
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block">${app.fullName}</strong></div>
-            <div><span class="text-slate-500">මුලකුරු සමඟ නම:</span> <strong class="text-slate-900 block">${app.nameWithInitials}</strong></div>
-            <div><span class="text-slate-500">ඉංග්‍රීසි නම (Capital):</span> <strong class="text-slate-900 block font-mono">${app.nameEnglishCaps}</strong></div>
-            <div><span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය:</span> <strong class="text-slate-900 block font-mono">${app.nic}</strong></div>
-            <div class="sm:col-span-2"><span class="text-slate-500">ස්ථිර ලිපිනය (Address):</span> <strong class="text-slate-900 block">${app.address}</strong></div>
-            <div><span class="text-slate-500">නගරය (City):</span> <strong class="text-slate-900 block font-bold text-[#0B0D7C]">${app.city}</strong></div>
-            <div><span class="text-slate-500">උපන් දිනය (DOB):</span> <strong class="text-slate-800 block">${app.dob}</strong></div>
-            <div><span class="text-slate-500">ස්ත්‍රී / පුරුෂ භාවය:</span> <strong class="text-slate-800">${app.gender}</strong></div>
-            <div><span class="text-slate-500">විවාහක / අවිවාහක බව:</span> <strong class="text-slate-800">${app.maritalStatus}</strong></div>
-            <div><span class="text-slate-500">ආගම:</span> <strong class="text-slate-800">${app.religion}</strong></div>
-            <div><span class="text-slate-500">ග්‍රාම නිලධාරී වසම:</span> <strong class="text-slate-900 block">${app.gnDivision}</strong></div>
-            <div><span class="text-slate-500">දුරකථනය:</span> <strong class="text-slate-900 font-mono">${app.phone}</strong></div>
-            <div><span class="text-slate-500">WhatsApp:</span> <strong class="text-slate-900 font-mono">${app.whatsapp}</strong></div>
-            <div class="sm:col-span-2"><span class="text-slate-500">විද්‍යුත් තැපෑල (Email):</span> <strong class="text-slate-900">${app.email || '-'}</strong></div>
+            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.fullName)}</strong></div>
+            <div><span class="text-slate-500">මුලකුරු සමඟ නම:</span> <strong class="text-slate-900 block">${safeStr(app.nameWithInitials || '-')}</strong></div>
+            <div><span class="text-slate-500">ඉංග්‍රීසි නම (Capital):</span> <strong class="text-slate-900 block font-mono">${safeStr(app.nameEnglishCaps || '-')}</strong></div>
+            <div><span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය:</span> <strong class="text-slate-900 block font-mono font-bold">${safeStr(app.nic)}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">ස්ථිර ලිපිනය (Address):</span> <strong class="text-slate-900 block">${safeStr(app.address)}</strong></div>
+            <div><span class="text-slate-500">නගරය (City):</span> <strong class="text-slate-900 block font-bold text-emerald-800">${safeStr(app.city)}</strong></div>
+            <div><span class="text-slate-500">උපන් දිනය (DOB):</span> <strong class="text-slate-800 block">${safeStr(app.dob)}</strong></div>
+            <div><span class="text-slate-500">ස්ත්‍රී / පුරුෂ භාවය:</span> <strong class="text-slate-800">${safeStr(app.gender)}</strong></div>
+            <div><span class="text-slate-500">විවාහක / අවිවාහක බව:</span> <strong class="text-slate-800">${safeStr(app.maritalStatus || '-')}</strong></div>
+            <div><span class="text-slate-500">ආගම:</span> <strong class="text-slate-800">${safeStr(app.religion || '-')}</strong></div>
+            <div><span class="text-slate-500">ග්‍රාම නිලධාරී වසම:</span> <strong class="text-slate-900 block">${safeStr(app.gnDivision || '-')}</strong></div>
+            <div><span class="text-slate-500">දුරකථන:</span> <strong class="text-slate-900 font-mono">${safeStr(app.phone)}</strong></div>
+            <div><span class="text-slate-500">WhatsApp:</span> <strong class="text-slate-900 font-mono">${safeStr(app.whatsapp || '-')}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">විද්‍යුත් තැපෑල (Email):</span> <strong class="text-slate-900">${safeStr(app.email || '-')}</strong></div>
           </div>
         </div>
 
-        <!-- KYC Document Photos (NIC / Driving License / Passport) -->
+        <!-- KYC Document Photos (NIC / License / Passport) -->
         <div class="bg-indigo-50/50 rounded-2xl p-4 border border-indigo-200">
           <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
             <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-id-card text-[9px]"></i></span>
-            හැඳුනුම් ලේඛන ඡායාරූප (KYC Identity Document Photos - NIC / License / Passport)
+            1 වන අයදුම්කරුගේ හැඳුනුම්පත් ඡායාරූප (KYC Photos - NIC / License / Passport)
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
@@ -1913,7 +1936,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
             </div>
             <div>
-              <span class="text-slate-500 block mb-1 font-bold">පසුපස (Back Side):</span>
+              <span class="text-slate-500 block mb-1 font-bold">පිටුපස (Back Side):</span>
               ${app.idBackImage ? `
                 <img src="${app.idBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
                 <a href="${app.idBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline">
@@ -1922,21 +1945,169 @@ document.addEventListener('DOMContentLoaded', () => {
               ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
             </div>
           </div>
-          ${app.applicant2 && (app.applicant2.idFrontImage || app.applicant2.idBackImage) ? `
-            <div class="mt-3 pt-3 border-t border-indigo-200">
-              <span class="font-bold text-slate-800 block mb-2">දෙවන අයදුම්කරුගේ (Applicant 02) හැඳුනුම් ලේඛන:</span>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div>
-                  <span class="text-slate-500 block mb-1 font-bold">ඉදිරිපස:</span>
-                  ${app.applicant2.idFrontImage ? `<img src="${app.applicant2.idFrontImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white"><a href="${app.applicant2.idFrontImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline"><i class="fa-solid fa-up-right-from-square"></i> බලන්න</a>` : '<span class="text-slate-400">නැත</span>'}
-                </div>
-                <div>
-                  <span class="text-slate-500 block mb-1 font-bold">පසුපස:</span>
-                  ${app.applicant2.idBackImage ? `<img src="${app.applicant2.idBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white"><a href="${app.applicant2.idBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline"><i class="fa-solid fa-up-right-from-square"></i> බලන්න</a>` : '<span class="text-slate-400">නැත</span>'}
-                </div>
+        </div>
+
+        <!-- Section 2: Joint Applicant (if present) -->
+        ${(app.applicant2 && app.applicant2.fullName) ? `
+        <div class="bg-purple-50/50 rounded-2xl p-4 border border-purple-200">
+          <h4 class="font-bold text-purple-900 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-purple-700 text-white flex items-center justify-center text-[10px]">2</span>
+            2 වන / ඒකාබද්ධ අයදුම්කරු (Joint Applicant)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
+            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.applicant2.fullName)}</strong></div>
+            <div><span class="text-slate-500">ඉංග්‍රීසි නම:</span> <strong class="text-slate-900 block font-mono">${safeStr(app.applicant2.nameEnglishCaps || '-')}</strong></div>
+            <div><span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය:</span> <strong class="text-slate-900 block font-mono font-bold">${safeStr(app.applicant2.nic || '-')}</strong></div>
+            <div><span class="text-slate-500">ස්ත්‍රී / පුරුෂ භාවය:</span> <strong class="text-slate-800">${safeStr(app.applicant2.gender || '-')}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">ස්ථිර ලිපිනය:</span> <strong class="text-slate-900 block">${safeStr(app.applicant2.address || '-')}</strong></div>
+            <div><span class="text-slate-500">දුරකථන:</span> <strong class="text-slate-900 font-mono">${safeStr(app.applicant2.phone || '-')}</strong></div>
+            <div><span class="text-slate-500">ගිණුම් නෑදෑකම:</span> <strong class="text-purple-800 font-bold">${safeStr(app.applicant2.relationship || '-')}</strong></div>
+          </div>
+          ${(app.applicant2.idFrontImage || app.applicant2.idBackImage) ? `
+          <div class="border-t border-purple-200 pt-3">
+            <span class="font-bold text-slate-800 block mb-2 text-xs">2 වන අයදුම්කරුගේ හැඳුනුම්පත් ඡායාරූප:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <span class="text-slate-500 block mb-1">ඉදිරිපස:</span>
+                ${app.applicant2.idFrontImage ? `<img src="${app.applicant2.idFrontImage}" class="max-h-28 rounded-lg border border-slate-300 object-contain bg-white">` : '<span class="text-slate-400">නැත</span>'}
+              </div>
+              <div>
+                <span class="text-slate-500 block mb-1">පිටුපස:</span>
+                ${app.applicant2.idBackImage ? `<img src="${app.applicant2.idBackImage}" class="max-h-28 rounded-lg border border-slate-300 object-contain bg-white">` : '<span class="text-slate-400">නැත</span>'}
               </div>
             </div>
-          ` : ''}
+          </div>` : ''}
+          ${(app.applicant2.signatureImage || app.signatureImage2) ? `
+          <div class="border-t border-purple-200 pt-3 mt-3 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">2 වන අයදුම්කරුගේ අත්සන:</span>
+            <img src="${app.applicant2.signatureImage || app.signatureImage2}" class="max-h-12 bg-white p-1 rounded border border-slate-200">
+          </div>` : ''}
+        </div>` : ''}
+
+        <!-- Section 3: Occupation & Business -->
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+          <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]">3</span>
+            ව්‍යාපාරය හෝ රැකියාව පිළිබඳ තොරතුරු (Occupation / Business)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div><span class="text-slate-500">ව්‍යාපාරය / රැකියාව:</span> <strong class="text-slate-900 block">${safeStr(app.occupation || app.businessName || '-')}</strong></div>
+            <div><span class="text-slate-500">දුරකථන අංකය:</span> <strong class="text-slate-900 block font-mono">${safeStr(app.businessPhone || '-')}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">සේවා ස්ථානයේ ලිපිනය:</span> <strong class="text-slate-900 block">${safeStr(app.businessAddress || '-')}</strong></div>
+          </div>
+        </div>
+
+        <!-- Section 4: Nominee Details -->
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+          <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]">4</span>
+            පසු උරුමකරුගේ තොරතුරු (Nominee / Beneficiary Details)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div><span class="text-slate-500">පසු උරුමකරුගේ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.nomineeName || '-')}</strong></div>
+            <div><span class="text-slate-500">ජා.හැ. අංකය:</span> <strong class="text-slate-900 font-mono block">${safeStr(app.nomineeNic || '-')} (${safeStr(app.nomineeGender || '-')})</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">අයදුම්කරුට ඇති නෑදෑකම:</span> <strong class="text-[#0B0D7C] font-bold block">${safeStr(app.nomineeRelationship || '-')}</strong></div>
+          </div>
+        </div>
+
+        <!-- Section 5: Initial Deposit (NO SHARE CAPITAL / NO KOTAS MUDAL) -->
+        <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-200">
+          <h4 class="font-bold text-emerald-800 text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-emerald-700 text-white flex items-center justify-center text-[10px]">5</span>
+            ආරම්භක තැන්පතුව (Initial Deposit - People's Bank)
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <div><span class="text-slate-500">ආරම්භක තැන්පතු මුදල:</span> <strong class="text-emerald-700 text-base font-extrabold block">රු. ${Number(app.totalPaid || 2000).toLocaleString()}.00</strong></div>
+              <div><span class="text-slate-500">ගිණුම් වර්ගය:</span> <strong class="text-slate-800">${safeStr(app.accountType || 'බාහිර තැන්පත් ගිණුම')}</strong></div>
+              <div><span class="text-slate-500">තැන්පත් කළ බැංකුව:</span> <strong class="text-slate-800 font-mono">People's Bank - 124200110064754 (Nikaweratiya)</strong></div>
+              <div><span class="text-slate-500">රිසිට්පත් / Ref අංකය:</span> <strong class="text-slate-900 font-mono block">${safeStr(app.paymentRef || '-')}</strong></div>
+            </div>
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">තැන්පතු රිසිට්පත (Uploaded Slip):</span>
+              ${app.receiptImage ? `
+                <div class="relative group">
+                  <img src="${app.receiptImage}" class="max-h-40 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                  <a href="${app.receiptImage}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:underline">
+                    <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණ ප්‍රමාණයෙන් බලන්න (View Full)
+                  </a>
+                </div>
+              ` : '<p class="text-slate-400">රිසිට්පතක් උඩුගත කර නැත.</p>'}
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Signature -->
+        <div class="bg-indigo-50/50 rounded-2xl p-4 border border-indigo-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-1 flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]">6</span>
+              1 වන අයදුම්කරුගේ ඩිජිටල් අත්සන (Digital E-Signature)
+            </h4>
+            <p class="text-[11px] text-slate-500">බාහිර තැන්පත් ගිණුම් ප්‍රකාශය පිළිගෙන තබන ලද අත්සන</p>
+          </div>
+          <div class="bg-white p-2 rounded-xl border border-indigo-100 shadow-sm">
+            ${app.signatureImage ? `
+              <img src="${app.signatureImage}" class="max-h-16 max-w-xs object-contain">
+            ` : '<span class="text-slate-400 text-xs italic">අත්සනක් නැත</span>'}
+          </div>
+        </div>
+      `;
+    }
+
+    // ── 3. MEMBERSHIP MODAL (Default) ──────────────────────────────
+    else if (content) {
+      content.innerHTML = `
+        <!-- Section 1 -->
+        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+          <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]">1</span>
+            පුද්ගලික තොරතුරු (Personal Information)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div><span class="text-slate-500">සම්පූර්ණ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.fullName)}</strong></div>
+            <div><span class="text-slate-500">මුලකුරු සමඟ නම:</span> <strong class="text-slate-900 block">${safeStr(app.nameWithInitials)}</strong></div>
+            <div><span class="text-slate-500">ඉංග්‍රීසි නම (Capital):</span> <strong class="text-slate-900 block font-mono font-bold">${safeStr(app.nameEnglishCaps)}</strong></div>
+            <div><span class="text-slate-500">ජාතික හැඳුනුම්පත් අංකය:</span> <strong class="text-slate-900 block font-mono font-bold">${safeStr(app.nic)}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">ස්ථිර ලිපිනය (Address):</span> <strong class="text-slate-900 block">${safeStr(app.address)}</strong></div>
+            <div><span class="text-slate-500">නගරය (City):</span> <strong class="text-slate-900 block font-bold text-[#0B0D7C]">${safeStr(app.city)}</strong></div>
+            <div><span class="text-slate-500">උපන් දිනය (DOB):</span> <strong class="text-slate-800 block">${safeStr(app.dob)}</strong></div>
+            <div><span class="text-slate-500">ස්ත්‍රී / පුරුෂ භාවය:</span> <strong class="text-slate-800">${safeStr(app.gender)}</strong></div>
+            <div><span class="text-slate-500">විවාහක / අවිවාහක බව:</span> <strong class="text-slate-800">${safeStr(app.maritalStatus)}</strong></div>
+            <div><span class="text-slate-500">ආගම:</span> <strong class="text-slate-800">${safeStr(app.religion)}</strong></div>
+            <div><span class="text-slate-500">ග්‍රාම නිලධාරී වසම:</span> <strong class="text-slate-900 block">${safeStr(app.gnDivision)}</strong></div>
+            <div><span class="text-slate-500">දුරකථන:</span> <strong class="text-slate-900 font-mono">${safeStr(app.phone)}</strong></div>
+            <div><span class="text-slate-500">WhatsApp:</span> <strong class="text-slate-900 font-mono">${safeStr(app.whatsapp)}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">විද්‍යුත් තැපෑල (Email):</span> <strong class="text-slate-900">${safeStr(app.email || '-')}</strong></div>
+          </div>
+        </div>
+
+        <!-- KYC Document Photos (NIC / Driving License / Passport) -->
+        <div class="bg-indigo-50/50 rounded-2xl p-4 border border-indigo-200">
+          <h4 class="font-bold text-[#0B0D7C] text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-id-card text-[9px]"></i></span>
+            හැඳුනුම්පත් ඡායාරූප (KYC Photos - NIC / License / Passport)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">ඉදිරිපස (Front Side):</span>
+              ${app.idFrontImage ? `
+                <img src="${app.idFrontImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                <a href="${app.idFrontImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline">
+                  <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණයෙන් බලන්න
+                </a>
+              ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
+            </div>
+            <div>
+              <span class="text-slate-500 block mb-1 font-bold">පිටුපස (Back Side):</span>
+              ${app.idBackImage ? `
+                <img src="${app.idBackImage}" class="max-h-36 rounded-xl border border-slate-300 shadow-sm object-contain bg-white">
+                <a href="${app.idBackImage}" target="_blank" class="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-[#0B0D7C] hover:underline">
+                  <i class="fa-solid fa-up-right-from-square"></i> සම්පූර්ණයෙන් බලන්න
+                </a>
+              ` : '<span class="text-slate-400 text-xs">Upload කර නැත</span>'}
+            </div>
+          </div>
         </div>
 
         <!-- Section 2 -->
@@ -1946,9 +2117,9 @@ document.addEventListener('DOMContentLoaded', () => {
             පසු උරුමය (13 වන නියෝගය යටතේ නම් කිරීම)
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div><span class="text-slate-500">පසු උරුමකරුගේ නම:</span> <strong class="text-slate-900 block">${app.nomineeName}</strong></div>
-            <div><span class="text-slate-500">ජ.හැ. අංකය:</span> <strong class="text-slate-900 font-mono block">${app.nomineeNic} (${app.nomineeGender})</strong></div>
-            <div><span class="text-slate-500">නෑදෑකම:</span> <strong class="text-slate-900 block">${app.nomineeRelationship}</strong></div>
+            <div><span class="text-slate-500">පසු උරුමකරුගේ නම:</span> <strong class="text-slate-900 block font-bold">${safeStr(app.nomineeName)}</strong></div>
+            <div><span class="text-slate-500">ජා.හැ. අංකය:</span> <strong class="text-slate-900 font-mono block">${safeStr(app.nomineeNic)} (${safeStr(app.nomineeGender)})</strong></div>
+            <div><span class="text-slate-500">නෑදෑකම:</span> <strong class="text-slate-900 block">${safeStr(app.nomineeRelationship)}</strong></div>
           </div>
         </div>
 
@@ -1959,12 +2130,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ව්‍යාපාරය හෝ රැකියාව පිළිබඳ තොරතුරු
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div><span class="text-slate-500">ව්‍යාපාරයේ නම / රැකියාව:</span> <strong class="text-slate-900 block">${app.businessName || '-'} (${app.occupation || '-'})</strong></div>
-            <div><span class="text-slate-500">ලිපිනය / දුරකථනය:</span> <strong class="text-slate-900 block">${app.businessAddress || '-'} | ${app.businessPhone || '-'}</strong></div>
+            <div><span class="text-slate-500">ව්‍යාපාරය / රැකියාව:</span> <strong class="text-slate-900 block">${safeStr(app.businessName || '-')} (${safeStr(app.occupation || '-')})</strong></div>
+            <div><span class="text-slate-500">දුරකථන අංකය:</span> <strong class="text-slate-900 block font-mono">${safeStr(app.businessPhone || '-')}</strong></div>
+            <div class="sm:col-span-2"><span class="text-slate-500">සේවා ස්ථානයේ ලිපිනය:</span> <strong class="text-slate-900 block">${safeStr(app.businessAddress || '-')}</strong></div>
           </div>
         </div>
 
-        <!-- Section 4: Payment Verification -->
+        <!-- Section 4: Membership Payment Verification (ONLY MEMBERSHIP HAS KOTAS MUDAL!) -->
         <div class="bg-pink-50/50 rounded-2xl p-4 border border-pink-200">
           <h4 class="font-bold text-[#DF0178] text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
             <span class="w-5 h-5 rounded bg-[#DF0178] text-white flex items-center justify-center text-[10px]">4</span>
@@ -1973,10 +2145,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div class="space-y-1.5">
               <div><span class="text-slate-500">ගෙවූ මුළු මුදල:</span> <strong class="text-emerald-700 text-base font-extrabold block">රු. ${Number(app.totalPaid || 6000).toLocaleString()}.00</strong></div>
-              <div><span class="text-slate-500">කොටස් මුදල්:</span> <strong class="text-slate-800">රු. 5,000.00</strong></div>
-              <div><span class="text-slate-500">ඉතුරුම් තැන්පතුව:</span> <strong class="text-slate-800">රු. 1,000.00</strong></div>
+              <div><span class="text-slate-500">සාමාජික කොටස් මුදල්:</span> <strong class="text-slate-800">රු. 5,000.00</strong></div>
+              <div><span class="text-slate-500">සාමාජික ඉතුරුම් තැන්පතුව:</span> <strong class="text-slate-800">රු. 1,000.00</strong></div>
               <div><span class="text-slate-500">බැංකු ගිණුම:</span> <strong class="text-slate-800 font-mono">People's Bank - 124200110064754 (Nikaweratiya)</strong></div>
-              <div><span class="text-slate-500">රිසිට්පත් / Ref අංකය:</span> <strong class="text-slate-900 font-mono block">${app.paymentRef || '-'}</strong></div>
+              <div><span class="text-slate-500">රිසිට්පත් / Ref අංකය:</span> <strong class="text-slate-900 font-mono block">${safeStr(app.paymentRef || '-')}</strong></div>
             </div>
             <div>
               <span class="text-slate-500 block mb-1 font-bold">තැන්පතු රිසිට්පත (Uploaded Slip):</span>
@@ -1999,62 +2171,12 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="w-5 h-5 rounded bg-[#0B0D7C] text-white flex items-center justify-center text-[10px]">5</span>
               අයදුම්කරුගේ ඩිජිටල් අත්සන (Digital E-Signature)
             </h4>
-            <p class="text-[11px] text-slate-500">නීත්‍යානුකූල ප්‍රකාශය පිළිගෙන අයදුම්කරු විසින් තබන ලද අත්සන</p>
+            <p class="text-[11px] text-slate-500">නීත්‍යානුකූල සාමාජික ප්‍රකාශය පිළිගෙන අයදුම්කරු විසින් තබන ලද අත්සන</p>
           </div>
           <div class="bg-white p-2 rounded-xl border border-indigo-100 shadow-sm">
             ${app.signatureImage ? `
               <img src="${app.signatureImage}" class="max-h-16 max-w-xs object-contain">
             ` : '<span class="text-slate-400 text-xs italic">අත්සනක් නැත</span>'}
-          </div>
-        </div>
-
-        <!-- Section 6: Committee Recommendation (For Print / Manager Approval) -->
-        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-300">
-          <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="w-5 h-5 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">6</span>
-            කාරක සභා නිර්දේශය (Committee Recommendation)
-          </h4>
-          <p class="text-xs text-slate-700 leading-relaxed bg-white p-3 rounded-xl border border-slate-200 mb-3">
-            .................................................................... දින පැවති කාරක සභා රැස්වීමේදී සලකා බලා සාමාජිකත්වය ලබා දීමට සුදුසුකම් ඇති අයෙකු බැවින් ඊළඟ මහාසභා රැස්වීමට ඉදිරිපත් කිරීමට තීරණය කරන ලදි. (කාරක සභා වාර්තා පොතේ අංක ................ දරන පිටුව)
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-center">
-              <span class="text-slate-500 block text-[10px] mb-1">දිනය (Date)</span>
-              <strong class="text-slate-800 font-mono">[ D | D ] [ M | M ] [ Y | Y | Y | Y ]</strong>
-            </div>
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-center">
-              <span class="text-slate-500 block text-[10px] mb-2">ගරු සභාපති අත්සන</span>
-              <div class="border-b border-dashed border-slate-400 h-6"></div>
-            </div>
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-center">
-              <span class="text-slate-500 block text-[10px] mb-2">ගරු ලේකම් අත්සන</span>
-              <div class="border-b border-dashed border-slate-400 h-6"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 7: General Assembly Recommendation (For Print / Manager Approval) -->
-        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-300">
-          <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="w-5 h-5 rounded bg-slate-800 text-white flex items-center justify-center text-[10px]">7</span>
-            මහා සභා නිර්දේශය (General Assembly / AGM Decision)
-          </h4>
-          <p class="text-xs text-slate-700 leading-relaxed bg-white p-3 rounded-xl border border-slate-200 mb-3">
-            .................................................................... දින පැවති මහා සභා රැස්වීමේදී සලකා බලා සාමාජිකත්වය ලබා දීමට තීරණය කරන ලදි. (මහාසභා වාර්තා පොතේ අංක ................ දරන පිටුව)
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-center">
-              <span class="text-slate-500 block text-[10px] mb-1">දිනය (Date)</span>
-              <strong class="text-slate-800 font-mono">[ D | D ] [ M | M ] [ Y | Y | Y | Y ]</strong>
-            </div>
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-center">
-              <span class="text-slate-500 block text-[10px] mb-2">ගරු සභාපති අත්සන</span>
-              <div class="border-b border-dashed border-slate-400 h-6"></div>
-            </div>
-            <div class="p-2.5 bg-white rounded-lg border border-slate-200 text-center">
-              <span class="text-slate-500 block text-[10px] mb-2">ගරු ලේකම් අත්සන</span>
-              <div class="border-b border-dashed border-slate-400 h-6"></div>
-            </div>
           </div>
         </div>
       `;
@@ -2129,6 +2251,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ============================================================
+  // --- ADMIN A4 PRINT CONTROLLER (3 SEPARATE PRINT TEMPLATES) ---
+  // ============================================================
   window.printAdminApplication = (app) => {
     const printWin = window.open('', '_blank');
     if (!printWin) return;
@@ -2142,7 +2267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const commonCSS = `
       @page { size: A4 portrait; margin: 7mm 9mm 7mm 9mm; }
       * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      body { font-family: 'Segoe UI', Arial, 'Noto Sans Sinhala', 'Iskoola Pota', sans-serif; color: #000; background: #fff; margin: 0; padding: 10px 15px; font-size: 10.5px; line-height: 1.35; }
+      body { font-family: 'Segoe UI', Arial, 'Noto Sans Sinhala', 'Iskoola Pota', sans-serif; color: #000; background: #fff; margin: 0; padding: 10px 15px; font-size: 10px; line-height: 1.35; }
       .sheet { max-width: 192mm; margin: 0 auto; }
       .no-print { text-align: right; margin-bottom: 12px; }
       .btn-print { padding: 7px 18px; background: #000; color: #fff; border: 1px solid #000; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
@@ -2154,19 +2279,18 @@ document.addEventListener('DOMContentLoaded', () => {
       .bank-use-box { border: 1.5px solid #000; padding: 4px 6px; font-size: 9px; background: #fff; line-height: 1.3; }
       .bank-use-title { font-weight: bold; text-align: center; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 3px; font-size: 9.5px; }
       .section-bar { background: #000 !important; color: #fff !important; font-weight: bold; font-size: 10px; padding: 2.5px 6px; margin-top: 6px; margin-bottom: 3px; letter-spacing: 0.3px; }
-      table.app-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 3px; }
+      table.app-table { width: 100%; border-collapse: collapse; font-size: 9.5px; margin-bottom: 3px; }
       table.app-table th, table.app-table td { border: 1px solid #000; padding: 3px 5px; vertical-align: middle; }
       table.app-table th { background: #f2f2f2 !important; font-weight: bold; text-align: left; width: 32%; }
       .declaration-box { border: 1px solid #000; padding: 5px 7px; margin-top: 4px; font-size: 9.5px; }
       .recom-box { border: 1px solid #000; padding: 5px 7px; margin-top: 5px; font-size: 9.5px; }
-      .recom-title { font-weight: bold; font-size: 10.5px; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; }
+      .recom-title { font-weight: bold; font-size: 10px; border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 4px; }
       .date-box-wrap { display: inline-flex; gap: 1px; vertical-align: middle; margin-left: 4px; }
       .d-cell { display: inline-block; width: 12px; height: 14px; border: 1px solid #000; text-align: center; font-size: 8.5px; line-height: 14px; font-family: monospace; font-weight: bold; }
-      .sig-line { border-top: 1px dashed #000; margin-top: 26px; padding-top: 2px; font-size: 9.5px; font-weight: bold; text-align: center; }
-      .two-sig { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+      .sig-line { border-top: 1px dashed #000; margin-top: 24px; padding-top: 2px; font-size: 9px; font-weight: bold; text-align: center; }
     `;
 
-    // ── Shared header HTML ────────────────────────────────────────
+    // ── Shared Bank Use Box ───────────────────────────────────────
     const bankUseBox = `
       <div class="bank-use-box">
         <div class="bank-use-title">කාර්යාලීය ප්‍රයෝජනය සඳහා පමණි</div>
@@ -2175,10 +2299,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div>කළමනාකරු: .........................</div>
       </div>`;
 
+    // ── Shared Committee & General Assembly Recommendation Box ───
     const recomBoxes = `
       <div class="recom-box">
         <div class="recom-title">■ කාරක සභා නිර්දේශය</div>
-        <div style="text-align:justify;line-height:1.35;">........................................................................................................ දින පැවති කාරක සභා රැස්වීමේදී සලකා බලා ලබා දීමට සුදුසු යැයි තීරණය කරන ලදි. (වාර්තා පොතේ අංක ................ දරන පිටුව)</div>
+        <div style="text-align:justify;line-height:1.35;">........................................................................................................ දින පැවති කාරක සභා රැස්වීමේදී සලකා බලා ගිණුම විවෘත කිරීමට සුදුසු යැයි තීරණය කරන ලදි. (වාර්තා පොතේ අංක ................ දරන පිටුව)</div>
         <table style="width:100%;border:none;margin-top:6px;"><tr>
           <td style="border:none;width:34%;vertical-align:bottom;"><strong>දිනය :</strong> <span class="date-box-wrap"><span class="d-cell">D</span><span class="d-cell">D</span><span style="font-size:9px;line-height:14px;">/</span><span class="d-cell">M</span><span class="d-cell">M</span><span style="font-size:9px;line-height:14px;">/</span><span class="d-cell">2</span><span class="d-cell">0</span><span class="d-cell">&nbsp;</span><span class="d-cell">&nbsp;</span></span></td>
           <td style="border:none;width:33%;text-align:center;vertical-align:bottom;"><div class="sig-line">ගරු සභාපති</div></td>
@@ -2187,7 +2312,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="recom-box">
         <div class="recom-title">■ මහා සභා නිර්දේශය</div>
-        <div style="text-align:justify;line-height:1.35;">........................................................................................................ දින පැවති මහා සභා රැස්වීමේදී සලකා බලා ලබා දීමට තීරණය කරන ලදි. (මහාසභා වාර්තා පොතේ අංක ................ දරන පිටුව)</div>
+        <div style="text-align:justify;line-height:1.35;">........................................................................................................ දින පැවති මහා සභා රැස්වීමේදී සලකා බලා අනුමත කිරීමට තීරණය කරන ලදි. (මහාසභා වාර්තා පොතේ අංක ................ දරන පිටුව)</div>
         <table style="width:100%;border:none;margin-top:6px;"><tr>
           <td style="border:none;width:34%;vertical-align:bottom;"><strong>දිනය :</strong> <span class="date-box-wrap"><span class="d-cell">D</span><span class="d-cell">D</span><span style="font-size:9px;line-height:14px;">/</span><span class="d-cell">M</span><span class="d-cell">M</span><span style="font-size:9px;line-height:14px;">/</span><span class="d-cell">2</span><span class="d-cell">0</span><span class="d-cell">&nbsp;</span><span class="d-cell">&nbsp;</span></span></td>
           <td style="border:none;width:33%;text-align:center;vertical-align:bottom;"><div class="sig-line">ගරු සභාපති</div></td>
@@ -2195,18 +2320,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr></table>
       </div>`;
 
-    // ── Shared payment-slip page ──────────────────────────────────
-    const paymentSlipPage = (docTitle, totalAmt, breakdown) => `
+    // ── Shared Payment-Slip Page (NO KOTAS MUDAL FOR EDA / CHILD!) ─
+    const paymentSlipPage = (docTitle, totalAmt, breakdownHtml) => `
       <div class="page-break" style="margin-top:15px;"></div>
       <div style="border-bottom:1.5px solid #000;padding-bottom:5px;margin-bottom:8px;">
         <div class="bank-title">සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය</div>
         <div class="doc-title" style="margin-top:2px;">${docTitle} - ගෙවීම් තහවුරු කිරීමේ ලේඛනය (PAYMENT SLIP PROOF)</div>
-        <div style="font-size:9.5px;margin-top:2px;">යොමු අංකය: <strong>${displayRef}</strong> &nbsp;|&nbsp; අයදුම්කරු: <strong>${app.fullName || app.childFullName || ''}</strong> (${app.nic || app.guardianNic || ''})</div>
+        <div style="font-size:9.5px;margin-top:2px;">යොමු අංකය: <strong>${displayRef}</strong> &nbsp;|&nbsp; අයදුම්කරු: <strong>${safeStr(app.fullName || app.childFullName || '')}</strong> (${safeStr(app.nic || app.guardianNic || '')})</div>
       </div>
       <table class="app-table" style="margin-bottom:8px;">
-        ${breakdown}
+        ${breakdownHtml}
         <tr>
-          <th>තැන්පත් කළ සම්පූර්ණ මුදල</th>
+          <th style="width:32%;">තැන්පත් කළ සම්පූර්ණ මුදල</th>
           <td colspan="3"><strong style="font-size:11px;">රු. ${Number(totalAmt).toLocaleString()}.00</strong></td>
         </tr>
         <tr>
@@ -2215,12 +2340,12 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
         <tr>
           <th>බැංකු රිසිට්පත් / Ref අංකය</th>
-          <td colspan="3"><strong style="font-family:monospace;">${app.paymentRef || '-'}</strong></td>
+          <td colspan="3"><strong style="font-family:monospace;">${safeStr(app.paymentRef || '-')}</strong></td>
         </tr>
       </table>
       <div style="border:1px solid #000;padding:8px;text-align:center;margin-bottom:12px;background:#fafafa;">
         <div style="font-weight:bold;font-size:10px;margin-bottom:6px;text-align:left;">අයදුම්කරු විසින් උඩුගත කළ බැංකු තැන්පතු පත්‍රිකාව (Uploaded Slip Image):</div>
-        ${app.receiptImage ? `<img src="${app.receiptImage}" style="max-height:180mm;max-width:100%;border:1px solid #000;filter:contrast(110%);">` : '<div style="padding:40px;font-style:italic;color:#555;">බැංකු රිසිට්පතක් උඩුගත කර නොමැත.</div>'}
+        ${app.receiptImage ? `<img src="${app.receiptImage}" style="max-height:175mm;max-width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);">` : '<div style="padding:40px;font-style:italic;color:#555;">බැංකු රිසිට්පතක් උඩුගත කර නොමැත.</div>'}
       </div>
       <table style="width:100%;border:1px solid #000;border-collapse:collapse;font-size:10px;">
         <tr>
@@ -2229,8 +2354,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </tr>
       </table>`;
 
-    // ── Declaration / signature block ────────────────────────────
-    const sigBlock = (text) => `
+    // ── Shared Signature Block ────────────────────────────────────
+    const sigBlock = (text, sigTitle = 'අයදුම්කරුගේ අත්සන') => `
       <div class="declaration-box">
         <div style="text-align:justify;margin-bottom:5px;">${text}</div>
         <table style="width:100%;border:none;margin-top:4px;"><tr>
@@ -2242,13 +2367,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <div style="min-height:38px;display:flex;align-items:center;justify-content:center;">
               ${app.signatureImage ? `<img src="${app.signatureImage}" style="max-height:38px;max-width:170px;filter:grayscale(100%) contrast(150%);">` : '<span style="font-style:italic;">[ ඩිජිටල් අත්සන ඇතුළත් කර ඇත ]</span>'}
             </div>
-            <div style="border-top:1px solid #000;padding-top:2px;font-weight:bold;font-size:9.5px;">අයදුම්කරුගේ අත්සන</div>
+            <div style="border-top:1px solid #000;padding-top:2px;font-weight:bold;font-size:9.5px;">${sigTitle}</div>
           </td>
         </tr></table>
       </div>`;
 
     // =============================================================
-    // ── CHILD SAVINGS PRINT TEMPLATE ─────────────────────────────
+    // ── 1. CHILD SAVINGS PRINT TEMPLATE ──────────────────────────
     // =============================================================
     if (isChild) {
       const accountTypeLabel = safeStr(app.childAccountType || app.childAccountTypeEn || 'ළමා ඉතුරුම් ගිණුම');
@@ -2322,15 +2447,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- SECTION 3: Declaration -->
           <div class="section-bar">3. ප්‍රකාශය සහ අත්සන (DECLARATION &amp; SIGNATURE)</div>
-          ${sigBlock('"ඉහත සඳහන් සියලු විස්තර සත්‍ය හා නිවැරදි බවට සහතික කරන අතර, ළමා ගිනුම ආරම්භ කිරීම සඳහා රු. 2,000/- ක ආරම්භක තැන්පතුව People\'s Bank හරහා සිදු කළ බවට සහතික කරමි. සමිතියේ නීති රීතිවලට එකඟව කටයුතු කිරීමට ඉල්ලා සිටිමි."')}
+          ${sigBlock('"ඉහත සඳහන් සියලු විස්තර සත්‍ය හා නිවැරදි බවට සහතික කරන අතර, ළමා ගිණුම ආරම්භ කිරීම සඳහා රු. 2,000/- ක ආරම්භක තැන්පතුව People\'s Bank හරහා සිදු කළ බවට සහතික කරමි. සමිතියේ නීති රීතිවලට එකඟව කටයුතු කිරීමට ඉල්ලා සිටිමි."', 'මව / පියා / භාරකරුගේ අත්සන')}
 
           ${recomBoxes}
 
-          <!-- PAGE 2: Payment Slip -->
+          <!-- PAGE 2: Payment Slip (NO KOTAS MUDAL!) -->
           ${paymentSlipPage('ළමා ගිනුම් අයදුම් පත්‍රය', depositAmt, `
             <tr>
               <th style="width:32%;">ළමා ගිණුම් ආරම්භක තැන්පතුව</th>
-              <td colspan="3"><strong>රු. ${depositAmt.toLocaleString()}.00</strong> (අවම)</td>
+              <td colspan="3"><strong>රු. ${depositAmt.toLocaleString()}.00</strong> (අවම තැන්පතුව)</td>
             </tr>
             <tr>
               <th>ගිණුම් වර්ගය</th>
@@ -2341,10 +2466,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <!-- Birth Certificate Images -->
           ${(app.birthCertFrontImage || app.birthCertBackImage) ? `
           <div class="page-break" style="margin-top:10px;"></div>
-          <div style="font-weight:bold;font-size:10.5px;border-bottom:1px solid #000;padding-bottom:4px;margin-bottom:8px;">ඉපදුම් සහතිකය (Birth Certificate)</div>
+          <div style="font-weight:bold;font-size:10.5px;border-bottom:1px solid #000;padding-bottom:4px;margin-bottom:8px;">උප්පැන්න සහතිකය (Birth Certificate Photos)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            ${app.birthCertFrontImage ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">ඉදිරිපස (Front)</div><img src="${app.birthCertFrontImage}" style="width:100%;border:1px solid #000;filter:contrast(110%);"></div>` : ''}
-            ${app.birthCertBackImage  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">පිටිපස (Back)</div><img src="${app.birthCertBackImage}" style="width:100%;border:1px solid #000;filter:contrast(110%);"></div>` : ''}
+            ${app.birthCertFrontImage ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">ඉදිරිපස (Front)</div><img src="${app.birthCertFrontImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
+            ${app.birthCertBackImage  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">පිටුපස (Back)</div><img src="${app.birthCertBackImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
           </div>` : ''}
         </div>
       </body></html>`;
@@ -2355,7 +2480,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =============================================================
-    // ── EXTERNAL DEPOSIT (EDA) PRINT TEMPLATE ────────────────────
+    // ── 2. EXTERNAL DEPOSIT (EDA) PRINT TEMPLATE ─────────────────
     // =============================================================
     if (isEda) {
       const accountTypeLabel = safeStr(app.accountType || 'බාහිර තැන්පත් ගිණුම');
@@ -2392,7 +2517,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <tr><th>මුලකුරු සමඟ නම (සිංහලෙන්)</th><td colspan="3">${safeStr(app.nameWithInitials || '-')}</td></tr>
             <tr><th>මුලකුරු සමඟ නම (ඉංග්‍රීසි කැපිටල්)</th><td colspan="3" style="font-family:monospace;font-weight:bold;">${safeStr(app.nameEnglishCaps || '-')}</td></tr>
             <tr>
-              <th>ජාතික හැඳුනුම්පත් අංකය (NIC)</th><td style="font-family:monospace;">${safeStr(app.nic)}</td>
+              <th>ජාතික හැඳුනුම්පත් අංකය (NIC)</th><td style="font-family:monospace;font-weight:bold;">${safeStr(app.nic)}</td>
               <th style="width:25%;">ස්ත්‍රී / පුරුෂ භාවය</th><td>${safeStr(app.gender || '-')}</td>
             </tr>
             <tr><th>ස්ථිර ලිපිනය (Address)</th><td colspan="3"><strong>${safeStr(app.address || '-')}</strong></td></tr>
@@ -2430,34 +2555,54 @@ document.addEventListener('DOMContentLoaded', () => {
               <th style="width:25%;">ගිණුම් නෑදෑකම</th><td>${safeStr(ap2.relationship || '-')}</td>
             </tr>
           </table>
-
-          <!-- Joint Applicant Signature -->
-          <div class="section-bar" style="margin-top:5px;">2(b) ඒකාබද්ධ අයදුම්කරුගේ ප්‍රකාශය සහ අත්සන</div>
-          <div class="declaration-box">
-            <div style="text-align:justify;margin-bottom:5px;">"ඉහත සඳහන් සියලු විස්තර සත්‍ය හා නිවැරදි බවට සහතික කරන අතර, ඒකාබද්ධ ගිණුම් හිමිකරු ලෙස සමිතියේ නීති රීතිවලට එකඟව කටයුතු කිරීමට ඉල්ලා සිටිමි."</div>
-            <table style="width:100%;border:none;margin-top:4px;"><tr>
-              <td style="border:none;width:45%;vertical-align:bottom;"><div><strong>දිනය:</strong> ${safeStr(app.submittedAt)}</div></td>
-              <td style="border:none;width:55%;text-align:center;vertical-align:bottom;">
-                <div style="min-height:38px;display:flex;align-items:center;justify-content:center;">
-                  ${ap2.signatureImage ? `<img src="${ap2.signatureImage}" style="max-height:38px;max-width:170px;filter:grayscale(100%) contrast(150%);">` : '<span style="font-style:italic;">[ ඒකාබද්ධ අත්සන ]</span>'}
+          <div class="declaration-box" style="margin-top:4px;">
+            <div style="text-align:justify;margin-bottom:4px;font-size:9px;">"ඉහත සඳහන් සියලු විස්තර සත්‍ය හා නිවැරදි බවට සහතික කරන අතර, ඒකාබද්ධ ගිණුම් හිමිකරු ලෙස සමිතියේ නීති රීතිවලට එකඟව කටයුතු කිරීමට ඉල්ලා සිටිමි."</div>
+            <table style="width:100%;border:none;margin-top:2px;"><tr>
+              <td style="border:none;width:50%;vertical-align:bottom;"><div><strong>දිනය:</strong> ${safeStr(app.submittedAt)}</div></td>
+              <td style="border:none;width:50%;text-align:center;vertical-align:bottom;">
+                <div style="min-height:30px;display:flex;align-items:center;justify-content:center;">
+                  ${(ap2.signatureImage || app.signatureImage2) ? `<img src="${ap2.signatureImage || app.signatureImage2}" style="max-height:30px;max-width:140px;filter:grayscale(100%);">` : '<span style="font-style:italic;font-size:8.5px;">[ ඒකාබද්ධ අත්සන ]</span>'}
                 </div>
-                <div style="border-top:1px solid #000;padding-top:2px;font-weight:bold;font-size:9.5px;">ඒකාබද්ධ අයදුම්කරුගේ අත්සන</div>
+                <div style="border-top:1px solid #000;padding-top:2px;font-weight:bold;font-size:9px;">ඒකාබද්ධ අයදුම්කරුගේ අත්සන</div>
               </td>
             </tr></table>
           </div>
           ` : ''}
 
-          <!-- SECTION 3: Primary Applicant Declaration -->
-          <div class="section-bar">3. 1 වන අයදුම්කරුගේ ප්‍රකාශය සහ අත්සන (DECLARATION &amp; SIGNATURE)</div>
-          ${sigBlock('"ඉහත සඳහන් සියලු විස්තර සත්‍ය හා නිවැරදි බවට සහතික කරන අතර, බාහිර තැන්පත් ගිනුම ආරම්භ කිරීම සඳහා රු. 2,000/- ක ආරම්භක තැන්පතුව People\'s Bank හරහා සිදු කළ බවට සහතික කරමි. සමිතියේ නීති රීතිවලට එකඟව කටයුතු කිරීමට ඉල්ලා සිටිමි."')}
+          <!-- SECTION 3: Business / Occupation -->
+          <div class="section-bar">3. ව්‍යාපාරය හෝ රැකියාව පිළිබඳ තොරතුරු (OCCUPATION / BUSINESS)</div>
+          <table class="app-table">
+            <tr>
+              <th>ව්‍යාපාරය / රැකියාව</th><td>${safeStr(app.occupation || app.businessName || '-')}</td>
+              <th style="width:25%;">දුරකථන අංකය</th><td style="font-family:monospace;">${safeStr(app.businessPhone || '-')}</td>
+            </tr>
+            <tr>
+              <th>සේවා ස්ථානයේ ලිපිනය</th><td colspan="3">${safeStr(app.businessAddress || '-')}</td>
+            </tr>
+          </table>
+
+          <!-- SECTION 4: Nominee -->
+          <div class="section-bar">4. පසු උරුමය සම්බන්ධ තොරතුරු (NOMINEE / BENEFICIARY)</div>
+          <table class="app-table">
+            <tr><th>පසු උරුමකරුගේ සම්පූර්ණ නම</th><td colspan="3"><strong>${safeStr(app.nomineeName || '-')}</strong></td></tr>
+            <tr>
+              <th>ජාතික හැඳුනුම්පත් අංකය</th><td style="font-family:monospace;">${safeStr(app.nomineeNic || '-')}</td>
+              <th style="width:25%;">ස්ත්‍රී / පුරුෂ භාවය</th><td>${safeStr(app.nomineeGender || '-')}</td>
+            </tr>
+            <tr><th>අයදුම්කරුට ඇති නෑදෑකම</th><td colspan="3"><strong>${safeStr(app.nomineeRelationship || '-')}</strong></td></tr>
+          </table>
+
+          <!-- SECTION 5: Primary Applicant Declaration -->
+          <div class="section-bar">5. 1 වන අයදුම්කරුගේ ප්‍රකාශය සහ අත්සන (DECLARATION &amp; SIGNATURE)</div>
+          ${sigBlock('"ඉහත සඳහන් සියලු විස්තර සත්‍ය හා නිවැරදි බවට සහතික කරන අතර, බාහිර තැන්පත් ගිණුම ආරම්භ කිරීම සඳහා රු. 2,000/- ක ආරම්භක තැන්පතුව People\'s Bank හරහා සිදු කළ බවට සහතික කරමි. සමිතියේ නීති රීතිවලට එකඟව කටයුතු කිරීමට ඉල්ලා සිටිමි."')}
 
           ${recomBoxes}
 
-          <!-- PAGE 2: Payment Slip -->
+          <!-- PAGE 2: Payment Slip (NO KOTAS MUDAL!) -->
           ${paymentSlipPage('බාහිර තැන්පත් ගිනුම් අයදුම් පත්‍රය', depositAmt, `
             <tr>
               <th style="width:32%;">ආරම්භක තැන්පතු මුදල</th>
-              <td colspan="3"><strong>රු. ${depositAmt.toLocaleString()}.00</strong> (අවම)</td>
+              <td colspan="3"><strong>රු. ${depositAmt.toLocaleString()}.00</strong> (අවම තැන්පතුව)</td>
             </tr>
             <tr>
               <th>ගිණුම් වර්ගය</th>
@@ -2466,12 +2611,14 @@ document.addEventListener('DOMContentLoaded', () => {
           `)}
 
           <!-- ID Images -->
-          ${(app.nicFrontImage || app.nicBackImage) ? `
+          ${(app.nicFrontImage || app.nicBackImage || (ap2 && (ap2.idFrontImage || ap2.idBackImage))) ? `
           <div class="page-break" style="margin-top:10px;"></div>
-          <div style="font-weight:bold;font-size:10.5px;border-bottom:1px solid #000;padding-bottom:4px;margin-bottom:8px;">හැඳුනුම්පත් ඡායාරූප (ID Document Photos)</div>
+          <div style="font-weight:bold;font-size:10.5px;border-bottom:1px solid #000;padding-bottom:4px;margin-bottom:8px;">හැඳුනුම්පත් ඡායාරූප (KYC Identity Document Photos)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            ${app.nicFrontImage ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">ඉදිරිපස (Front)</div><img src="${app.nicFrontImage}" style="width:100%;border:1px solid #000;filter:contrast(110%);"></div>` : ''}
-            ${app.nicBackImage  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">පිටිපස (Back)</div><img src="${app.nicBackImage}" style="width:100%;border:1px solid #000;filter:contrast(110%);"></div>` : ''}
+            ${app.nicFrontImage ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">1 වන අයදුම්කරු - ඉදිරිපස</div><img src="${app.nicFrontImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
+            ${app.nicBackImage  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">1 වන අයදුම්කරු - පිටුපස</div><img src="${app.nicBackImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
+            ${(ap2 && ap2.idFrontImage) ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">2 වන අයදුම්කරු - ඉදිරිපස</div><img src="${ap2.idFrontImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
+            ${(ap2 && ap2.idBackImage)  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">2 වන අයදුම්කරු - පිටුපස</div><img src="${ap2.idBackImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
           </div>` : ''}
         </div>
       </body></html>`;
@@ -2482,7 +2629,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =============================================================
-    // ── MEMBERSHIP PRINT TEMPLATE (default) ──────────────────────
+    // ── 3. MEMBERSHIP PRINT TEMPLATE (Default) ───────────────────
     // =============================================================
     printWin.document.write(`<!DOCTYPE html><html><head>
       <title>සාමාජික අයදුම් පත්‍රය - ${displayRef}</title>
@@ -2503,13 +2650,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <strong>තත්ත්වය:</strong> <span style="font-weight:bold;">${safeStr(app.status || 'PENDING').toUpperCase()}</span>
             </div>
           </div>
-          <div class="bank-use-box">
-            <div class="bank-use-title">කාර්යාලීය ප්‍රයෝජනය සඳහා පමණි</div>
-            <div>සාමාජික අංකය: ....................</div>
-            <div>ගිණුම් අංකය: .........................</div>
-            <div>ඇතුළත් කළේ: .........................</div>
-            <div>කළමනාකරු: .........................</div>
-          </div>
+          ${bankUseBox}
         </div>
 
         <!-- SECTION 1 -->
@@ -2570,7 +2711,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ${recomBoxes}
 
-        <!-- PAGE 2: Payment Slip -->
+        <!-- PAGE 2: Payment Slip (ONLY MEMBERSHIP HAS KOTAS MUDAL!) -->
         ${paymentSlipPage('සාමාජික අයදුම් පත්‍රය', Number(app.totalPaid || 6000), `
           <tr>
             <th style="width:32%;">සාමාජික කොටස් මුදල්</th><td>රු. 5,000.00</td>
@@ -2581,10 +2722,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- NIC Images -->
         ${(app.nicFrontImage || app.nicBackImage) ? `
         <div class="page-break" style="margin-top:10px;"></div>
-        <div style="font-weight:bold;font-size:10.5px;border-bottom:1px solid #000;padding-bottom:4px;margin-bottom:8px;">හැඳුනුම්පත් ඡායාරූප (ID Document Photos)</div>
+        <div style="font-weight:bold;font-size:10.5px;border-bottom:1px solid #000;padding-bottom:4px;margin-bottom:8px;">හැඳුනුම්පත් ඡායාරූප (KYC Identity Document Photos)</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          ${app.nicFrontImage ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">ඉදිරිපස (Front)</div><img src="${app.nicFrontImage}" style="width:100%;border:1px solid #000;filter:contrast(110%);"></div>` : ''}
-          ${app.nicBackImage  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">පිටිපස (Back)</div><img src="${app.nicBackImage}" style="width:100%;border:1px solid #000;filter:contrast(110%);"></div>` : ''}
+          ${app.nicFrontImage ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">ඉදිරිපස (Front)</div><img src="${app.nicFrontImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
+          ${app.nicBackImage  ? `<div><div style="font-size:9px;font-weight:bold;margin-bottom:4px;">පිටුපස (Back)</div><img src="${app.nicBackImage}" style="width:100%;border:1px solid #000;object-contain:contain;filter:contrast(110%);"></div>` : ''}
         </div>` : ''}
       </div>
     </body></html>`);
