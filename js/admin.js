@@ -2383,7 +2383,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const depositAmt = Number(app.totalPaid || 2000);
 
       const html = `<!DOCTYPE html><html><head>
-        <title>ළමා ගිනුම් අයදුම් පත්‍රය - ${displayRef}</title>
+        <title>ළමා ගිණුම් අයදුම් පත්‍රය - ${displayRef}</title>
         <meta charset="utf-8">
         <style>${commonCSS}</style>
       </head><body>
@@ -2394,7 +2394,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <div class="bank-title">සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය</div>
               <div class="bank-sub">1972 අංක 5 දරන සමූපකාර සමිති පනත යටතේ ලියාපදිංචි අංක: කුලි/395 | ගලපිටියාගම, නිකවැරටිය</div>
-              <div class="doc-title">ළමා ගිනුම් අයදුම් පත්‍රය (${accountTypeLabel.toUpperCase()} APPLICATION)</div>
+              <div class="doc-title">ළමා ගිණුම් අයදුම් පත්‍රය (${accountTypeLabel.toUpperCase()} APPLICATION)</div>
               <div style="font-size:9.5px;margin-top:3px;">
                 <strong>යොමු අංකය:</strong> <span style="font-family:monospace;font-weight:bold;">${displayRef}</span> &nbsp;|&nbsp;
                 <strong>ගිණුම් වර්ගය:</strong> <span style="font-weight:bold;">${accountTypeLabel}</span> &nbsp;|&nbsp;
@@ -2452,7 +2452,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${recomBoxes}
 
           <!-- PAGE 2: Payment Slip (NO KOTAS MUDAL!) -->
-          ${paymentSlipPage('ළමා ගිනුම් අයදුම් පත්‍රය', depositAmt, `
+          ${paymentSlipPage('ළමා ගිණුම් අයදුම් පත්‍රය', depositAmt, `
             <tr>
               <th style="width:32%;">ළමා ගිණුම් ආරම්භක තැන්පතුව</th>
               <td colspan="3"><strong>රු. ${depositAmt.toLocaleString()}.00</strong> (අවම තැන්පතුව)</td>
@@ -2499,7 +2499,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <div class="bank-title">සීමා රහිත ගලපිටියාගම සකසුරුවම් හා ණය ගනුදෙනු පිළිබඳ සමූපකාර සමිතිය</div>
               <div class="bank-sub">1972 අංක 5 දරන සමූපකාර සමිති පනත යටතේ ලියාපදිංචි අංක: කුලි/395 | ගලපිටියාගම, නිකවැරටිය</div>
-              <div class="doc-title">බාහිර තැන්පත් ගිනුම් අයදුම් පත්‍රය (EXTERNAL DEPOSIT APPLICATION FORM)</div>
+              <div class="doc-title">බාහිර තැන්පත් ගිණුම් අයදුම් පත්‍රය (EXTERNAL DEPOSIT APPLICATION FORM)</div>
               <div style="font-size:9.5px;margin-top:3px;">
                 <strong>යොමු අංකය:</strong> <span style="font-family:monospace;font-weight:bold;">${displayRef}</span> &nbsp;|&nbsp;
                 <strong>ගිණුම් වර්ගය:</strong> <span style="font-weight:bold;">${accountTypeLabel}</span> &nbsp;|&nbsp;
@@ -2599,7 +2599,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${recomBoxes}
 
           <!-- PAGE 2: Payment Slip (NO KOTAS MUDAL!) -->
-          ${paymentSlipPage('බාහිර තැන්පත් ගිනුම් අයදුම් පත්‍රය', depositAmt, `
+          ${paymentSlipPage('බාහිර තැන්පත් ගිණුම් අයදුම් පත්‍රය', depositAmt, `
             <tr>
               <th style="width:32%;">ආරම්භක තැන්පතු මුදල</th>
               <td colspan="3"><strong>රු. ${depositAmt.toLocaleString()}.00</strong> (අවම තැන්පතුව)</td>
