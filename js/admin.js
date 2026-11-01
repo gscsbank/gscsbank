@@ -1204,11 +1204,14 @@ document.addEventListener('DOMContentLoaded', () => {
     currentAppFilter = filter;
     document.querySelectorAll('.app-filter-btn').forEach(btn => {
       const onclickAttr = btn.getAttribute('onclick') || '';
-      const active = onclickAttr.includes(filter);
-      btn.classList.toggle('bg-[#0B0D7C]', active);
-      btn.classList.toggle('text-white', active);
-      btn.classList.toggle('bg-white', !active);
-      btn.classList.toggle('text-slate-700', !active);
+      const active = onclickAttr.includes("'" + filter + "'");
+      if (active) {
+        btn.classList.add('bg-[#0B0D7C]', 'text-white');
+        btn.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      } else {
+        btn.classList.remove('bg-[#0B0D7C]', 'text-white');
+        btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      }
     });
     renderApplicationsTable();
   };
@@ -1217,11 +1220,14 @@ document.addEventListener('DOMContentLoaded', () => {
     currentAppTypeFilter = type;
     document.querySelectorAll('.app-type-btn').forEach(btn => {
       const onclickAttr = btn.getAttribute('onclick') || '';
-      const active = onclickAttr.includes(`'${type}'`);
-      btn.classList.toggle('bg-[#0B0D7C]', active);
-      btn.classList.toggle('text-white', active);
-      btn.classList.toggle('bg-white', !active);
-      btn.classList.toggle('text-slate-700', !active);
+      const active = onclickAttr.includes("'" + type + "'");
+      if (active) {
+        btn.classList.add('bg-[#0B0D7C]', 'text-white');
+        btn.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      } else {
+        btn.classList.remove('bg-[#0B0D7C]', 'text-white');
+        btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      }
     });
     renderApplicationsTable();
   };
