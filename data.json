@@ -34,18 +34,16 @@
   },
   "newsAndAnnouncements": [
     {
-      "id": "news-2",
-      "category": "Digital Banking",
-      "categoryEn": "Digital Banking",
-      "badgeColor": "bg-[#DF0178]",
-      "title": "Smart COOP Mobile App හරහා ඩිජිටල් බැංකුකරණය අරඹන්න",
-      "titleEn": "Experience Modern Digital Banking with Smart COOP App",
-      "date": "2026-10-01",
-      "image": "assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png",
-      "summary": "ඔබගේ සියලුම සනස ගිණුම් කටයුතු නිවසේ සිටම ඔබගේ ජංගම දුරකථනයෙන් සිදුකරගැනීමට Smart COOP යෙදුම දැන් බාගත කරගන්න.",
-      "summaryEn": "All banking services now at your fingertips with Smart COOP mobile app. Download today for instant account access.",
-      "content": "ගලපිටියගම සනස බැංකුවේ සාමාජික ඔබට දැන් වඩාත් පහසු සහ ආරක්ෂිත ඩිජිටල් බැංකු සේවාවක් ලබාදීම සඳහා Smart COOP App හඳුන්වා දී ඇත.\n\nප්‍රධාන පහසුකම්:\n- ඕනෑම වේලාවක ගිණුම් ශේෂ පරීක්ෂාව\n- තැන්පතු සහ ණය ගිණුම් විස්තර ලබාගැනීම\n- අන්තර් බැංකු මුදල් හුවමාරු (Fund Transfers)\n- බිල්පත් ගෙවීම් (Utility Bill Payments)\n\nයෙදුම සක්‍රීය කරගැනීමට අදම අපගේ ප්‍රධාන කාර්යාලය අමතන්න.",
-      "urgent": false
+      "id": "news-1793600770132",
+      "title": "පාට සිත්තම්  චිත්‍ර ප්‍රදර්ශනය",
+      "titleEn": "Art Exhibition of Paata Siththam",
+      "category": "ළමා වැඩසටහන්",
+      "badgeColor": "bg-[#0B0D7C]",
+      "date": "2026-10-27",
+      "image": "https://lh3.googleusercontent.com/d/1r77BBpakvObrr5bTXied5Igy_klQzQf6",
+      "summary": "පුංචි සිත්තරුන්ගේ සිතුවම්වලින් වර්ණවත් වන “පාට සිත්තම්” චිත්‍ර ප්‍රදර්ශනය හා ජයග්‍රාහකයින් තේරීමේ වැඩසටහන හෙට දිනයේ පැවැත්වීමට සියලු කටයුතු සූදානම්! 🖌️🖼️",
+      "content": "🌟 දිනය: ඔක්තෝබර් 28\n🕒 වේලාව: සවස 3.00ට\n📍 ස්ථානය: ගලපිටියාගම සණස බැංකු පරිශ්‍රයේදී\n\nපුංචි දරුවන්ගේ නිර්මාණශීලීත්වය අගයන්නටත්, ඔවුන්ගේ දක්ෂතා දැකබලා ගන්නටත් ඔබ සැමට ආදරයෙන් ආරාධනා කරමු. ❤️\n\n🎉 එන්න… හෙට අපේ පුංචි සිත්තරුන්ගේ දක්ෂතා අගයමු! 🎨\n\nමුදල් ත්‍යාග සහ සහතිකපත් හෙට දිනයේදීම ලබා දෙන බැවින් සියලුම තරඟකරැවන්ගේ පැමිණිමද අනිවාර්ය වේ.",
+      "urgent": true
     }
   ],
   "interestRates": {
@@ -787,6 +785,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T06:20:55.499Z",
+  "_exportedAt": "2026-11-02T06:26:11.659Z",
   "_version": "GSCS-DATA-V1"
 }
