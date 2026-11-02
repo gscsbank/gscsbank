@@ -74,10 +74,35 @@ window.formatGoogleDriveUrl = formatGoogleDriveUrl;
 
 let currentTab = 'overview';
 
+// --- Mobile Sidebar Toggle Controller ---
+window.toggleAdminSidebar = function(open) {
+  const sidebar = document.getElementById('admin-sidebar');
+  const backdrop = document.getElementById('admin-sidebar-backdrop');
+  if (!sidebar) return;
+
+  const isOpen = !sidebar.classList.contains('-translate-x-full');
+  const shouldOpen = (open !== undefined) ? open : !isOpen;
+
+  if (shouldOpen) {
+    sidebar.classList.remove('-translate-x-full');
+    if (backdrop) backdrop.classList.remove('hidden');
+    document.body.style.overflow = (window.innerWidth < 1024) ? 'hidden' : '';
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    if (backdrop) backdrop.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+};
+
 // --- Tab Switcher (Defined Immediately on window so it is ALWAYS available) ---
 window.switchAdminTab = function(tabId) {
   if (!tabId) return;
   currentTab = tabId;
+
+  // Auto-close mobile sidebar when user selects a tab
+  if (window.innerWidth < 1024) {
+    window.toggleAdminSidebar(false);
+  }
 
   // 1. Update sidebar button highlights
   const allButtons = document.querySelectorAll('.admin-tab-btn');
@@ -372,31 +397,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const tbody = document.getElementById('admin-news-table-body');
     if (!tbody) return;
 
+    if (!news || news.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="py-8 text-center text-slate-400">
+            <i class="fa-regular fa-folder-open text-3xl mb-2 block"></i>
+            කිසිදු පුවතක් හෝ නිවේදනයක් හමු නොවීය.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     tbody.innerHTML = news.map(n => `
-      <tr class="hover:bg-slate-50 transition-colors">
+      <!-- Desktop Table Row -->
+      <tr class="hidden md:table-row hover:bg-slate-50 transition-colors">
         <td class="py-3 px-4">
           <img src="${formatGoogleDriveUrl(n.image)}" alt="thumb" class="w-12 h-10 object-cover rounded-lg border border-slate-200" onerror="this.onerror=null; this.src='assets/images/gscs-logo.png';">
         </td>
         <td class="py-3 px-4">
-          <div class="font-bold text-slate-900 max-w-xs truncate">${n.title}</div>
-          <div class="text-[11px] text-slate-400 line-clamp-1">${n.summary}</div>
+          <div class="font-bold text-slate-900 max-w-xs truncate">${safeStr(n.title)}</div>
+          <div class="text-[11px] text-slate-400 line-clamp-1">${safeStr(n.summary)}</div>
         </td>
         <td class="py-3 px-4">
           <span class="px-2.5 py-1 rounded-full text-[11px] font-bold text-white ${n.badgeColor || 'bg-[#0B0D7C]'}">
-            ${n.category}
+            ${safeStr(n.category || 'Notice')}
           </span>
         </td>
-        <td class="py-3 px-4 text-slate-500">${n.date}</td>
+        <td class="py-3 px-4 text-slate-500">${safeStr(n.date)}</td>
         <td class="py-3 px-4">
           ${n.urgent ? '<span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-red-600 text-white">URGENT</span>' : '<span class="text-slate-400">-</span>'}
         </td>
         <td class="py-3 px-4 text-right whitespace-nowrap space-x-2">
-          <button onclick="window.editNewsItem('${n.id}')" class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50" title="Edit">
+          <button onclick="window.editNewsItem('${n.id}')" class="p-1.5 rounded-lg text-blue-600 hover:bg-blue-50 cursor-pointer" title="Edit">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <button onclick="window.deleteNewsItemConfirm('${n.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50" title="Delete">
+          <button onclick="window.deleteNewsItemConfirm('${n.id}')" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50 cursor-pointer" title="Delete">
             <i class="fa-solid fa-trash"></i>
           </button>
+        </td>
+      </tr>
+
+      <!-- Mobile Touch-friendly Card Row -->
+      <tr class="md:hidden">
+        <td colspan="6" class="p-3.5 bg-white border-b border-slate-200">
+          <div class="flex items-start gap-3">
+            <img src="${formatGoogleDriveUrl(n.image)}" alt="thumb" class="w-16 h-14 object-cover rounded-xl border border-slate-200 flex-shrink-0 shadow-sm" onerror="this.onerror=null; this.src='assets/images/gscs-logo.png';">
+            <div class="flex-grow min-w-0">
+              <div class="flex items-center gap-1.5 mb-1">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white ${n.badgeColor || 'bg-[#0B0D7C]'}">${safeStr(n.category || 'Notice')}</span>
+                ${n.urgent ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-red-600 text-white">URGENT</span>' : ''}
+                <span class="text-[10px] text-slate-400 ml-auto font-medium">${safeStr(n.date)}</span>
+              </div>
+              <div class="font-bold text-slate-900 text-xs truncate leading-snug">${safeStr(n.title)}</div>
+              <div class="text-[11px] text-slate-500 line-clamp-1 mt-0.5">${safeStr(n.summary)}</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2.5 mt-3 pt-2.5 border-t border-slate-100">
+            <button onclick="window.editNewsItem('${n.id}')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all">
+              <i class="fa-solid fa-pen-to-square"></i> සංස්කරණය
+            </button>
+            <button onclick="window.deleteNewsItemConfirm('${n.id}')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-red-700 bg-red-50 hover:bg-red-100 flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all">
+              <i class="fa-solid fa-trash"></i> මකන්න
+            </button>
+          </div>
         </td>
       </tr>
     `).join('');

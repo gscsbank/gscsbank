@@ -134,6 +134,11 @@
 
     saveNewsItem(item) {
       if (!this.data.newsAndAnnouncements) this.data.newsAndAnnouncements = [];
+      if (!this.data.deletedNewsIds) this.data.deletedNewsIds = [];
+      if (item && item.id) {
+        this.data.deletedNewsIds = this.data.deletedNewsIds.filter(d => d !== item.id);
+      }
+
       const idx = this.data.newsAndAnnouncements.findIndex(n => n.id === item.id);
       if (idx >= 0) {
         this.data.newsAndAnnouncements[idx] = { ...this.data.newsAndAnnouncements[idx], ...item };
@@ -146,14 +151,26 @@
         this.data.newsAndAnnouncements.unshift(newItem);
       }
       this.save();
+
       // Sync to Google Sheets cloud
       const savedItem = idx >= 0 ? this.data.newsAndAnnouncements[idx] : this.data.newsAndAnnouncements[0];
-      this.syncToAppsScript('submit', 'news', savedItem);
+      const payloadItem = {
+        ...savedItem,
+        image: savedItem.image || savedItem.imageUrl || '',
+        imageUrl: savedItem.image || savedItem.imageUrl || ''
+      };
+      this.syncToAppsScript('submit', 'news', payloadItem);
     }
 
     deleteNewsItem(id) {
+      if (!id) return;
+      if (!this.data.deletedNewsIds) this.data.deletedNewsIds = [];
+      if (!this.data.deletedNewsIds.includes(id)) {
+        this.data.deletedNewsIds.push(id);
+      }
       this.data.newsAndAnnouncements = (this.data.newsAndAnnouncements || []).filter(n => n.id !== id);
       this.save();
+
       // Delete from Google Sheets cloud
       this.syncToAppsScript('delete', 'news', { id: id });
     }
@@ -743,12 +760,40 @@
       }
       // Merge news from cloud (admin-managed content)
       if (Array.isArray(cloudData.newsAndAnnouncements)) {
-        // Convert YES/NO strings from Sheets to booleans
-        const normalizedNews = cloudData.newsAndAnnouncements.map(n => ({
-          ...n,
-          isPublished: n.isPublished === 'YES' || n.isPublished === true
-        }));
-        this.data.newsAndAnnouncements = mergeList(this.data.newsAndAnnouncements || [], normalizedNews);
+        const deletedIds = this.data.deletedNewsIds || [];
+        const normalizedNews = cloudData.newsAndAnnouncements
+          .filter(n => n && n.id && !deletedIds.includes(String(n.id)))
+          .map(n => ({
+            ...n,
+            image: n.image || n.imageUrl || '',
+            isPublished: n.isPublished === 'YES' || n.isPublished === true
+          }));
+
+        // Preserve local edits (local properties take precedence)
+        const newsMap = new Map();
+        (normalizedNews || []).forEach(remote => {
+          if (remote && remote.id) newsMap.set(String(remote.id), remote);
+        });
+
+        (this.data.newsAndAnnouncements || []).forEach(local => {
+          if (local && local.id && !deletedIds.includes(String(local.id))) {
+            const remote = newsMap.get(String(local.id));
+            if (remote) {
+              newsMap.set(String(local.id), {
+                ...remote,
+                ...local,
+                image: local.image || remote.image || remote.imageUrl || '',
+                summary: local.summary || remote.summary || '',
+                urgent: local.urgent !== undefined ? local.urgent : remote.urgent,
+                badgeColor: local.badgeColor || remote.badgeColor || 'bg-[#0B0D7C]'
+              });
+            } else {
+              newsMap.set(String(local.id), local);
+            }
+          }
+        });
+
+        this.data.newsAndAnnouncements = Array.from(newsMap.values()).filter(n => !deletedIds.includes(String(n.id)));
       }
 
       this.save();

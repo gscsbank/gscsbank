@@ -279,11 +279,11 @@ function saveNews(ss, item) {
         sheet.getRange(r + 1, 1, 1, headers.length).setValues([[
           item.id || '',
           item.title || '',
-          item.content || '',
+          item.content || item.summary || '',
           item.category || '',
           item.date || '',
           item.isPublished !== false ? 'YES' : 'NO',
-          item.imageUrl || '',
+          item.imageUrl || item.image || '',
           item.updatedAt || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm')
         ]]);
         return;
@@ -295,11 +295,11 @@ function saveNews(ss, item) {
   var row = [
     item.id || ('news-' + Date.now()),
     item.title || '',
-    item.content || '',
+    item.content || item.summary || '',
     item.category || 'general',
     item.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd'),
     item.isPublished !== false ? 'YES' : 'NO',
-    item.imageUrl || '',
+    item.imageUrl || item.image || '',
     item.updatedAt || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm')
   ];
   sheet.appendRow(row);

@@ -85,18 +85,26 @@
   </div>
 
   <!-- ================= DASHBOARD APP VIEW ================= -->
-  <div id="admin-app-view" class="hidden flex min-h-screen">
+  <div id="admin-app-view" class="hidden flex flex-col lg:flex-row min-h-screen relative">
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="admin-sidebar-backdrop" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden" onclick="window.toggleAdminSidebar(false)"></div>
 
     <!-- Sidebar Navigation -->
-    <aside class="w-72 bg-[#05073E] text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800">
+    <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-[#05073E] text-slate-300 flex flex-col flex-shrink-0 border-r border-slate-800 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
       
       <!-- Bank Brand & Logo -->
-      <div class="p-5 border-b border-slate-800/80 flex items-center gap-3">
-        <img src="assets/images/gscs-logo.png" alt="GSCS Logo" class="h-10 bg-white rounded-lg p-1 object-contain">
-        <div class="overflow-hidden">
-          <h1 class="text-sm font-extrabold text-white tracking-tight truncate">GSCS BANK ADMIN</h1>
-          <p class="text-[10px] text-pink-400 font-bold truncate">Galapitiyagama Sanasa</p>
+      <div class="p-5 border-b border-slate-800/80 flex items-center justify-between">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <img src="assets/images/gscs-logo.png" alt="GSCS Logo" class="h-10 bg-white rounded-lg p-1 object-contain">
+          <div class="overflow-hidden">
+            <h1 class="text-sm font-extrabold text-white tracking-tight truncate">GSCS BANK ADMIN</h1>
+            <p class="text-[10px] text-pink-400 font-bold truncate">Galapitiyagama Sanasa</p>
+          </div>
         </div>
+        <button onclick="window.toggleAdminSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer" aria-label="Close Sidebar">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
       </div>
 
       <!-- Navigation Tabs -->
@@ -185,26 +193,32 @@
     <main class="flex-grow flex flex-col min-w-0 bg-slate-100 overflow-y-auto">
       
       <!-- Top Action Bar -->
-      <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
-        <div>
-          <h2 id="current-tab-title" class="text-xl font-black text-[#0B0D7C]">දළ විශ්ලේෂණය (Overview)</h2>
-          <p class="text-xs text-slate-500">ගලපිටියාගම සණස සමූපකාර බැංකු කළමනාකරණ පද්ධතිය</p>
+      <header class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3.5 sm:py-4 flex flex-wrap items-center justify-between sticky top-0 z-30 shadow-sm gap-3">
+        <div class="flex items-center gap-3">
+          <button onclick="window.toggleAdminSidebar(true)" class="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors flex items-center justify-center cursor-pointer" aria-label="Open Sidebar Menu">
+            <i class="fa-solid fa-bars text-base"></i>
+          </button>
+          <div>
+            <h2 id="current-tab-title" class="text-lg sm:text-xl font-black text-[#0B0D7C]">දළ විශ්ලේෂණය (Overview)</h2>
+            <p class="text-[11px] sm:text-xs text-slate-500">ගලපිටියාගම සණස සමූපකාර බැංකු කළමනාකරණ පද්ධතිය</p>
+          </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <button id="admin-cloud-sync-btn" onclick="window.syncFromCloud(true)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0B0D7C] hover:bg-[#181DA8] text-white shadow-sm transition-all cursor-pointer">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 ml-auto">
+          <button id="admin-cloud-sync-btn" onclick="window.syncFromCloud(true)" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0B0D7C] hover:bg-[#181DA8] text-white shadow-sm transition-all cursor-pointer">
             <i class="fa-solid fa-arrows-rotate" id="admin-sync-icon"></i>
             <span id="admin-sync-label">Sync Cloud</span>
           </button>
 
-          <span id="cloud-sync-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span id="cloud-sync-status-badge" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span id="cloud-sync-status-text">Cloud Sync Ready</span>
           </span>
 
-          <button onclick="window.bankStore.exportJSON()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+          <button onclick="window.bankStore.exportJSON()" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
             <i class="fa-solid fa-download text-[#0B0D7C]"></i>
-            <span>Backup JSON</span>
+            <span class="hidden sm:inline">Backup JSON</span>
+            <span class="sm:hidden">JSON</span>
           </button>
         </div>
       </header>
@@ -327,12 +341,12 @@
 
         <!-- ================= TAB 2: NEWS & ANNOUNCEMENTS ================= -->
         <section id="panel-news" class="admin-panel space-y-6 hidden">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 class="text-lg font-bold text-[#0B0D7C]">පුවත් සහ නිවේදන කළමනාකරණය</h3>
               <p class="text-xs text-slate-500">වෙබ් අඩවියේ ප්‍රදර්ශනය වන පුවත්, මහා සභා නිවේදන හා ප්‍රවර්ධන</p>
             </div>
-            <button onclick="window.openNewsEditor()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white transition-all shadow-md flex items-center gap-2">
+            <button onclick="window.openNewsEditor()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#DF0178] hover:bg-[#BA0063] text-white transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto">
               <i class="fa-solid fa-plus"></i>
               <span>නව පුවතක් එක් කරන්න (Add News)</span>
             </button>
