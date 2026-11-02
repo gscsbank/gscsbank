@@ -17,8 +17,8 @@
     "addressEn": "No 247, Puttalam Road, Galapitiyagama, Nikaweratiya, Sri Lanka",
     "workingHours": "සඳුදා - සෙනසුරාදා: පෙ.ව. 9.00 - ප.ව. 3.30 | ඉරිදා සහ පෝය දිනවල හා වෙළඳ නිවාඩු දිනයන්හි: වසා ඇත",
     "workingHoursEn": "Mon - Sat: 9:00 AM - 3:30 PM | Sun, Poya & Mercantile Holidays: Closed",
-    "urgentNotice": "",
-    "urgentNoticeEn": "",
+    "urgentNotice": "විශේෂ නිවේදනය: 2026 වාර්ෂික මහා සභා රැස්වීම නොවැම්බර් 15 වන දින පැවැත්වේ. ස්ථාවර තැන්පතු සඳහා ඉහළම පොලිය සහ සහනදායී ණය පහසුකම් දැන් ක්‍රියාත්මකයි.",
+    "urgentNoticeEn": "Special Announcement: 2026 Annual General Meeting will be held soon. Highest deposit rates and concessionary loans are now active.",
     "urgentNoticeActive": false,
     "stats": {
       "members": "1,000+",
@@ -59,20 +59,6 @@
       "summary": "ඔබගේ සියලුම සනස ගිණුම් කටයුතු නිවසේ සිටම ඔබගේ ජංගම දුරකථනයෙන් සිදුකරගැනීමට Smart COOP යෙදුම දැන් බාගත කරගන්න.",
       "summaryEn": "All banking services now at your fingertips with Smart COOP mobile app. Download today for instant account access.",
       "content": "ගලපිටියගම සනස බැංකුවේ සාමාජික ඔබට දැන් වඩාත් පහසු සහ ආරක්ෂිත ඩිජිටල් බැංකු සේවාවක් ලබාදීම සඳහා Smart COOP App හඳුන්වා දී ඇත.\n\nප්‍රධාන පහසුකම්:\n- ඕනෑම වේලාවක ගිණුම් ශේෂ පරීක්ෂාව\n- තැන්පතු සහ ණය ගිණුම් විස්තර ලබාගැනීම\n- අන්තර් බැංකු මුදල් හුවමාරු (Fund Transfers)\n- බිල්පත් ගෙවීම් (Utility Bill Payments)\n\nයෙදුම සක්‍රීය කරගැනීමට අදම අපගේ ප්‍රධාන කාර්යාලය අමතන්න.",
-      "urgent": false
-    },
-    {
-      "id": "news-3",
-      "category": "Agriculture",
-      "categoryEn": "Agriculture",
-      "badgeColor": "bg-emerald-600",
-      "title": "යල කන්නයේ ගොවිබිමට සහන පොලී වගා ණය නිකුත් කිරීම",
-      "titleEn": "Concessionary Yala Season Cultivation Loans Disbursement",
-      "date": "2026-09-20",
-      "image": "assets/images/wix/d7b655_017323ee6e6c473d9cea6f9d6613dc3c~mv2.png",
-      "summary": "කෘෂිකාර්මික උපකරණ, බීජ සහ පොහොර මිලදී ගැනීම සඳහා වාර්ෂික 9.50% සහන පොලී අනුපාතයක් යටතේ ණය මුදල් නිකුත් කෙරේ.",
-      "summaryEn": "Special low interest cultivation credit at 9.50% p.a. for local farmers in Galapitiyagama and Nikaweratiya.",
-      "content": "ගලපිටියගම සහ අවට ප්‍රදේශවල ගොවි මහතුන් වෙනුවෙන් කඩිනම් වගා ණය යෝජනා ක්‍රමයක් ක්‍රියාත්මක කර ඇත. අස්වනු නෙලා විකිණීමෙන් පසු මුදල් පියවීමේ සහන කාල සහිතව ණය මුදල් ලබාගත හැක.",
       "urgent": false
     }
   ],
@@ -815,6 +801,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T06:19:44.769Z",
+  "_exportedAt": "2026-11-02T06:20:10.915Z",
   "_version": "GSCS-DATA-V1"
 }
