@@ -112,7 +112,7 @@
 <body class="bg-slate-50 text-slate-800 antialiased selection:bg-[#DF0178] selection:text-white">
 
   <!-- ================= STICKY TOP HEADER WRAPPER ================= -->
-  <div id="sticky-header-container" class="sticky top-0 z-50 w-full bg-white shadow-md">
+  <div id="sticky-header-container" class="relative lg:sticky lg:top-0 z-50 w-full bg-white shadow-md">
 
     <!-- ================= TOP UTILITY BAR (Commercial Bank Style) ================= -->
     <div class="top-bar-bg border-b border-indigo-950 text-xs py-2 px-4 sm:px-8">
@@ -160,7 +160,7 @@
     </div>
 
     <!-- ================= BREAKING URGENT BANNER ================= -->
-    <div id="urgent-notice-container" class="bg-pink-50 border-b border-pink-200 py-2 px-4 transition-all">
+    <div id="urgent-notice-container" class="hidden bg-pink-50 border-b border-pink-200 py-2 px-4 transition-all" style="display: none;">
       <div class="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-sm">
         <div id="urgent-notice-ticker" class="overflow-hidden whitespace-nowrap text-pink-950 flex-grow pr-4">
           <!-- Injected dynamically -->

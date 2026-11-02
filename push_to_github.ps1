@@ -40,7 +40,7 @@ git config user.name "GSCS Bank"
 
 Write-Host "Files add karanwa..." -ForegroundColor Cyan
 git branch -M main
-git add js/admin.js js/store.js js/app.js js/api-config.js admin.html index.html google-apps-script/Code.gs
+git add -A
 
 Write-Host "Commit karanwa..." -ForegroundColor Cyan
 git commit -m "Fix: move checkAuth to end, fix TDZ variables, fix filter functions and cloud sync"

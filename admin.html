@@ -848,15 +848,28 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">වර්ගය (Category) *</label>
-            <select id="edit-news-category" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
-              <option value="Notice">මහා සභා නිවේදන (Notice)</option>
-              <option value="Digital Banking">ඩිජිටල් බැංකුකරණය (Digital Banking)</option>
-              <option value="Promotion">ණය හා තැන්පතු ප්‍රවර්ධන (Promotion)</option>
-              <option value="Agriculture">කෘෂිකාර්මික හා ගොවි (Agriculture)</option>
-              <option value="Dividend">ලාභාංශ බෙදාහැරීම (Dividend)</option>
-              <option value="Community">සාමාජික සුබසාධන (Community)</option>
-            </select>
+            <label class="block text-xs font-bold text-slate-700 mb-1">වර්ගය (Category) * <span class="text-[10px] text-pink-600 font-normal">(තෝරන්න හෝ ටයිප් කරන්න)</span></label>
+            <div class="relative">
+              <input type="text" id="edit-news-category" list="news-category-list" required placeholder="වර්ගය තෝරන්න හෝ කැමති නමක් ටයිප් කරන්න..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-semibold focus:outline-none focus:border-[#0B0D7C]">
+              <datalist id="news-category-list">
+                <option value="Notice">මහා සභා නිවේදන (Notice)</option>
+                <option value="Digital Banking">ඩිජිටල් බැංකුකරණය (Digital Banking)</option>
+                <option value="Promotion">ණය හා තැන්පතු ප්‍රවර්ධන (Promotion)</option>
+                <option value="Agriculture">කෘෂිකාර්මික හා ගොවි (Agriculture)</option>
+                <option value="Dividend">ලාභාංශ බෙදාහැරීම (Dividend)</option>
+                <option value="Community">සාමාජික සුබසාධන (Community)</option>
+                <option value="විශේෂ නිවේදන">විශේෂ නිවේදන (Special Notice)</option>
+                <option value="ප්‍රජා වැඩසටහන්">ප්‍රජා වැඩසටහන් (Community Programs)</option>
+                <option value="සාමාන්‍ය පුවත්">සාමාන්‍ය පුවත් (General News)</option>
+              </datalist>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 mt-1.5 text-[10.5px] text-slate-500">
+              <span class="text-[10px] text-slate-400">ක්‍ෂණික:</span>
+              <button type="button" onclick="document.getElementById('edit-news-category').value='Notice'" class="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium">Notice</button>
+              <button type="button" onclick="document.getElementById('edit-news-category').value='Digital Banking'" class="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium">Digital</button>
+              <button type="button" onclick="document.getElementById('edit-news-category').value='Promotion'" class="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium">Promotion</button>
+              <button type="button" onclick="document.getElementById('edit-news-category').value='විශේෂ නිවේදන'" class="px-2 py-0.5 rounded bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium">විශේෂ නිවේදන</button>
+            </div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">පළකළ දිනය (Date) *</label>
@@ -865,13 +878,24 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">පින්තූරයේ URL (Image Path) *</label>
-          <input type="text" id="edit-news-image" required placeholder="assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-[#0B0D7C]">
+          <label class="block text-xs font-bold text-slate-700 mb-1">පින්තූරයේ URL (Image Path හෝ Google Drive Link) *</label>
+          <input type="text" id="edit-news-image" required placeholder="https://drive.google.com/file/d/... හෝ assets/images/..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-[#0B0D7C]">
           <div class="flex items-center gap-2 mt-1.5 text-[11px] text-slate-500">
             <span>Preset තෝරන්න:</span>
-            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/gscs-logo.png'" class="text-pink-600 hover:underline">Official Logo</button> |
-            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png'" class="text-pink-600 hover:underline">Smart COOP</button> |
-            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png'" class="text-pink-600 hover:underline">Branch Officer</button>
+            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/gscs-logo.png'; document.getElementById('edit-news-image').dispatchEvent(new Event('input'));" class="text-pink-600 hover:underline">Official Logo</button> |
+            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png'; document.getElementById('edit-news-image').dispatchEvent(new Event('input'));" class="text-pink-600 hover:underline">Smart COOP</button> |
+            <button type="button" onclick="document.getElementById('edit-news-image').value='assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png'; document.getElementById('edit-news-image').dispatchEvent(new Event('input'));" class="text-pink-600 hover:underline">Branch Officer</button>
+          </div>
+
+          <!-- Image Preview & Google Drive Auto-converter Box -->
+          <div id="edit-news-image-preview-container" class="mt-2.5 p-2.5 bg-slate-100 rounded-xl border border-slate-200 flex items-center gap-3">
+            <img id="edit-news-image-preview" src="assets/images/gscs-logo.png" alt="Preview" class="w-14 h-12 object-cover rounded-lg border border-slate-300 bg-white flex-shrink-0 shadow-sm" onerror="this.onerror=null; this.src='assets/images/gscs-logo.png';">
+            <div class="text-[11px] text-slate-600 flex-grow">
+              <div id="edit-news-image-status" class="font-bold text-[#0B0D7C] flex items-center gap-1.5">
+                <i class="fa-solid fa-image text-blue-600"></i> පින්තූරයේ පෙරදසුන (Live Preview)
+              </div>
+              <p class="text-[10.5px] text-slate-500 mt-0.5">Google Drive link (Anyone with the link) එකක් paste කළ විට එය Direct Image බවට Auto Convert වේ.</p>
+            </div>
           </div>
         </div>
 

@@ -67,6 +67,38 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'රු. ' + Number(val).toLocaleString('en-LK', { maximumFractionDigits: 2 });
   }
 
+  // Google Drive Direct Image URL Formatter
+  function formatGoogleDriveUrl(url) {
+    if (!url || typeof url !== 'string') return url || '';
+    const trimmed = url.trim();
+
+    if (trimmed.includes('drive.google.com') || trimmed.includes('drive.usercontent.google.com')) {
+      let fileId = null;
+
+      // Pattern 1: /file/d/FILE_ID
+      const matchD = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (matchD && matchD[1]) fileId = matchD[1];
+
+      // Pattern 2: id=FILE_ID
+      if (!fileId) {
+        const matchId = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        if (matchId && matchId[1]) fileId = matchId[1];
+      }
+
+      // Pattern 3: /d/FILE_ID
+      if (!fileId) {
+        const matchShort = trimmed.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (matchShort && matchShort[1]) fileId = matchShort[1];
+      }
+
+      if (fileId) {
+        return `https://lh3.googleusercontent.com/d/${fileId}`;
+      }
+    }
+    return trimmed;
+  }
+  window.formatGoogleDriveUrl = formatGoogleDriveUrl;
+
   function toggleLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('GSCS_LANG', lang);
@@ -104,23 +136,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Urgent Notice Banner ---
   function renderUrgentNotice() {
-    const bankInfo = window.bankStore.getBankInfo();
+    const bankInfo = window.bankStore ? window.bankStore.getBankInfo() : null;
     const ticker = document.getElementById('urgent-notice-ticker');
     const container = document.getElementById('urgent-notice-container');
-    if (!ticker || !container) return;
+    if (!container) return;
 
-    if (bankInfo.urgentNoticeActive && bankInfo.urgentNotice) {
+    const isActive = bankInfo && (
+      bankInfo.urgentNoticeActive === true ||
+      bankInfo.urgentNoticeActive === 'true' ||
+      bankInfo.urgentNoticeActive === 1 ||
+      bankInfo.urgentNoticeActive === '1'
+    );
+    const noticeText = bankInfo ? (currentLang === 'en' ? (bankInfo.urgentNoticeEn || bankInfo.urgentNotice) : bankInfo.urgentNotice) : '';
+
+    if (isActive && noticeText && String(noticeText).trim() !== '') {
       container.classList.remove('hidden');
-      const text = currentLang === 'en' ? (bankInfo.urgentNoticeEn || bankInfo.urgentNotice) : bankInfo.urgentNotice;
-      ticker.innerHTML = `
-        <span class="urgent-ticker-content inline-flex items-center gap-2 font-medium text-pink-950">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#DF0178] animate-ping flex-shrink-0"></span>
-          <strong class="text-[#0B0D7C] flex-shrink-0">${currentLang === 'en' ? 'BANK NOTICE:' : 'විශේෂ නිවේදනය:'}</strong>
-          <span class="urgent-notice-text flex-shrink-0">${text}</span>
-        </span>
-      `;
+      container.style.display = '';
+      if (ticker) {
+        ticker.innerHTML = `
+          <span class="urgent-ticker-content inline-flex items-center gap-2 font-medium text-pink-950">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#DF0178] animate-ping flex-shrink-0"></span>
+            <strong class="text-[#0B0D7C] flex-shrink-0">${currentLang === 'en' ? 'BANK NOTICE:' : 'විශේෂ නිවේදනය:'}</strong>
+            <span class="urgent-notice-text flex-shrink-0">${noticeText}</span>
+          </span>
+        `;
+      }
     } else {
       container.classList.add('hidden');
+      container.style.display = 'none';
+      if (ticker) {
+        ticker.innerHTML = '';
+      }
     }
   }
 
@@ -139,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return `
         <div class="hero-slide ${idx === currentHeroIdx ? 'active' : ''}" data-index="${idx}">
-          <div class="hero-bg" style="background-image: url('${slide.bgImage}'); background-position: ${slide.bgPosition || '65% center'};"></div>
+          <div class="hero-bg" style="background-image: url('${formatGoogleDriveUrl(slide.bgImage)}'); background-position: ${slide.bgPosition || '65% center'};"></div>
           <div class="hero-overlay"></div>
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center relative z-10">
             <div class="max-w-2xl text-white pt-10 pb-20">
@@ -311,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="product-card group ${prod.image ? 'p-0 overflow-hidden flex flex-col' : 'p-6 sm:p-7 flex flex-col'}">
           ${prod.image ? `
             <div class="relative h-48 w-full overflow-hidden bg-slate-100 flex-shrink-0">
-              <img src="${prod.image}" alt="${title}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+              <img src="${formatGoogleDriveUrl(prod.image)}" alt="${title}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
               <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-black/25 to-transparent"></div>
               ${badge ? `<span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold bg-[#DF0178] text-white shadow-md">${badge}</span>` : ''}
               <div class="absolute bottom-3 left-4 flex items-center gap-2 text-white">
@@ -616,11 +662,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = currentLang === 'en' ? (item.titleEn || item.title) : item.title;
       const summary = currentLang === 'en' ? (item.summaryEn || item.summary) : item.summary;
       const category = currentLang === 'en' ? (item.categoryEn || item.category) : item.category;
+      const rawImg = item.image || 'assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png';
+      const imgSrc = formatGoogleDriveUrl(rawImg);
 
       return `
         <article class="news-card flex flex-col h-full group cursor-pointer" onclick="window.openNewsModal('${item.id}')">
           <div class="relative h-48 overflow-hidden bg-slate-100">
-            <img src="${item.image || 'assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png'}" alt="${title}" class="news-img w-full h-full object-cover">
+            <img src="${imgSrc}" alt="${title}" class="news-img w-full h-full object-cover" onerror="this.onerror=null; if(this.src.indexOf('lh3.googleusercontent.com/d/')>-1){ this.src='https://drive.google.com/thumbnail?id=' + this.src.split('/d/')[1] + '&sz=w1200'; } else { this.src='assets/images/gscs-logo.png'; }">
             <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold text-white shadow-md ${item.badgeColor || 'bg-[#0B0D7C]'}">
               ${category}
             </span>
@@ -836,10 +884,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const title = currentLang === 'en' ? (item.titleEn || item.title) : item.title;
     const body = currentLang === 'en' ? (item.contentEn || item.content) : item.content;
+    const modalImgSrc = formatGoogleDriveUrl(item.image) || 'assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png';
 
     content.innerHTML = `
       <div class="relative">
-        <img src="${item.image}" alt="${title}" class="w-full h-64 object-cover rounded-t-2xl">
+        <img src="${modalImgSrc}" alt="${title}" class="w-full h-64 object-cover rounded-t-2xl" onerror="this.onerror=null; if(this.src.indexOf('lh3.googleusercontent.com/d/')>-1){ this.src='https://drive.google.com/thumbnail?id=' + this.src.split('/d/')[1] + '&sz=w1200'; } else { this.src='assets/images/gscs-logo.png'; }">
         <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold text-white ${item.badgeColor || 'bg-[#0B0D7C]'}">
           ${item.category}
         </span>

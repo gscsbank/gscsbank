@@ -19,9 +19,9 @@ window.DEFAULT_BANK_DATA = {
     addressEn: "No 247, Puttalam Road, Galapitiyagama, Nikaweratiya, Sri Lanka",
     workingHours: "සඳුදා - සෙනසුරාදා: පෙ.ව. 9.00 - ප.ව. 3.30 | ඉරිදා සහ පෝය දිනවල හා වෙළඳ නිවාඩු දිනයන්හි: වසා ඇත",
     workingHoursEn: "Mon - Sat: 9:00 AM - 3:30 PM | Sun, Poya & Mercantile Holidays: Closed",
-    urgentNotice: "විශේෂ නිවේදනය: 2026 වාර්ෂික මහා සභා රැස්වීම නොවැම්බර් 15 වන දින පැවැත්වේ. ස්ථාවර තැන්පතු සඳහා ඉහළම පොලිය සහ සහනදායී ණය පහසුකම් දැන් ක්‍රියාත්මකයි.",
-    urgentNoticeEn: "Special Announcement: 2026 Annual General Meeting will be held soon. Highest deposit rates and concessionary loans are now active.",
-    urgentNoticeActive: true,
+    urgentNotice: "",
+    urgentNoticeEn: "",
+    urgentNoticeActive: false,
     stats: {
       members: "1,000+",
       customers: "5,000+",

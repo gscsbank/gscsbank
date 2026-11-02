@@ -40,6 +40,38 @@ function makeWaUrl(phone, msg) {
   return `https://wa.me/94${num}?text=${encodeURIComponent(msg || '')}`;
 }
 
+// Google Drive Direct Image URL Formatter
+function formatGoogleDriveUrl(url) {
+  if (!url || typeof url !== 'string') return url || '';
+  const trimmed = url.trim();
+
+  if (trimmed.includes('drive.google.com') || trimmed.includes('drive.usercontent.google.com')) {
+    let fileId = null;
+
+    // Pattern 1: /file/d/FILE_ID
+    const matchD = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (matchD && matchD[1]) fileId = matchD[1];
+
+    // Pattern 2: id=FILE_ID
+    if (!fileId) {
+      const matchId = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (matchId && matchId[1]) fileId = matchId[1];
+    }
+
+    // Pattern 3: /d/FILE_ID
+    if (!fileId) {
+      const matchShort = trimmed.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (matchShort && matchShort[1]) fileId = matchShort[1];
+    }
+
+    if (fileId) {
+      return `https://lh3.googleusercontent.com/d/${fileId}`;
+    }
+  }
+  return trimmed;
+}
+window.formatGoogleDriveUrl = formatGoogleDriveUrl;
+
 let currentTab = 'overview';
 
 // --- Tab Switcher (Defined Immediately on window so it is ALWAYS available) ---
@@ -292,7 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Urgent notice
       const ovUrgentBadge = document.getElementById('ov-urgent-badge');
       const ovUrgentText = document.getElementById('ov-urgent-text');
-      if (info.urgentNoticeActive) {
+      const isUrgentActive = info && (info.urgentNoticeActive === true || info.urgentNoticeActive === 'true' || info.urgentNoticeActive === 1 || info.urgentNoticeActive === '1');
+      if (isUrgentActive) {
         if (ovUrgentBadge) {
           ovUrgentBadge.textContent = 'ACTIVE';
           ovUrgentBadge.className = 'px-2 py-0.5 rounded text-[10px] font-black bg-pink-500 text-white';
@@ -342,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tbody.innerHTML = news.map(n => `
       <tr class="hover:bg-slate-50 transition-colors">
         <td class="py-3 px-4">
-          <img src="${n.image}" alt="thumb" class="w-12 h-10 object-cover rounded-lg border border-slate-200">
+          <img src="${formatGoogleDriveUrl(n.image)}" alt="thumb" class="w-12 h-10 object-cover rounded-lg border border-slate-200" onerror="this.onerror=null; this.src='assets/images/gscs-logo.png';">
         </td>
         <td class="py-3 px-4">
           <div class="font-bold text-slate-900 max-w-xs truncate">${n.title}</div>
@@ -388,8 +421,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.getElementById('news-editor-title').textContent = 'නව පුවතක් හෝ නිවේදනයක් පළ කිරීම';
       document.getElementById('edit-news-id').value = '';
+      document.getElementById('edit-news-category').value = 'Notice';
       document.getElementById('edit-news-date').value = new Date().toISOString().split('T')[0];
       document.getElementById('edit-news-image').value = 'assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png';
+    }
+
+    const previewImg = document.getElementById('edit-news-image-preview');
+    if (previewImg) {
+      previewImg.src = formatGoogleDriveUrl(document.getElementById('edit-news-image').value);
+    }
+    const statusEl = document.getElementById('edit-news-image-status');
+    if (statusEl) {
+      statusEl.innerHTML = '<i class="fa-solid fa-image text-blue-600"></i> පින්තූරයේ පෙරදසුන (Live Preview)';
     }
 
     modal.classList.remove('hidden');
@@ -720,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const info = window.bankStore.getBankInfo();
     if (!info) return;
 
-    document.getElementById('info-urgent-active').checked = !!info.urgentNoticeActive;
+    document.getElementById('info-urgent-active').checked = info && (info.urgentNoticeActive === true || info.urgentNoticeActive === 'true' || info.urgentNoticeActive === 1 || info.urgentNoticeActive === '1');
     document.getElementById('info-urgent-text').value = info.urgentNotice || '';
     document.getElementById('info-name-si').value = info.sinhalaName || '';
     document.getElementById('info-name-en').value = info.name || '';
@@ -810,19 +853,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 8. Forms Handlers ---
   function setupForms() {
+    // News Image Auto-Convert & Live Preview
+    const imgInput = document.getElementById('edit-news-image');
+    const previewImg = document.getElementById('edit-news-image-preview');
+    const statusEl = document.getElementById('edit-news-image-status');
+    if (imgInput) {
+      const handleImageInput = () => {
+        let val = (imgInput.value || '').trim();
+        if (!val) {
+          if (previewImg) previewImg.src = 'assets/images/gscs-logo.png';
+          if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-image text-slate-400"></i> පින්තූරයක් තෝරා නැත';
+          return;
+        }
+
+        const converted = formatGoogleDriveUrl(val);
+        if (converted !== val) {
+          imgInput.value = converted;
+          val = converted;
+          if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> <span class="text-emerald-700 font-bold">Google Drive Direct Link සාර්ථකව Convert විය!</span>';
+          }
+        } else if (val.includes('lh3.googleusercontent.com')) {
+          if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> <span class="text-emerald-700 font-bold">Google Drive Direct Image ක්‍රියාත්මකයි</span>';
+          }
+        } else {
+          if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-image text-[#0B0D7C]"></i> පින්තූරයේ පෙරදසුන (Live Preview)';
+          }
+        }
+
+        if (previewImg) {
+          previewImg.src = val;
+        }
+      };
+
+      imgInput.addEventListener('input', handleImageInput);
+      imgInput.addEventListener('change', handleImageInput);
+      imgInput.addEventListener('paste', () => setTimeout(handleImageInput, 50));
+    }
+
     // News Form Submit
     const newsForm = document.getElementById('news-editor-form');
     if (newsForm) {
       newsForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const id = document.getElementById('edit-news-id').value;
+        const rawImage = document.getElementById('edit-news-image').value;
+        const catValue = (document.getElementById('edit-news-category').value || 'Notice').trim();
+        
+        let badgeColor = 'bg-[#0B0D7C]';
+        const catLower = catValue.toLowerCase();
+        if (catLower.includes('digital') || catLower.includes('smart') || catLower.includes('ඩිජිටල්')) badgeColor = 'bg-[#DF0178]';
+        else if (catLower.includes('agri') || catLower.includes('කෘෂි')) badgeColor = 'bg-emerald-600';
+        else if (catLower.includes('promo') || catLower.includes('ප්‍රවර්ධන')) badgeColor = 'bg-purple-600';
+        else if (catLower.includes('dividend') || catLower.includes('ලාභාංශ')) badgeColor = 'bg-amber-600';
+        else if (catLower.includes('community') || catLower.includes('සුබසාධන')) badgeColor = 'bg-teal-600';
+        else if (catLower.includes('විශේෂ') || catLower.includes('urgent')) badgeColor = 'bg-red-600';
+
         const item = {
           id: id || undefined,
           title: document.getElementById('edit-news-title').value,
           titleEn: document.getElementById('edit-news-title-en').value,
-          category: document.getElementById('edit-news-category').value,
+          category: catValue,
+          badgeColor: badgeColor,
           date: document.getElementById('edit-news-date').value,
-          image: document.getElementById('edit-news-image').value,
+          image: formatGoogleDriveUrl(rawImage),
           summary: document.getElementById('edit-news-summary').value,
           content: document.getElementById('edit-news-content').value,
           urgent: document.getElementById('edit-news-urgent').checked

@@ -562,7 +562,8 @@
   window.chatGeeSeeShowAlert = function() {
     const data = window.bankStore ? window.bankStore.getData() : {};
     const info = (data && data.bankInfo) || {};
-    if (info.urgentNoticeActive && info.urgentNotice) {
+    const isUrgentActive = info && (info.urgentNoticeActive === true || info.urgentNoticeActive === 'true' || info.urgentNoticeActive === 1 || info.urgentNoticeActive === '1');
+    if (isUrgentActive && info.urgentNotice && String(info.urgentNotice).trim() !== '') {
       appendBotMessage({
         text: `📢 <strong>විශේෂ බැංකු නිවේදනය (Notice):</strong><br><br>${info.urgentNotice}`
       });
