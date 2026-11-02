@@ -32,23 +32,7 @@
       "We provide a wide range of loan facilities at minimum interest rates, designed to support the diverse financial needs of our members and to promote sustainable economic growth."
     ]
   },
-  "newsAndAnnouncements": [
-    {
-      "id": "news-1793613017503",
-      "title": "“පාට සිත්තම්” චිත්‍ර ප්‍රදර්ශනය",
-      "titleEn": "“පාට සිත්තම්” චිත්‍ර ප්‍රදර්ශනය",
-      "content": "“පාට සිත්තම්” චිත්‍ර ප්‍රදර්ශනය",
-      "summary": "“පාට සිත්තම්” චිත්‍ර ප්‍රදර්ශනය",
-      "category": "Notice",
-      "date": "2026-11-02",
-      "isPublished": true,
-      "imageUrl": "assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png",
-      "urgent": false,
-      "badgeColor": "bg-[#0B0D7C]",
-      "updatedAt": "2026-11-02T09:50:00.000Z",
-      "image": "assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png"
-    }
-  ],
+  "newsAndAnnouncements": [],
   "interestRates": {
     "fixedDeposits": [
       {
@@ -788,6 +772,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T09:55:08.961Z",
+  "_exportedAt": "2026-11-02T09:55:13.539Z",
   "_version": "GSCS-DATA-V1"
 }
