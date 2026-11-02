@@ -25,11 +25,18 @@
         if (stored) {
           const parsed = JSON.parse(stored);
           if (parsed && parsed.bankInfo) {
+            const deletedIds = Array.isArray(parsed.deletedNewsIds) ? parsed.deletedNewsIds.map(String) : [];
+            let newsList = Array.isArray(parsed.newsAndAnnouncements)
+              ? parsed.newsAndAnnouncements
+              : (window.DEFAULT_BANK_DATA.newsAndAnnouncements || []);
+            newsList = newsList.filter(n => n && !deletedIds.includes(String(n.id)));
+
             // Deep-merge: keep admin edited data if available, fallback to defaults
             return {
               ...window.DEFAULT_BANK_DATA,
               ...parsed,
-              newsAndAnnouncements: (parsed.newsAndAnnouncements && parsed.newsAndAnnouncements.length) ? parsed.newsAndAnnouncements : window.DEFAULT_BANK_DATA.newsAndAnnouncements,
+              deletedNewsIds: deletedIds,
+              newsAndAnnouncements: newsList,
               products: (parsed.products && parsed.products.length) ? parsed.products : window.DEFAULT_BANK_DATA.products,
               interestRates: (parsed.interestRates && parsed.interestRates.fixedDeposits) ? parsed.interestRates : window.DEFAULT_BANK_DATA.interestRates,
               heroSlides: (parsed.heroSlides && parsed.heroSlides.length) ? parsed.heroSlides : window.DEFAULT_BANK_DATA.heroSlides,
@@ -55,21 +62,23 @@
           const repoData = await res.json();
           if (repoData && repoData.bankInfo) {
             console.log('[Store] Live data.json loaded from repository.');
-            // If repoData has news, use them. If repoData.newsAndAnnouncements is empty, preserve existing news or default news!
-            const rawNews = (repoData.newsAndAnnouncements && repoData.newsAndAnnouncements.length)
+            const deleted = (this.data.deletedNewsIds || []).map(String);
+            const rawNews = Array.isArray(repoData.newsAndAnnouncements)
               ? repoData.newsAndAnnouncements
-              : ((this.data.newsAndAnnouncements && this.data.newsAndAnnouncements.length) ? this.data.newsAndAnnouncements : window.DEFAULT_BANK_DATA.newsAndAnnouncements);
+              : (Array.isArray(this.data.newsAndAnnouncements) ? this.data.newsAndAnnouncements : (window.DEFAULT_BANK_DATA.newsAndAnnouncements || []));
 
-            // Normalize news: map imageUrl -> image, ensure booleans are correct
-            const normalizedNews = (rawNews || []).map(n => ({
-              ...n,
-              image: n.image || n.imageUrl || '',
-              imageUrl: n.image || n.imageUrl || '',
-              isPublished: n.isPublished !== false && n.isPublished !== 'NO',
-              urgent: n.urgent === true || n.urgent === 'YES',
-              badgeColor: n.badgeColor || 'bg-[#0B0D7C]',
-              summary: n.summary || n.content || ''
-            }));
+            // Normalize news: map imageUrl -> image, ensure booleans are correct and skip deleted
+            const normalizedNews = (rawNews || [])
+              .filter(n => n && n.id && !deleted.includes(String(n.id)))
+              .map(n => ({
+                ...n,
+                image: n.image || n.imageUrl || '',
+                imageUrl: n.image || n.imageUrl || '',
+                isPublished: n.isPublished !== false && n.isPublished !== 'NO',
+                urgent: n.urgent === true || n.urgent === 'YES',
+                badgeColor: n.badgeColor || 'bg-[#0B0D7C]',
+                summary: n.summary || n.content || ''
+              }));
             this.data = {
               ...this.data,
               ...repoData,
@@ -143,11 +152,12 @@
 
     // --- News & Announcements CRUD ---
     getNews() {
+      const deleted = (this.data.deletedNewsIds || []).map(String);
       const list = this.data.newsAndAnnouncements;
-      if (Array.isArray(list) && list.length > 0) {
-        return list;
+      if (Array.isArray(list)) {
+        return list.filter(n => n && !deleted.includes(String(n.id)));
       }
-      return (window.DEFAULT_BANK_DATA && window.DEFAULT_BANK_DATA.newsAndAnnouncements) || [];
+      return ((window.DEFAULT_BANK_DATA && window.DEFAULT_BANK_DATA.newsAndAnnouncements) || []).filter(n => n && !deleted.includes(String(n.id)));
     }
 
     getNewsById(id) {
@@ -187,16 +197,17 @@
 
     deleteNewsItem(id) {
       if (!id) return;
+      const strId = String(id);
       if (!this.data.deletedNewsIds) this.data.deletedNewsIds = [];
-      if (!this.data.deletedNewsIds.includes(id)) {
-        this.data.deletedNewsIds.push(id);
+      if (!this.data.deletedNewsIds.includes(strId)) {
+        this.data.deletedNewsIds.push(strId);
       }
-      this.data.newsAndAnnouncements = (this.data.newsAndAnnouncements || []).filter(n => n.id !== id);
+      this.data.newsAndAnnouncements = (this.data.newsAndAnnouncements || []).filter(n => String(n.id) !== strId);
       this.save();
 
       // Delete from Google Sheets cloud
-      this.syncToAppsScript('delete', 'news', { id: id });
-      this.triggerAutoPushToGitHub('News deleted: ' + id);
+      this.syncToAppsScript('delete', 'news', { id: strId });
+      this.triggerAutoPushToGitHub('News deleted: ' + strId);
     }
 
     // --- Interest Rates CRUD ---
@@ -597,7 +608,7 @@
     exportDataJson() {
       const publicData = {
         bankInfo: this.data.bankInfo || {},
-        newsAndAnnouncements: ((this.data.newsAndAnnouncements && this.data.newsAndAnnouncements.length) ? this.data.newsAndAnnouncements : (window.DEFAULT_BANK_DATA.newsAndAnnouncements || [])).filter(n => n && n.isPublished !== false),
+        newsAndAnnouncements: this.getNews().filter(n => n && n.isPublished !== false),
         interestRates: this.data.interestRates || {},
         products: this.data.products || [],
         heroSlides: this.data.heroSlides || [],
@@ -685,7 +696,7 @@
       // 1. Prepare public data JSON string
       const publicData = {
         bankInfo: this.data.bankInfo || {},
-        newsAndAnnouncements: ((this.data.newsAndAnnouncements && this.data.newsAndAnnouncements.length) ? this.data.newsAndAnnouncements : (window.DEFAULT_BANK_DATA.newsAndAnnouncements || [])).filter(n => n && n.isPublished !== false),
+        newsAndAnnouncements: this.getNews().filter(n => n && n.isPublished !== false),
         interestRates: this.data.interestRates || {},
         products: this.data.products || [],
         heroSlides: this.data.heroSlides || [],

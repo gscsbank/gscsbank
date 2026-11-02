@@ -655,11 +655,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Latest News & Notices Grid ---
   function renderNews() {
     let news = window.bankStore ? window.bankStore.getNews() : [];
-    if (!news || !news.length) {
-      news = (window.DEFAULT_BANK_DATA && window.DEFAULT_BANK_DATA.newsAndAnnouncements) || [];
-    }
     const container = document.getElementById('news-grid');
     if (!container) return;
+
+    if (!news || !news.length) {
+      container.innerHTML = `
+        <div class="col-span-full py-12 text-center text-slate-400">
+          <i class="fa-regular fa-newspaper text-3xl mb-2 block text-slate-300"></i>
+          <p class="text-xs sm:text-sm font-semibold">${currentLang === 'en' ? 'No news or announcements published yet.' : 'දැනට නවතම පුවත් හෝ නිවේදන පළ කර නොමැත.'}</p>
+        </div>
+      `;
+      return;
+    }
 
     container.innerHTML = (news || []).slice(0, 4).map(item => {
       const title = currentLang === 'en' ? (item.titleEn || item.title) : item.title;
