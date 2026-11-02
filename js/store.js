@@ -53,9 +53,20 @@
           const repoData = await res.json();
           if (repoData && repoData.bankInfo) {
             console.log('[Store] Live data.json loaded from repository.');
+            // Normalize news: map imageUrl -> image, ensure booleans are correct
+            const normalizedNews = (repoData.newsAndAnnouncements || []).map(n => ({
+              ...n,
+              image: n.image || n.imageUrl || '',
+              imageUrl: n.image || n.imageUrl || '',
+              isPublished: n.isPublished === true || n.isPublished === 'YES',
+              urgent: n.urgent === true || n.urgent === 'YES',
+              badgeColor: n.badgeColor || 'bg-[#0B0D7C]',
+              summary: n.summary || n.content || ''
+            }));
             this.data = {
               ...this.data,
               ...repoData,
+              newsAndAnnouncements: normalizedNews,
               inquiries: this.data.inquiries || repoData.inquiries || [],
               membershipApplications: this.data.membershipApplications || repoData.membershipApplications || [],
               loanPayments: this.data.loanPayments || repoData.loanPayments || [],
@@ -557,6 +568,32 @@
       URL.revokeObjectURL(url);
     }
 
+    // --- Export data.json for GitHub Pages (public content only — no private submissions) ---
+    // Mobile phone visitors fetch this file to see admin-edited news, rates, products etc.
+    exportDataJson() {
+      const publicData = {
+        bankInfo: this.data.bankInfo || {},
+        newsAndAnnouncements: (this.data.newsAndAnnouncements || []).filter(n => n && n.isPublished !== false),
+        interestRates: this.data.interestRates || {},
+        products: this.data.products || [],
+        heroSlides: this.data.heroSlides || [],
+        partners: this.data.partners || [],
+        // Private submissions deliberately excluded (inquiries, applications, loanPayments, etc.)
+        _exportedAt: new Date().toISOString(),
+        _version: 'GSCS-DATA-V1'
+      };
+      const jsonStr = JSON.stringify(publicData, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
     importJSON(jsonText) {
       try {
         const parsed = JSON.parse(jsonText);
@@ -766,7 +803,12 @@
           .map(n => ({
             ...n,
             image: n.image || n.imageUrl || '',
-            isPublished: n.isPublished === 'YES' || n.isPublished === true
+            imageUrl: n.image || n.imageUrl || '',
+            isPublished: n.isPublished === 'YES' || n.isPublished === true,
+            urgent: n.urgent === 'YES' || n.urgent === true,
+            badgeColor: n.badgeColor || 'bg-[#0B0D7C]',
+            summary: n.summary || n.content || '',
+            titleEn: n.titleEn || ''
           }));
 
         // Preserve local edits (local properties take precedence)
@@ -783,8 +825,10 @@
                 ...remote,
                 ...local,
                 image: local.image || remote.image || remote.imageUrl || '',
-                summary: local.summary || remote.summary || '',
-                urgent: local.urgent !== undefined ? local.urgent : remote.urgent,
+                imageUrl: local.image || remote.image || remote.imageUrl || '',
+                summary: local.summary || remote.summary || remote.content || '',
+                titleEn: local.titleEn || remote.titleEn || '',
+                urgent: local.urgent !== undefined ? local.urgent : (remote.urgent || false),
                 badgeColor: local.badgeColor || remote.badgeColor || 'bg-[#0B0D7C]'
               });
             } else {

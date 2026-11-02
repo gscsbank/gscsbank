@@ -215,6 +215,11 @@
             <span id="cloud-sync-status-text">Cloud Sync Ready</span>
           </span>
 
+          <button onclick="window.bankStore.exportDataJson()" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors" title="Mobile Fix: data.json download කරලා GitHub ට upload කරන්න">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span class="hidden sm:inline">Export Mobile</span>
+            <span class="sm:hidden">&#128228;</span>
+          </button>
           <button onclick="window.bankStore.exportJSON()" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
             <i class="fa-solid fa-download text-[#0B0D7C]"></i>
             <span class="hidden sm:inline">Backup JSON</span>
@@ -767,15 +772,28 @@
                 පරිපාලක පුවරුවෙන් ඔබ සිදුකළ සියලුම වෙනස්කම් (පුවත්, පොලී, සේවා) අඩංගු <code class="font-mono text-pink-600 bg-pink-50 px-1 py-0.5 rounded">data.json</code> ගොනුව ක්ලික් එකකින් බාගත කරගන්න. ඔබට අවශ්‍ය ඕනෑම අවස්ථාවක මෙම ගොනුවෙන් නැවත දත්ත යථා තත්ත්වයට පත් කළ හැක.
               </p>
               <div class="pt-2 flex flex-wrap gap-3">
+                <button onclick="window.bankStore.exportDataJson()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 text-white hover:bg-emerald-700 transition-all flex items-center gap-2" title="Mobile phone ට news, rates, products පෙන්වීමට GitHub ට upload කළ යුතු ගොනුව">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                  <span>&#128228; Export data.json <span class="font-normal opacity-80">(Mobile Fix)</span></span>
+                </button>
                 <button onclick="window.bankStore.exportJSON()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-[#0B0D7C] text-white hover:bg-[#070954] transition-all flex items-center gap-2">
                   <i class="fa-solid fa-download"></i>
-                  <span>Download data.json</span>
+                  <span>Download Full Backup</span>
                 </button>
                 <label class="px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer transition-all flex items-center gap-2">
                   <i class="fa-solid fa-upload"></i>
-                  <span>Upload data.json</span>
+                  <span>Restore Backup</span>
                   <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="window.handleJSONUpload(event)">
                 </label>
+              </div>
+              <!-- Step-by-step guide for mobile fix -->
+              <div class="mt-2 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 space-y-1">
+                <p class="font-bold text-emerald-900">&#128242; Mobile Phone ට News පෙන්වීමේ ක්‍රමය:</p>
+                <ol class="list-decimal list-inside space-y-0.5 text-emerald-700">
+                  <li>"&#128228; Export data.json" button click කරන්න</li>
+                  <li>Download වූ <code class="font-mono bg-white px-1 rounded">data.json</code> ගොනුව GitHub repository root ට upload කරන්න</li>
+                  <li>GitHub Pages deploy වූ පසු mobile ට news ස්වයංක්‍රීයව දිස්වේ ✅</li>
+                </ol>
               </div>
             </div>
 

@@ -275,15 +275,19 @@ function saveNews(ss, item) {
   if (idCol >= 0) {
     for (var r = 1; r < values.length; r++) {
       if (String(values[r][idCol]) === String(item.id)) {
-        // Update existing row
+        // Update existing row (all fields including new ones)
         sheet.getRange(r + 1, 1, 1, headers.length).setValues([[
           item.id || '',
           item.title || '',
+          item.titleEn || '',
           item.content || item.summary || '',
+          item.summary || item.content || '',
           item.category || '',
           item.date || '',
           item.isPublished !== false ? 'YES' : 'NO',
           item.imageUrl || item.image || '',
+          item.urgent ? 'YES' : 'NO',
+          item.badgeColor || 'bg-[#0B0D7C]',
           item.updatedAt || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm')
         ]]);
         return;
@@ -291,15 +295,19 @@ function saveNews(ss, item) {
     }
   }
 
-  // New row
+  // New row (all fields)
   var row = [
     item.id || ('news-' + Date.now()),
     item.title || '',
+    item.titleEn || '',
     item.content || item.summary || '',
+    item.summary || item.content || '',
     item.category || 'general',
     item.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd'),
     item.isPublished !== false ? 'YES' : 'NO',
     item.imageUrl || item.image || '',
+    item.urgent ? 'YES' : 'NO',
+    item.badgeColor || 'bg-[#0B0D7C]',
     item.updatedAt || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm')
   ];
   sheet.appendRow(row);
@@ -433,6 +441,10 @@ function getSheetDataAsObjects(ss, sheetName, defaultHeaders) {
       if (headerKey === 'consent' || headerKey === 'publishedAsTestimonial') {
         val = (val === 'YES' || val === true);
       }
+      // Handle news boolean fields
+      if (headerKey === 'isPublished' || headerKey === 'urgent') {
+        val = (val === 'YES' || val === true);
+      }
       rowObj[headerKey] = val;
     }
     if (hasData) {
@@ -500,7 +512,7 @@ function getFeedbackHeaders() {
 }
 
 function getNewsHeaders() {
-  return ['id', 'title', 'content', 'category', 'date', 'isPublished', 'imageUrl', 'updatedAt'];
+  return ['id', 'title', 'titleEn', 'content', 'summary', 'category', 'date', 'isPublished', 'imageUrl', 'urgent', 'badgeColor', 'updatedAt'];
 }
 
 // ------------------------------------------------------------------------------
