@@ -3,6 +3,7 @@
   const STORAGE_KEY = 'GSCS_BANK_DATA_V12';  // Bumped version → Updated product images (.jpg)
   const FIREBASE_CONFIG_KEY = 'GSCS_FIREBASE_CONFIG';
   const APPS_SCRIPT_CONFIG_KEY = 'GSCS_APPS_SCRIPT_URL';
+  const GITHUB_CONFIG_KEY = 'GSCS_GITHUB_CONFIG';
 
   class BankStore {
     constructor() {
@@ -171,6 +172,7 @@
         imageUrl: savedItem.image || savedItem.imageUrl || ''
       };
       this.syncToAppsScript('submit', 'news', payloadItem);
+      this.triggerAutoPushToGitHub('News saved: ' + (savedItem.title || ''));
     }
 
     deleteNewsItem(id) {
@@ -184,6 +186,7 @@
 
       // Delete from Google Sheets cloud
       this.syncToAppsScript('delete', 'news', { id: id });
+      this.triggerAutoPushToGitHub('News deleted: ' + id);
     }
 
     // --- Interest Rates CRUD ---
@@ -194,6 +197,7 @@
     updateRates(newRates) {
       this.data.interestRates = { ...this.data.interestRates, ...newRates };
       this.save();
+      this.triggerAutoPushToGitHub('Rates updated');
     }
 
     updateFixedDepositRate(id, updatedFields) {
@@ -202,6 +206,7 @@
       if (idx >= 0) {
         list[idx] = { ...list[idx], ...updatedFields };
         this.save();
+        this.triggerAutoPushToGitHub('Fixed deposit rate updated');
       }
     }
 
@@ -210,11 +215,13 @@
       item.id = item.id || 'fd-' + Date.now();
       this.data.interestRates.fixedDeposits.push(item);
       this.save();
+      this.triggerAutoPushToGitHub('Fixed deposit rate added');
     }
 
     deleteFixedDepositRate(id) {
       this.data.interestRates.fixedDeposits = (this.data.interestRates.fixedDeposits || []).filter(r => r.id !== id);
       this.save();
+      this.triggerAutoPushToGitHub('Fixed deposit rate deleted');
     }
 
     updateSavingsRate(id, updatedFields) {
@@ -223,6 +230,7 @@
       if (idx >= 0) {
         list[idx] = { ...list[idx], ...updatedFields };
         this.save();
+        this.triggerAutoPushToGitHub('Savings rate updated');
       }
     }
 
@@ -232,6 +240,7 @@
       if (idx >= 0) {
         list[idx] = { ...list[idx], ...updatedFields };
         this.save();
+        this.triggerAutoPushToGitHub('Loan rate updated');
       }
     }
 
@@ -250,11 +259,13 @@
         this.data.products.push(prod);
       }
       this.save();
+      this.triggerAutoPushToGitHub('Product saved: ' + (prod.title || ''));
     }
 
     deleteProduct(id) {
       this.data.products = (this.data.products || []).filter(p => p.id !== id);
       this.save();
+      this.triggerAutoPushToGitHub('Product deleted: ' + id);
     }
 
     // --- Hero Slides CRUD ---
@@ -272,11 +283,13 @@
         this.data.heroSlides.push(slide);
       }
       this.save();
+      this.triggerAutoPushToGitHub('Hero slide saved');
     }
 
     deleteHeroSlide(id) {
       this.data.heroSlides = (this.data.heroSlides || []).filter(s => s.id !== id);
       this.save();
+      this.triggerAutoPushToGitHub('Hero slide deleted: ' + id);
     }
 
     // --- Bank Info & Urgent Banner ---
@@ -287,6 +300,7 @@
     updateBankInfo(info) {
       this.data.bankInfo = { ...this.data.bankInfo, ...info };
       this.save();
+      this.triggerAutoPushToGitHub('Bank info updated');
     }
 
     // --- Inquiries ---
@@ -612,6 +626,148 @@
     resetToDefaults() {
       this.data = JSON.parse(JSON.stringify(window.DEFAULT_BANK_DATA));
       this.save();
+    }
+
+    // --- GitHub Direct Repository Sync Engine (Auto-Push data.json) ---
+    getGitHubConfig() {
+      try {
+        const stored = localStorage.getItem(GITHUB_CONFIG_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return {
+            owner: parsed.owner || 'gscsbank',
+            repo: parsed.repo || 'gscsbank',
+            branch: parsed.branch || 'main',
+            token: parsed.token || '',
+            autoPush: parsed.autoPush !== undefined ? Boolean(parsed.autoPush) : true
+          };
+        }
+      } catch (e) {}
+      return {
+        owner: 'gscsbank',
+        repo: 'gscsbank',
+        branch: 'main',
+        token: '',
+        autoPush: true
+      };
+    }
+
+    saveGitHubConfig(config) {
+      if (!config) {
+        localStorage.removeItem(GITHUB_CONFIG_KEY);
+      } else {
+        localStorage.setItem(GITHUB_CONFIG_KEY, JSON.stringify(config));
+      }
+    }
+
+    async pushDataJsonToGitHub(commitMsg = 'Update data.json via GSCS Bank Admin Panel') {
+      const cfg = this.getGitHubConfig();
+      if (!cfg || !cfg.token) {
+        return { success: false, error: 'GitHub Personal Access Token (PAT) එක ඇතුළත් කර නොමැත. කරුණාකර Sync පිටුවේ Token එක save කරන්න.' };
+      }
+
+      const owner = (cfg.owner || 'gscsbank').trim();
+      const repo = (cfg.repo || 'gscsbank').trim();
+      const branch = (cfg.branch || 'main').trim();
+      const token = cfg.token.trim();
+      const path = 'data.json';
+
+      // 1. Prepare public data JSON string
+      const publicData = {
+        bankInfo: this.data.bankInfo || {},
+        newsAndAnnouncements: (this.data.newsAndAnnouncements || []).filter(n => n && n.isPublished !== false),
+        interestRates: this.data.interestRates || {},
+        products: this.data.products || [],
+        heroSlides: this.data.heroSlides || [],
+        partners: this.data.partners || [],
+        _exportedAt: new Date().toISOString(),
+        _version: 'GSCS-DATA-V1'
+      };
+      const jsonStr = JSON.stringify(publicData, null, 2);
+
+      try {
+        // 2. Fetch existing file SHA if it exists
+        const getUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&_t=${Date.now()}`;
+        let sha = null;
+        try {
+          const checkRes = await fetch(getUrl, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github+json'
+            }
+          });
+          if (checkRes.ok) {
+            const fileData = await checkRes.json();
+            sha = fileData.sha;
+          }
+        } catch (e) {
+          console.warn('[Store] Could not fetch existing file SHA, will create new file:', e);
+        }
+
+        // 3. UTF-8 safe base64 encoding
+        const utf8Bytes = new TextEncoder().encode(jsonStr);
+        let binaryStr = '';
+        for (let i = 0; i < utf8Bytes.length; i++) {
+          binaryStr += String.fromCharCode(utf8Bytes[i]);
+        }
+        const contentBase64 = btoa(binaryStr);
+
+        // 4. PUT request to GitHub Contents API
+        const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+        const putPayload = {
+          message: commitMsg,
+          content: contentBase64,
+          branch: branch
+        };
+        if (sha) {
+          putPayload.sha = sha;
+        }
+
+        const putRes = await fetch(putUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(putPayload)
+        });
+
+        const resJson = await putRes.json().catch(() => ({}));
+        if (putRes.ok) {
+          console.log('[Store] GitHub direct push successful:', resJson);
+          return { success: true, commit: resJson.commit };
+        } else {
+          console.error('[Store] GitHub push error:', resJson);
+          return {
+            success: false,
+            error: resJson.message || `HTTP ${putRes.status}: GitHub error`
+          };
+        }
+      } catch (err) {
+        console.error('[Store] GitHub push exception:', err);
+        return { success: false, error: err.message };
+      }
+    }
+
+    triggerAutoPushToGitHub(reason) {
+      const cfg = this.getGitHubConfig();
+      if (cfg && cfg.token && cfg.autoPush) {
+        if (this._githubPushTimer) clearTimeout(this._githubPushTimer);
+        this._githubPushTimer = setTimeout(() => {
+          this.pushDataJsonToGitHub(`Update: ${reason || 'Admin modification'}`)
+            .then(res => {
+              if (res.success) {
+                window.dispatchEvent(new CustomEvent('githubAutoPushStatus', { detail: { success: true, reason } }));
+              } else {
+                window.dispatchEvent(new CustomEvent('githubAutoPushStatus', { detail: { success: false, error: res.error, reason } }));
+              }
+            })
+            .catch(err => {
+              window.dispatchEvent(new CustomEvent('githubAutoPushStatus', { detail: { success: false, error: err.message, reason } }));
+            });
+        }, 1500);
+      }
     }
 
     // --- Optional Firebase Firestore Realtime Sync ---

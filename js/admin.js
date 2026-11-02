@@ -268,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (appScriptInput && window.bankStore.getAppsScriptUrl) {
       appScriptInput.value = window.bankStore.getAppsScriptUrl();
     }
+    try { populateGitHubSettings(); } catch(e) {}
     if (window.bankStore.getAppsScriptUrl && window.bankStore.getAppsScriptUrl()) {
       if (typeof window.syncFromCloud === 'function') {
         window.syncFromCloud(false).catch(err => console.warn('Cloud sync on init:', err));
@@ -1156,6 +1157,118 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('වලංගු JSON ආකෘතියක් නොවේ: ' + err.message);
     }
   };
+
+  // --- GitHub Direct Repository Sync & Auto-Push ---
+  function populateGitHubSettings() {
+    if (!window.bankStore || !window.bankStore.getGitHubConfig) return;
+    const cfg = window.bankStore.getGitHubConfig();
+    const tokenInput = document.getElementById('github-token-input');
+    const repoInput = document.getElementById('github-repo-input');
+    const branchInput = document.getElementById('github-branch-input');
+    const autoPushCheck = document.getElementById('github-autopush-input');
+    const statusBadge = document.getElementById('github-sync-status-badge');
+    const statusText = document.getElementById('github-sync-status-text');
+
+    if (tokenInput) tokenInput.value = cfg.token || '';
+    if (repoInput) repoInput.value = `${cfg.owner || 'gscsbank'}/${cfg.repo || 'gscsbank'}`;
+    if (branchInput) branchInput.value = cfg.branch || 'main';
+    if (autoPushCheck) autoPushCheck.checked = cfg.autoPush !== false;
+
+    if (statusBadge && statusText) {
+      if (cfg.token) {
+        statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+        statusText.textContent = cfg.autoPush ? 'Auto-Push Active' : 'Ready (Manual Push)';
+      } else {
+        statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200';
+        statusText.textContent = 'Token Not Configured';
+      }
+    }
+  }
+
+  window.saveGitHubConfigFromAdmin = () => {
+    const tokenInput = document.getElementById('github-token-input');
+    const repoInput = document.getElementById('github-repo-input');
+    const branchInput = document.getElementById('github-branch-input');
+    const autoPushCheck = document.getElementById('github-autopush-input');
+    const msgEl = document.getElementById('github-sync-msg');
+
+    const token = tokenInput ? tokenInput.value.trim() : '';
+    const fullRepo = repoInput ? repoInput.value.trim() : 'gscsbank/gscsbank';
+    const branch = branchInput ? branchInput.value.trim() : 'main';
+    const autoPush = autoPushCheck ? autoPushCheck.checked : true;
+
+    let owner = 'gscsbank';
+    let repo = 'gscsbank';
+    if (fullRepo.includes('/')) {
+      const parts = fullRepo.split('/');
+      owner = parts[0].trim();
+      repo = parts[1].trim();
+    } else if (fullRepo) {
+      repo = fullRepo;
+    }
+
+    const config = {
+      owner,
+      repo,
+      branch: branch || 'main',
+      token,
+      autoPush
+    };
+
+    window.bankStore.saveGitHubConfig(config);
+    populateGitHubSettings();
+    showAdminToast('GitHub සැකසුම් සාර්ථකව සුරකින ලදී!');
+    if (msgEl) {
+      msgEl.innerHTML = `<span class="text-emerald-600 font-semibold"><i class="fa-solid fa-circle-check"></i> GitHub සැකසුම් සුරකින ලදී.</span>`;
+    }
+  };
+
+  window.pushToGitHubFromAdmin = async (showFeedback = true) => {
+    const btn = document.getElementById('admin-github-push-btn');
+    const icon = document.getElementById('admin-github-push-icon');
+    const label = document.getElementById('admin-github-push-label');
+    const msgEl = document.getElementById('github-sync-msg');
+
+    if (icon) icon.className = 'fa-solid fa-spinner fa-spin';
+    if (label) label.textContent = 'Pushing...';
+    if (btn) btn.disabled = true;
+
+    try {
+      const res = await window.bankStore.pushDataJsonToGitHub('Admin Manual Push: Update data.json');
+      if (res.success) {
+        if (msgEl) {
+          msgEl.innerHTML = `<span class="text-emerald-600 font-semibold"><i class="fa-solid fa-circle-check"></i> data.json සාර්ථකව GitHub වෙත Push කරන ලදී! සියලුම devices විනාඩි 1-2 කින් update වේ.</span>`;
+        }
+        showAdminToast('data.json සාර්ථකව GitHub වෙත Push කරන ලදී!');
+      } else {
+        if (msgEl) {
+          msgEl.innerHTML = `<span class="text-red-600 font-semibold"><i class="fa-solid fa-circle-xmark"></i> GitHub Push අසාර්ථකයි: ${res.error}</span>`;
+        }
+        if (showFeedback) {
+          alert('GitHub Push අසාර්ථක විය:\n' + res.error);
+        }
+      }
+    } catch (err) {
+      if (msgEl) {
+        msgEl.innerHTML = `<span class="text-red-600 font-semibold"><i class="fa-solid fa-circle-xmark"></i> දෝෂයක්: ${err.message}</span>`;
+      }
+      if (showFeedback) alert('දෝෂයක්: ' + err.message);
+    } finally {
+      if (icon) icon.className = 'fa-solid fa-cloud-arrow-up';
+      if (label) label.textContent = 'Push to GitHub';
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  // Listen for Auto-Push Events triggered on save
+  window.addEventListener('githubAutoPushStatus', (e) => {
+    const detail = e.detail || {};
+    if (detail.success) {
+      showAdminToast('ස්වයංක්‍රීයව GitHub වෙත Push කරන ලදී! (' + (detail.reason || '') + ')');
+    } else if (detail.error && !detail.error.includes('Token')) {
+      console.warn('Auto-push notice:', detail.error);
+    }
+  });
 
   // --- Factory Reset ---
   window.confirmResetDefaults = () => {
