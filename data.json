@@ -34,6 +34,18 @@
   },
   "newsAndAnnouncements": [
     {
+      "id": "news-1793601547724",
+      "title": "ලෝක සකසුරුවම් දිනය අදයි!",
+      "titleEn": "Today is World Thrift Day!",
+      "category": "විශේෂ නිවේදන",
+      "badgeColor": "bg-red-600",
+      "date": "2026-10-31",
+      "image": "https://lh3.googleusercontent.com/d/1R7R239igx81neFM7aLjtx32tyTjoZGXa",
+      "summary": "🎯 ඔබේ සිහින සැබෑ කරගන්නට අද සිටම සකසුරුවම පුරුදු වන්න!",
+      "content": "🏦 ලෝක සකසුරුවම් දිනය අදයි!\n\n✨ ලස්සන අනාගතයක් සඳහා සකසුරුවම් කරමු.\n\n🎯 ඔබේ සිහින සැබෑ කරගන්නට අද සිටම සකසුරුවම පුරුදු වන්න!\n\n🤝 ඔබේ අනාගත ඉලක්ක සපුරා ගැනීමට ගලපිටියාගම සණස බැංකුව සමඟ එක් වන්න.\n\n\n🏦 World Thrift Day is Today!\n\n✨ Save today for a brighter future.\n\n🎯 Start practicing thrift from today to make your dreams come true!\n\n🤝 Join Galapitiyagama Sanasa Bank to secure your future goals.\n\n\n🏦 இன்று உலக சேமிப்புத் தினம்!\n\n✨ வளமான எதிர்காலத்திற்காக சேமியுங்கள்.\n\n🎯 உங்கள் கனவுகளை நனவாக்க இன்றிலிருந்தே சேமிக்கும் பழக்கத்தை பற்றிக்கொள்ளுங்கள்!\n\n🤝 உங்கள் எதிர்கால இலக்குகளை அடைய கலப்பிட்டியகம சனச வங்கியுடன் இணைந்திடுங்கள்.",
+      "urgent": false
+    },
+    {
       "id": "news-1793601432971",
       "title": "ඔබේ අනාගතය වෙනස් කරන අවස්ථාවට ඔබත් එන්න!",
       "titleEn": "Come to the event that will change your future!",
@@ -809,6 +821,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T06:37:17.728Z",
+  "_exportedAt": "2026-11-02T06:39:09.238Z",
   "_version": "GSCS-DATA-V1"
 }
