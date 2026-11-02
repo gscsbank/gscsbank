@@ -35,15 +35,45 @@
   "newsAndAnnouncements": [
     {
       "id": "news-1",
-      "title": "dddd",
-      "titleEn": "Annual General Meeting (AGM) 2026 Announcement",
       "category": "Notice",
+      "categoryEn": "Notice",
       "badgeColor": "bg-[#0B0D7C]",
+      "title": "ගලපිටියගම සනස සමූපකාර සමිතියේ 2026 වාර්ෂික මහා සභා රැස්වීම",
+      "titleEn": "Annual General Meeting (AGM) 2026 Announcement",
       "date": "2026-10-15",
       "image": "assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png",
       "summary": "ගලපිටියාගම සණස බැංකුවේ වාර්ෂික මහා සභා රැස්වීම නිකවැරටිය සමිති ශාලාවේදී පැවැත්වීමට තීරණය කර ඇත.",
+      "summaryEn": "The Annual General Meeting of Galapitiyagama Sanasa Co-operative Society will be held at the Society Hall, Nikaweratiya.",
       "content": "ගලපිටියාගම සණස බැංකුවේ ගරු සාමාජික සාමාජිකාවන් වෙත දැනුම්දීමයි.\n\nඅප බැංකුවේ වාර්ෂික මහා සභා රැස්වීම නිකවැරටිය ප්‍රධාන සමිති ශ්‍රවණාගාරයේදී පැවැත්වේ.\n\nන්‍යාය පත්‍රය:\n1. පසුගිය වසරේ වාර්තාව හා ගිණුම් ප්‍රකාශනය සභාගත කිරීම\n2. වාර්ෂික ලාභාංශ බෙදාහැරීම අනුමත කිරීම\n3. නව අධ්‍යක්ෂ මණ්ඩල සාමාජිකයින් තෝරාපත් කරගැනීම\n4. සාමාජික යෝජනා සලකා බැලීම\n\nසියලුම ගරු සාමාජික භවතුන් නියමිත වේලාවට සහභාගී වන ලෙස ගෞරවයෙන් ඇරයුම් කරමු.\n\n- ලේකම්, ගලපිටියාගම සණස බැංකුව.",
       "urgent": true
+    },
+    {
+      "id": "news-2",
+      "category": "Digital Banking",
+      "categoryEn": "Digital Banking",
+      "badgeColor": "bg-[#DF0178]",
+      "title": "Smart COOP Mobile App හරහා ඩිජිටල් බැංකුකරණය අරඹන්න",
+      "titleEn": "Experience Modern Digital Banking with Smart COOP App",
+      "date": "2026-10-01",
+      "image": "assets/images/wix/d7b655_4f1c21b5b9ba49de92c451219f602714~mv2.png",
+      "summary": "ඔබගේ සියලුම සනස ගිණුම් කටයුතු නිවසේ සිටම ඔබගේ ජංගම දුරකථනයෙන් සිදුකරගැනීමට Smart COOP යෙදුම දැන් බාගත කරගන්න.",
+      "summaryEn": "All banking services now at your fingertips with Smart COOP mobile app. Download today for instant account access.",
+      "content": "ගලපිටියගම සනස බැංකුවේ සාමාජික ඔබට දැන් වඩාත් පහසු සහ ආරක්ෂිත ඩිජිටල් බැංකු සේවාවක් ලබාදීම සඳහා Smart COOP App හඳුන්වා දී ඇත.\n\nප්‍රධාන පහසුකම්:\n- ඕනෑම වේලාවක ගිණුම් ශේෂ පරීක්ෂාව\n- තැන්පතු සහ ණය ගිණුම් විස්තර ලබාගැනීම\n- අන්තර් බැංකු මුදල් හුවමාරු (Fund Transfers)\n- බිල්පත් ගෙවීම් (Utility Bill Payments)\n\nයෙදුම සක්‍රීය කරගැනීමට අදම අපගේ ප්‍රධාන කාර්යාලය අමතන්න.",
+      "urgent": false
+    },
+    {
+      "id": "news-3",
+      "category": "Agriculture",
+      "categoryEn": "Agriculture",
+      "badgeColor": "bg-emerald-600",
+      "title": "යල කන්නයේ ගොවිබිමට සහන පොලී වගා ණය නිකුත් කිරීම",
+      "titleEn": "Concessionary Yala Season Cultivation Loans Disbursement",
+      "date": "2026-09-20",
+      "image": "assets/images/wix/d7b655_017323ee6e6c473d9cea6f9d6613dc3c~mv2.png",
+      "summary": "කෘෂිකාර්මික උපකරණ, බීජ සහ පොහොර මිලදී ගැනීම සඳහා වාර්ෂික 9.50% සහන පොලී අනුපාතයක් යටතේ ණය මුදල් නිකුත් කෙරේ.",
+      "summaryEn": "Special low interest cultivation credit at 9.50% p.a. for local farmers in Galapitiyagama and Nikaweratiya.",
+      "content": "ගලපිටියගම සහ අවට ප්‍රදේශවල ගොවි මහතුන් වෙනුවෙන් කඩිනම් වගා ණය යෝජනා ක්‍රමයක් ක්‍රියාත්මක කර ඇත. අස්වනු නෙලා විකිණීමෙන් පසු මුදල් පියවීමේ සහන කාල සහිතව ණය මුදල් ලබාගත හැක.",
+      "urgent": false
     }
   ],
   "interestRates": {
@@ -785,6 +815,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T09:38:12.276Z",
+  "_exportedAt": "2026-11-02T09:39:06.385Z",
   "_version": "GSCS-DATA-V1"
 }
