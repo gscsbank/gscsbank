@@ -654,7 +654,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Latest News & Notices Grid ---
   function renderNews() {
-    const news = window.bankStore.getNews();
+    let news = window.bankStore ? window.bankStore.getNews() : [];
+    if (!news || !news.length) {
+      news = (window.DEFAULT_BANK_DATA && window.DEFAULT_BANK_DATA.newsAndAnnouncements) || [];
+    }
     const container = document.getElementById('news-grid');
     if (!container) return;
 

@@ -43,7 +43,7 @@ git branch -M main
 git add -A
 
 Write-Host "Commit karanwa..." -ForegroundColor Cyan
-git commit -m "Fix: move checkAuth to end, fix TDZ variables, fix filter functions and cloud sync"
+git commit -m "Fix: news display fallback, GitHub live auto-push engine, mobile responsiveness, and Google Drive image preview"
 
 Write-Host "GitHub push karanwa ($branch)..." -ForegroundColor Cyan
 git push -u origin main --force

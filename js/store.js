@@ -29,6 +29,7 @@
             return {
               ...window.DEFAULT_BANK_DATA,
               ...parsed,
+              newsAndAnnouncements: (parsed.newsAndAnnouncements && parsed.newsAndAnnouncements.length) ? parsed.newsAndAnnouncements : window.DEFAULT_BANK_DATA.newsAndAnnouncements,
               products: (parsed.products && parsed.products.length) ? parsed.products : window.DEFAULT_BANK_DATA.products,
               interestRates: (parsed.interestRates && parsed.interestRates.fixedDeposits) ? parsed.interestRates : window.DEFAULT_BANK_DATA.interestRates,
               heroSlides: (parsed.heroSlides && parsed.heroSlides.length) ? parsed.heroSlides : window.DEFAULT_BANK_DATA.heroSlides,
@@ -54,12 +55,17 @@
           const repoData = await res.json();
           if (repoData && repoData.bankInfo) {
             console.log('[Store] Live data.json loaded from repository.');
+            // If repoData has news, use them. If repoData.newsAndAnnouncements is empty, preserve existing news or default news!
+            const rawNews = (repoData.newsAndAnnouncements && repoData.newsAndAnnouncements.length)
+              ? repoData.newsAndAnnouncements
+              : ((this.data.newsAndAnnouncements && this.data.newsAndAnnouncements.length) ? this.data.newsAndAnnouncements : window.DEFAULT_BANK_DATA.newsAndAnnouncements);
+
             // Normalize news: map imageUrl -> image, ensure booleans are correct
-            const normalizedNews = (repoData.newsAndAnnouncements || []).map(n => ({
+            const normalizedNews = (rawNews || []).map(n => ({
               ...n,
               image: n.image || n.imageUrl || '',
               imageUrl: n.image || n.imageUrl || '',
-              isPublished: n.isPublished === true || n.isPublished === 'YES',
+              isPublished: n.isPublished !== false && n.isPublished !== 'NO',
               urgent: n.urgent === true || n.urgent === 'YES',
               badgeColor: n.badgeColor || 'bg-[#0B0D7C]',
               summary: n.summary || n.content || ''
@@ -137,7 +143,11 @@
 
     // --- News & Announcements CRUD ---
     getNews() {
-      return this.data.newsAndAnnouncements || [];
+      const list = this.data.newsAndAnnouncements;
+      if (Array.isArray(list) && list.length > 0) {
+        return list;
+      }
+      return (window.DEFAULT_BANK_DATA && window.DEFAULT_BANK_DATA.newsAndAnnouncements) || [];
     }
 
     getNewsById(id) {
@@ -587,7 +597,7 @@
     exportDataJson() {
       const publicData = {
         bankInfo: this.data.bankInfo || {},
-        newsAndAnnouncements: (this.data.newsAndAnnouncements || []).filter(n => n && n.isPublished !== false),
+        newsAndAnnouncements: ((this.data.newsAndAnnouncements && this.data.newsAndAnnouncements.length) ? this.data.newsAndAnnouncements : (window.DEFAULT_BANK_DATA.newsAndAnnouncements || [])).filter(n => n && n.isPublished !== false),
         interestRates: this.data.interestRates || {},
         products: this.data.products || [],
         heroSlides: this.data.heroSlides || [],
@@ -675,7 +685,7 @@
       // 1. Prepare public data JSON string
       const publicData = {
         bankInfo: this.data.bankInfo || {},
-        newsAndAnnouncements: (this.data.newsAndAnnouncements || []).filter(n => n && n.isPublished !== false),
+        newsAndAnnouncements: ((this.data.newsAndAnnouncements && this.data.newsAndAnnouncements.length) ? this.data.newsAndAnnouncements : (window.DEFAULT_BANK_DATA.newsAndAnnouncements || [])).filter(n => n && n.isPublished !== false),
         interestRates: this.data.interestRates || {},
         products: this.data.products || [],
         heroSlides: this.data.heroSlides || [],
