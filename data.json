@@ -34,16 +34,31 @@
   },
   "newsAndAnnouncements": [
     {
+      "id": "news-1793613764733",
+      "title": "🏦 ලෝක සකසුරුවම් දිනය අදයි!",
+      "titleEn": "🏦 Today is World Thrift Day!",
+      "category": "විශේෂ නිවේදන",
+      "badgeColor": "bg-red-600",
+      "date": "2026-10-31",
+      "image": "https://lh3.googleusercontent.com/d/1R7R239igx81neFM7aLjtx32tyTjoZGXa",
+      "summary": "🎯 ඔබේ සිහින සැබෑ කරගන්නට අද සිටම සකසුරුවම පුරුදු වන්න!",
+      "content": "🏦 ලෝක සකසුරුවම් දිනය අදයි!\n\n✨ ලස්සන අනාගතයක් සඳහා සකසුරුවම් කරමු.\n\n🎯 ඔබේ සිහින සැබෑ කරගන්නට අද සිටම සකසුරුවම පුරුදු වන්න!\n\n🤝 ඔබේ අනාගත ඉලක්ක සපුරා ගැනීමට ගලපිටියාගම සණස බැංකුව සමඟ එක් වන්න.\n\n\n🏦 World Thrift Day is Today!\n\n✨ Save today for a brighter future.\n\n🎯 Start practicing thrift from today to make your dreams come true!\n\n🤝 Join Galapitiyagama Sanasa Bank to secure your future goals.\n\n\n🏦 இன்று உலக சேமிப்புத் தினம்!\n\n✨ வளமான எதிர்காலத்திற்காக சேமியுங்கள்.\n\n🎯 உங்கள் கனவுகளை நனவாக்க இன்றிலிருந்தே சேமிக்கும் பழக்கத்தை பற்றிக்கொள்ளுங்கள்!\n\n🤝 உங்கள் எதிர்கால இலக்குகளை அடைய கலப்பிட்டியகம சனச வங்கியுடன் இணைந்திடுங்கள்.\n\n\n\n📌 #GSCSBank #WorldThriftDay #Savings #Nikaweratiya #Galapitiyagama",
+      "urgent": true
+    },
+    {
       "id": "news-1793613682323",
       "title": "ඔබේ අනාගතය වෙනස් කරන අවස්ථාවට ඔබත් එන්න!",
       "titleEn": "Come to the event that will change your future!",
-      "category": "තරුණ වැඩසටහන්",
-      "badgeColor": "bg-[#0B0D7C]",
-      "date": "2026-10-27",
-      "image": "https://lh3.googleusercontent.com/d/1h4HsBDRV3qG2DcJRZN--KO86qDBdLczU",
-      "summary": "ඔබේ අනාගතය වෙනස් කරන අවස්ථාවට ඔබත් එන්න!\n\n🌟 ඔබ වයස අවුරුදු 35ට අඩු තරුණයෙක් හෝ තරුණියක්ද?",
       "content": "ඔබේ අනාගතය වෙනස් කරන අවස්ථාවට ඔබත් එන්න!\n\n🌟 ඔබ වයස අවුරුදු 35ට අඩු තරුණයෙක් හෝ තරුණියක්ද?\n\nඔබේ දක්ෂතා හඳුනාගන්න, අලුත් දේ ඉගෙනගන්න, නව අදහස් සමඟ ඉදිරියට යන්න සහ ඔබේ අනාගතය සාර්ථක කරගන්න මඟ විවර කරන සුවිශේෂී වැඩසටහනකට ඔබට ආරාධනා! ❤️\n\n🎤 විශේෂ සම්පත් දායකත්වයක් මඟින් මෙහෙයවනු ලබන මෙම වැඩසටහනට සහභාගී වී ඔබේ ජීවිතයට අලුත් ආරම්භයක් ලබාගන්න.\n\n📢 දෙමාපියනි, ඔබේ තරුණ දරුවන් අනිවාර්යයෙන්ම යොමු කරන්න!\n\n🙋‍♂️🙋‍♀️ වයස අවුරුදු 35ට අඩු සියලුම තරුණ තරුණියන්ට විවෘත ආරාධනාවක්!\n\n📅 දිනය: ඔක්තෝබර් 28\n🕔 වේලාව: සවස 5.00 සිට 7.00 දක්වා\n📍 ස්ථානය: ගලපිටියාගම සණස බැංකු පරිශ්‍රය\n\n💙 මේ ඔබේ සමිතියයි!\n💛 මේ ඔබේ බැංකුවයි!\n\nඔබ වෙනුවෙන්ම සංවිධානය කරන මේ වටිනා අවස්ථාව මඟහරින්න එපා. ඔබේ මිතුරන්වත් එක්කරගෙන එන්න. එකට ඉගෙනගෙන, එකට දියුණු වී, අපේ ප්‍රදේශයේ අනාගතය ගොඩනඟමු! 🤝🌱\n\n🔥 ඔබේ හෙට දවස වෙනස් කරන පළමු පියවර අද තබන්න. අපි ඔබ එනතුරු බලා සිටිමු!",
-      "urgent": false
+      "summary": "ඔබේ අනාගතය වෙනස් කරන අවස්ථාවට ඔබත් එන්න!\n\n🌟 ඔබ වයස අවුරුදු 35ට අඩු තරුණයෙක් හෝ තරුණියක්ද?",
+      "category": "තරුණ වැඩසටහන්",
+      "date": "2026-10-27",
+      "isPublished": true,
+      "imageUrl": "https://lh3.googleusercontent.com/d/1h4HsBDRV3qG2DcJRZN--KO86qDBdLczU",
+      "urgent": false,
+      "badgeColor": "bg-[#0B0D7C]",
+      "updatedAt": "2026-11-02T10:01:00.000Z",
+      "image": "https://lh3.googleusercontent.com/d/1h4HsBDRV3qG2DcJRZN--KO86qDBdLczU"
     },
     {
       "id": "news-1793613447339",
@@ -815,6 +830,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T10:01:23.849Z",
+  "_exportedAt": "2026-11-02T10:02:46.258Z",
   "_version": "GSCS-DATA-V1"
 }
