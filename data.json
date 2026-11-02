@@ -34,20 +34,6 @@
   },
   "newsAndAnnouncements": [
     {
-      "id": "news-1",
-      "category": "Notice",
-      "categoryEn": "Notice",
-      "badgeColor": "bg-[#0B0D7C]",
-      "title": "ගලපිටියගම සනස සමූපකාර සමිතියේ 2026 වාර්ෂික මහා සභා රැස්වීම",
-      "titleEn": "Annual General Meeting (AGM) 2026 Announcement",
-      "date": "2026-10-15",
-      "image": "assets/images/wix/d7b655_8b90b4687fad497bb55da48a880da264~mv2.png",
-      "summary": "ගලපිටියාගම සණස බැංකුවේ වාර්ෂික මහා සභා රැස්වීම නිකවැරටිය සමිති ශාලාවේදී පැවැත්වීමට තීරණය කර ඇත.",
-      "summaryEn": "The Annual General Meeting of Galapitiyagama Sanasa Co-operative Society will be held at the Society Hall, Nikaweratiya.",
-      "content": "ගලපිටියාගම සණස බැංකුවේ ගරු සාමාජික සාමාජිකාවන් වෙත දැනුම්දීමයි.\n\nඅප බැංකුවේ වාර්ෂික මහා සභා රැස්වීම නිකවැරටිය ප්‍රධාන සමිති ශ්‍රවණාගාරයේදී පැවැත්වේ.\n\nන්‍යාය පත්‍රය:\n1. පසුගිය වසරේ වාර්තාව හා ගිණුම් ප්‍රකාශනය සභාගත කිරීම\n2. වාර්ෂික ලාභාංශ බෙදාහැරීම අනුමත කිරීම\n3. නව අධ්‍යක්ෂ මණ්ඩල සාමාජිකයින් තෝරාපත් කරගැනීම\n4. සාමාජික යෝජනා සලකා බැලීම\n\nසියලුම ගරු සාමාජික භවතුන් නියමිත වේලාවට සහභාගී වන ලෙස ගෞරවයෙන් ඇරයුම් කරමු.\n\n- ලේකම්, ගලපිටියාගම සණස බැංකුව.",
-      "urgent": true
-    },
-    {
       "id": "news-2",
       "category": "Digital Banking",
       "categoryEn": "Digital Banking",
@@ -801,6 +787,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T06:20:35.155Z",
+  "_exportedAt": "2026-11-02T06:20:55.499Z",
   "_version": "GSCS-DATA-V1"
 }
