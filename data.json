@@ -17,7 +17,7 @@
     "addressEn": "No 247, Puttalam Road, Galapitiyagama, Nikaweratiya, Sri Lanka",
     "workingHours": "සඳුදා - සෙනසුරාදා: පෙ.ව. 9.00 - ප.ව. 3.30 | ඉරිදා සහ පෝය දිනවල හා වෙළඳ නිවාඩු දිනයන්හි: වසා ඇත",
     "workingHoursEn": "Mon - Sat: 9:00 AM - 3:30 PM | Sun, Poya & Mercantile Holidays: Closed",
-    "urgentNotice": "විශේෂ නිවේදනය: 2026 නොවැම්බර් මස මහසභාව 2026/11/08 වන ඉරිදා , ගලපිටියාගම සණස සමිති රැස්වීම් ශාලාවේදී  උදෑසන 9.00ට පැවැත්වේ.",
+    "urgentNotice": "විශේෂ නිවේදනය: 2026 දෙසැම්බර්  මස මහසභාව 2026/12/13 වන ඉරිදා , ගලපිටියාගම සණස සමිති රැස්වීම් ශාලාවේදී  උදෑසන 9.00ට පැවැත්වේ.",
     "urgentNoticeEn": "Special Announcement: 2026 Annual General Meeting will be held soon. Highest deposit rates and concessionary loans are now active.",
     "urgentNoticeActive": true,
     "stats": {
@@ -37,13 +37,16 @@
       "id": "news-1793617092231",
       "title": "🎁 ලෝක සකසුරුවම් දිනය වෙනුවෙන් ගලපිටියාගම සණස බැංකුවෙන් විශේෂ තිළිණයක්!",
       "titleEn": "🎁 A special gift from Galapitiyagama SANASA Bank for World Thrift Day!",
-      "category": "තිළිණයක්",
-      "badgeColor": "bg-[#0B0D7C]",
-      "date": "2026-10-31",
-      "image": "https://lh3.googleusercontent.com/d/1RRdrgrarayqRZAqpydy1tieNdp9TQcgS",
-      "summary": "🎁 ලෝක සකසුරුවම් දිනය වෙනුවෙන් ගලපිටියාගම සණස බැංකුවෙන් විශේෂ තිළිණයක්!\n\nඔබේ මූල්‍ය කටයුතු පහසුවෙන් හා නිවැරදිව කළමනාකරණය කරගැනීම සඳහා GSCS Money Manager ඇප් එක අද දින ඔබට හඳුන්වා දෙමු! 📱✨\n\nඔබේ අනාගත ඉලක්ක සපුරා ගැනීමට අදම එක් වන්න!",
       "content": "📱 Android දුරකතන සඳහා \"GSCS Money Manager\" App එක Install කරගන්නේ කෙසේද?   \n\nපහත සබැඳියෙන් APK ෆයිල් එක ඩවුන්ලෝඩ් කරගන්න.\n\n🔗 https://drive.google.com/file/d/1LHIdsB4Kwx3Qb-w_YjprAMkNtgE4YidG/view?usp=sharingDownload  \n\n\"Download anyway\" තෝරා ෆයිල් එක Download කරගන්න.\n\nPermission ලබා දෙන්න : ෆයිල් එක Open කිරීමේදී \"Blocked by Chrome\" හෝ \"Unkown Sources\" ලෙස පණිවිඩයක් ආවහොත් Settings වෙත යන්න.\nඑහි ඇති \"Allow from this source\" යන්න On කරගන්න.\n\nInstall කරගන්න : ඉන්පසු \"Install\" ක්ලික් කර ඇප් එක ස්ථාපනය කරගන්න.\n\nදැන් ඔබේ Android දුරකතනයෙන්ම ඔබේ මුදල් පාලනය කරගන්න!\n\n\n\n📱 ඔබගේ iPhone එකට \"GSCS Money Manager\" ඇප් එක එකතු කරගන්නේ කෙසේද?\n\nSafari බ්‍රව්සරය විවෘත කර පහත සබැඳියට පිවිසෙන්න:\n\n🔗 https://gscsbank.github.io/Money-Manager/\n\nතිරයේ පහළ මධ්‍යයේ ඇති Share අයිකනය මත ක්ලික් කරන්න.\n\nපෙන්වන මෙනුවෙන් පහළට ගොස් \"Add to Home Screen\"  යන්න තෝරන්න.\n\nඉන්පසු ඉහළ දකුණු කෙළවරේ ඇති \"Add\" බට්න් එක ක්ලික් කරන්න.\n\nදැන් ඔබේ iPhone එකේ මුල් තිරයෙන් (Home Screen) ඕනෑම වෙලාවක ඉතා පහසුවෙන් මෙම ඇප් එක භාවිතා කරන්න! \n",
-      "urgent": true
+      "summary": "🎁 ලෝක සකසුරුවම් දිනය වෙනුවෙන් ගලපිටියාගම සණස බැංකුවෙන් විශේෂ තිළිණයක්!\n\nඔබේ මූල්‍ය කටයුතු පහසුවෙන් හා නිවැරදිව කළමනාකරණය කරගැනීම සඳහා GSCS Money Manager ඇප් එක අද දින ඔබට හඳුන්වා දෙමු! 📱✨\n\nඔබේ අනාගත ඉලක්ක සපුරා ගැනීමට අදම එක් වන්න!",
+      "category": "තිළිණයක්",
+      "date": "2026-10-31",
+      "isPublished": true,
+      "imageUrl": "https://lh3.googleusercontent.com/d/1RRdrgrarayqRZAqpydy1tieNdp9TQcgS",
+      "urgent": true,
+      "badgeColor": "bg-[#0B0D7C]",
+      "updatedAt": "2026-11-02T10:58:00.000Z",
+      "image": "https://lh3.googleusercontent.com/d/1RRdrgrarayqRZAqpydy1tieNdp9TQcgS"
     },
     {
       "id": "news-1793613764733",
@@ -845,6 +848,6 @@
       "img": "assets/images/partners/sap-center.png"
     }
   ],
-  "_exportedAt": "2026-11-02T10:58:27.820Z",
+  "_exportedAt": "2026-11-25T08:43:32.394Z",
   "_version": "GSCS-DATA-V1"
 }
